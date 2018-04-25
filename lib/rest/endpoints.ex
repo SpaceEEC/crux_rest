@@ -1,0 +1,118 @@
+defmodule Crux.Rest.Endpoints do
+  @moduledoc """
+    The endpoints being used by the `Crux.Rest` module, you do not need to worry about it.
+  """
+
+  @doc """
+    Base API address.
+  """
+  @spec api() :: String.t()
+  def api, do: "https://discordapp.com/api/v7"
+
+  @doc """
+    Base CDN address.
+  """
+  @spec cdn() :: String.t()
+  def cdn, do: "https://cdn.discordapp.com"
+
+  @doc """
+    Used to obtain the gateway address.
+  """
+  @spec gateway() :: String.t()
+  def gateway, do: "/gateway"
+
+  @doc """
+    Used to obtain the gateway address along the recommended shard count.
+  """
+  @spec gateway_bot() :: String.t()
+  def gateway_bot, do: "#{gateway()}/bot"
+
+  @doc """
+    Used for invite related functions.
+  """
+  @spec invite(code :: String.t() | nil) :: String.t()
+  def invite(code \\ nil)
+  def invite(nil), do: "/invites"
+  def invite(code), do: "#{invite()}/#{code}"
+
+  @doc """
+    Used for channel related functions.
+  """
+  @spec channel(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def channel(channel_id, suffix \\ nil)
+  def channel(channel_id, nil), do: "/channels/#{channel_id}"
+  def channel(channel_id, suffix), do: "#{channel(channel_id)}/#{suffix}"
+
+  @doc """
+    Used for channel messages related functions.
+  """
+  @spec channel_messages(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def channel_messages(channel_id, suffix \\ nil)
+  def channel_messages(channel_id, nil), do: channel(channel_id, "messages")
+  def channel_messages(channel_id, suffix), do: "#{channel_messages(channel_id)}/#{suffix}"
+
+  @doc """
+    Used for reactions related functions.
+  """
+  @spec message_reactions(
+          channel_id :: non_neg_integer,
+          message_id :: non_neg_integer,
+          emoji :: String.t(),
+          suffix :: String.t() | nil
+        ) :: String.t()
+  def message_reactions(channel_id, message_id, emoji, suffix \\ nil)
+
+  def message_reactions(channel_id, message_id, emoji, nil),
+    do: "#{channel_messages(channel_id, message_id)}/reactions/#{emoji}"
+
+  def message_reactions(channel_id, message_id, emoji, suffix),
+    do: "#{message_reactions(channel_id, message_id, emoji)}/#{suffix}"
+
+  @doc """
+    Used for pin related functions.
+  """
+  @spec channel_pins(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def channel_pins(channel_id, suffix \\ nil)
+  def channel_pins(channel_id, nil), do: channel(channel_id, "pins")
+  def channel_pins(channel_id, suffix), do: "#{channel_pins(channel_id)}/#{suffix}"
+
+  @doc """
+    Used for channel permissions related functions.
+  """
+  @spec channel_permissions(channel_id :: non_neg_integer, target_id :: non_neg_integer) ::
+          String.t()
+  def channel_permissions(channel_id, target_id),
+    do: "#{channel(channel_id, "permissions")}/#{target_id}"
+
+  @doc """
+    Used for guild related functions.
+  """
+  @spec guild(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def guild(guild_id \\ nil, suffix \\ nil)
+  def guild(nil, nil), do: "/guilds"
+  def guild(guild_id, nil), do: "/guilds/#{guild_id}"
+  def guild(guild_id, suffix), do: "#{guild(guild_id)}/#{suffix}"
+
+  @doc """
+    Used for guild emoji related functions.
+  """
+  @spec guild_emojis(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def guild_emojis(guild_id, suffix \\ nil)
+  def guild_emojis(guild_id, nil), do: "#{guild(guild_id)}/emojis"
+  def guild_emojis(guild_id, suffix), do: "#{guild_emojis(guild_id)}/#{suffix}"
+
+  @doc """
+    Used for guild members related functions.
+  """
+  @spec guild_members(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  def guild_members(guild_id, suffix \\ nil)
+  def guild_members(guild_id, nil), do: "#{guild(guild_id)}/members"
+  def guild_members(guild_id, suffix), do: "#{guild_members(guild_id)}/#{suffix}"
+
+  @doc """
+  Discord being special.
+  """
+  # I don't even
+  @spec guild_own_nick(guild_id :: non_neg_integer) :: String.t()
+  def guild_own_nick(guild_id), do: "#{guild_members(guild_id, "@me")}/nick"
+end
