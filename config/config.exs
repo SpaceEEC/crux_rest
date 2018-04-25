@@ -1,3 +1,3 @@
 use Mix.Config
 
-config :crux_rest, token: "your token"
+# config :crux_rest, token: "your token"
