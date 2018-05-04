@@ -9,7 +9,7 @@ The package can be installed by adding `crux_rest` to your list of dependencies 
 ```elixir
 def deps do
   [
-    {:crux_rest, "~> 0.1.0"}
+    {:crux_rest, "~> 0.1.1"}
   ]
 end
 ```
