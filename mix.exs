@@ -22,7 +22,7 @@ defmodule Crux.Rest.MixProject do
       maintainers: ["SpaceEEC"],
       links: %{
         "GitHub" => "https://github.com/SpaceEEC/crux_rest/",
-        "Unified Developement Documentation" => "https://crux.randomly.space/"
+        "Unified Development Documentation" => "https://crux.randomly.space/"
       }
     ]
   end
