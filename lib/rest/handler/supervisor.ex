@@ -8,9 +8,6 @@ defmodule Crux.Rest.Handler.Supervisor do
   end
 
   def init(_args) do
-    require Logger
-    Logger.info("[Crux][Rest][Handler][Supervisor]: init/1")
-
     children = [
       {Registry, keys: :unique, name: Crux.Rest.Handler.Registry},
       Supervisor.child_spec(

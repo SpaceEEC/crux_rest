@@ -3,7 +3,7 @@ defmodule Crux.Rest do
     Collection of Rest functions.
   """
   alias Crux.Structs
-  alias Crux.Structs.{Channel, Emoji, Guild, Invite, Member, Message, User}
+  alias Crux.Structs.{Channel, Emoji, Guild, Invite, Member, Message, Role, User}
   alias Crux.Rest
   alias Crux.Rest.{Endpoints, Util}
 
@@ -16,6 +16,8 @@ defmodule Crux.Rest do
     A Discord snowflake, fits in a 64bit integer.
 
     Received as integers via the gateway, but as strings via http.
+
+  > They are normalized to integers via `Crux.Structs`.
   """
   @type snowflake :: non_neg_integer()
 
@@ -95,7 +97,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-message)
   """
   @spec create_message(
-          channel_or_message :: Message.t() | Channel.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
           args :: create_message_data()
         ) :: {:ok, Message.t()} | {:error, term()}
   def create_message(channel_or_message, args)
@@ -145,8 +147,8 @@ defmodule Crux.Rest do
   """
   @type message_edit_data ::
           %{
-            optional(:content) => String.t(),
-            optional(:embed) => embed()
+            optional(:content) => String.t() | nil,
+            optional(:embed) => embed() | nil
           }
           | [{:content, String.t()} | {:embed, embed()}]
 
@@ -172,14 +174,14 @@ defmodule Crux.Rest do
   def edit_message(channel, message_id, args)
 
   @spec edit_message(
-          channel_id :: Channel.t() | snowflake(),
-          message_id :: snowflake(),
+          channel_id :: Util.channel_id_resolvable(),
+          message_id :: Util.message_id_resolvable(),
           args :: message_edit_data()
         ) :: {:ok, Message.t()} | {:error, term()}
-  def edit_message(%Channel{id: channel_id}, message_id, args),
-    do: edit_message(channel_id, message_id, args)
+  def edit_message(channel, message, args) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def edit_message(channel_id, message_id, args) do
     body = Map.new(args)
 
     Rest.Base.queue(:patch, Endpoints.channel_messages(channel_id, message_id), body)
@@ -203,15 +205,13 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-message).
   """
   @spec delete_message(
-          channel :: Channel.t() | snowflake(),
-          message_id :: snowflake()
+          channel_id :: Util.channel_id_resolvable(),
+          message_id :: Util.message_id_resolvable()
         ) :: {:ok, Message} | {:error, term()}
-  def delete_message(channel, message_id)
+  def delete_message(channel, message) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def delete_message(%Channel{id: channel_id}, message_id),
-    do: delete_message(channel_id, message_id)
-
-  def delete_message(channel_id, message_id) do
     Rest.Base.queue(:delete, Endpoints.channel_messages(channel_id, message_id))
   end
 
@@ -221,15 +221,11 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#bulk-delete-messages)
   """
   @spec delete_messages(
-          channel :: Channel.t() | snowflake(),
-          messages :: [Message.t() | snowflake()]
+          channel :: Util.channel_id_resolvable(),
+          messages :: [Util.message_id_resolvable()]
         ) :: :ok | {:error, term()}
-  def delete_messages(channel, messages)
-
-  def delete_messages(%Channel{id: channel_id}, messages),
-    do: delete_messages(channel_id, messages)
-
-  def delete_messages(channel_id, messages) do
+  def delete_messages(channel, messages) do
+    channel_id = Util.resolve_channel_id(channel)
     messages = Enum.map(messages, &Util.resolve_message_id/1)
 
     Rest.Base.queue(:post, Endpoints.channel_messages(channel_id, "bulk-delete"), %{
@@ -243,14 +239,13 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-channel-message).
   """
   @spec get_message(
-          channel :: Channel.t() | snowflake(),
-          message_id :: snowflake()
+          channel :: Util.channel_id_resolvable(),
+          message_id :: Util.message_id_resolvable()
         ) :: {:ok, Message} | {:error, term()}
-  def get_message(channel, message_id)
+  def get_message(channel, message) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def get_message(%Channel{id: channel_id}, message_id), do: get_message(channel_id, message_id)
-
-  def get_message(channel_id, message_id) when is_number(channel_id and is_number(message_id)) do
     Rest.Base.queue(:get, Endpoints.channel_messages(channel_id, message_id))
     |> create(Message)
   end
@@ -283,14 +278,13 @@ defmodule Crux.Rest do
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-channel-messages).
   """
   @spec get_messages(
-          channel :: Channel.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
           args :: get_messages_data()
         ) :: {:ok, [Message.t()]} | {:error, term()}
 
-  def get_messages(channel, args \\ [])
-  def get_messages(%Channel{id: channel_id}, args), do: get_messages(channel_id, args)
+  def get_messages(channel, args \\ []) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def get_messages(channel_id, args) do
     Rest.Base.queue(:get, Endpoints.channel_messages(channel_id), "", [], params: args)
     |> create(Message)
   end
@@ -305,11 +299,9 @@ defmodule Crux.Rest do
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-reaction).
   """
   @spec create_reaction(
-          message :: Message.t(),
-          emoji :: Reaction.t() | Emoji.t() | String.t()
+          message :: Util.message_id_resolvable(),
+          emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
-
-  def create_reaction(message, emoji)
 
   def create_reaction(%Message{channel_id: channel_id, id: message_id}, emoji),
     do: create_reaction(channel_id, message_id, emoji)
@@ -320,19 +312,17 @@ defmodule Crux.Rest do
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-reaction).
   """
   @spec create_reaction(
-          channel :: Channel.t() | snowflake(),
-          message_id :: snowflake(),
-          emoji :: Reaction.t() | Emoji.t() | String.t()
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable(),
+          emoji :: Util.emoji_id_resolvable()
         ) :: :ok | {:error, term()}
-  def create_reaction(channel, message_id, emoji)
+  def create_reaction(channel, message, emoji) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def create_reaction(%Channel{id: channel_id}, message_id, emoji),
-    do: create_reaction(channel_id, message_id, emoji)
-
-  def create_reaction(channel_id, message_id, emoji) do
     emoji =
       emoji
-      |> Util.resolve_emoji_identifier()
+      |> Emoji.to_identifier()
       |> URI.encode_www_form()
 
     Rest.Base.queue(:put, Endpoints.message_reactions(channel_id, message_id, emoji, "@me"))
@@ -365,9 +355,9 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-reactions).
   """
   @spec get_reactions(
-          channel :: Channel.t() | snowflake(),
-          message :: Message.t() | snowflake(),
-          emoji :: Reaction.t() | Emoji.t() | String.t(),
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable(),
+          emoji :: Util.emoji_identifier_resolvable(),
           args :: get_reactions_data()
         ) :: {:ok, [User.t()]} | {:error, term()}
   def get_reactions(
@@ -379,22 +369,19 @@ defmodule Crux.Rest do
 
   @spec get_reactions(
           message :: Message.t(),
-          emoji :: Reaction.t() | Emoji.t() | String.t(),
+          emoji :: Util.emoji_identifier_resolvable(),
           args :: get_reactions_data()
         ) :: {:ok, [User.t()]} | {:error, term()}
   def get_reactions(%Message{channel_id: channel_id, id: message_id}, emoji, args, _),
     do: get_reactions(channel_id, message_id, emoji, args)
 
-  def get_reactions(%Channel{id: channel_id}, message_id, emoji, args),
-    do: get_reactions(channel_id, message_id, emoji, args)
+  def get_reactions(channel, message, emoji, args) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def get_reactions(channel_id, %Message{id: message_id}, emoji, args),
-    do: get_reactions(channel_id, message_id, emoji, args)
-
-  def get_Reactions(channel_id, message_id, emoji, args) do
     emoji =
       emoji
-      |> Util.resolve_emoji_identifier()
+      |> Emoji.to_identifier()
       |> URI.encode_www_form()
 
     Rest.Base.queue(
@@ -415,10 +402,10 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-own-reaction) [2](https://discordapp.com/developers/docs/resources/channel#delete-user-reaction).
   """
   @spec delete_reaction(
-          channel :: Channel.t() | snowflake(),
-          message :: snowflake(),
-          emoji :: Reaction.t() | Emoji.t() | String.t(),
-          user :: Member.t() | User.t() | snowflake()
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable(),
+          emoji :: Util.emoji_identifier_resolvable(),
+          user :: Util.user_id_resolvable()
         ) :: :ok | {:error, term()}
   def delete_reaction(
         message_or_channel,
@@ -430,13 +417,13 @@ defmodule Crux.Rest do
   def delete_reaction(%Message{channel_id: channel_id, id: message_id}, emoji, user, _),
     do: delete_reaction(channel_id, message_id, emoji, user)
 
-  def delete_reaction(%Channel{id: channel_id}, message_id, emoji, user),
-    do: delete_reaction(channel_id, message_id, emoji, user)
+  def delete_reaction(channel, message, emoji, user) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def delete_reaction(channel_id, message_id, emoji, user) do
     emoji =
       emoji
-      |> Util.resolve_emoji_identifier()
+      |> Emoji.to_identifier()
       |> URI.encode_www_form()
 
     user = Util.resolve_user_id(user)
@@ -445,41 +432,36 @@ defmodule Crux.Rest do
   end
 
   @doc """
-  Deletes all reactions from a messaage.
+    Deletes all reactions from a messaage.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions).
   """
   @spec delete_all_reactions(
           message :: Message.t(),
-          emoji :: Reaction.t() | Emoji.t() | String.t()
+          emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
   def delete_all_reactions(message, emoji)
 
   def delete_all_reactions(%Message{channel_id: channel_id, id: message_id}, emoji),
-    do: delete_reaction(channel_id, message_id, emoji)
+    do: delete_all_reactions(channel_id, message_id, emoji)
 
   @doc """
-  Deletes all reactions from a messaage.
+    Deletes all reactions from a messaage.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions).
   """
   @spec delete_all_reactions(
-          channel :: Channel.t() | snowflake(),
-          message_id :: Message.t() | snowflake(),
-          emoji :: Reaction.t() | Emoji.t() | String.t()
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable(),
+          emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
-  def delete_all_reactions(channel, message_id, emoji)
+  def delete_all_reactions(channel, message, emoji) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def delete_all_reactions(%Channel{id: channel_id}, message_id, emoji),
-    do: delete_reaction(channel_id, message_id, emoji)
-
-  def delete_all_reactions(channel_id, %Message{id: message_id}, emoji),
-    do: delete_reaction(channel_id, message_id, emoji)
-
-  def delete_all_reactions(channel_id, message_id, emoji) do
     emoji =
       emoji
-      |> Util.resolve_emoji_identifier()
+      |> Emoji.to_identifier()
       |> URI.encode_www_form()
 
     Rest.Base.queue(:delete, Endpoints.message_reactions(channel_id, message_id, emoji))
@@ -497,13 +479,10 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#trigger-typing-indicator).
   """
-  @spec trigger_typing(message_or_channel :: Message.t() | Channel.t() | snowflake()) ::
-          :ok | {:error, term()}
-  def trigger_typing(message_or_channel)
-  def trigger_typing(%Message{channel_id: channel_id}), do: trigger_typing(channel_id)
-  def trigger_typing(%Channel{id: channel_id}), do: trigger_typing(channel_id)
+  @spec trigger_typing(channel :: Util.channel_id_resolvable()) :: :ok | {:error, term()}
+  def trigger_typing(channel) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def trigger_typing(channel_id) do
     Rest.Base.queue(:post, Endpoints.channel(channel_id, "typing"))
   end
 
@@ -526,16 +505,15 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#add-pinned-channel-message).
   """
   @spec add_pinned_message(
-          channel :: Channel | snowflake(),
-          message :: snowflake()
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable()
         ) :: :ok | {:error, term()}
-  def add_pinned_message(channel, message_id)
+  def add_pinned_message(channel, message) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
 
-  def add_pinned_message(%Channel{id: channel_id}, message_id),
-    do: add_pinned_message(channel_id, message_id)
-
-  def add_pinned_message(channel_id, message_id),
-    do: Rest.Base.queue(:put, Endpoints.channel_pins(channel_id, message_id))
+    Rest.Base.queue(:put, Endpoints.channel_pins(channel_id, message_id))
+  end
 
   @doc """
     Deletes a message from the pinned messages. This does not delete the message itself.
@@ -554,14 +532,16 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-pinned-channel-message).
   """
   @spec delete_pinned_message(
-          channel :: Channel.t() | snowflake(),
-          message :: snowflake()
+          channel :: Util.channel_id_resolvable(),
+          message :: Util.message_id_resolvable()
         ) :: :ok | {:error, term()}
-  def delete_pinned_message(%Channel{id: channel_id}, message_id),
-    do: delete_pinned_message(channel_id, message_id)
 
-  def delete_pinned_message(channel_id, message_id),
-    do: Rest.Base.queue(:delete, Endpoints.channel_pins(channel_id, message_id))
+  def delete_pinned_message(channel, message) do
+    channel_id = Util.resolve_channel_id(channel)
+    message_id = Util.resolve_message_id(message)
+
+    Rest.Base.queue(:delete, Endpoints.channel_pins(channel_id, message_id))
+  end
 
   @doc """
     Gets a channel from the api.
@@ -569,10 +549,10 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-channel)
   """
-  @spec get_channel(channel :: Channel.t() | snowflake()) :: {:ok, Channel.t()} | {:error, term()}
-  def get_channel(%Channel{id: channel_id}), do: get_channel(channel_id)
+  @spec get_channel(channel :: Util.resolve_channel_id()) :: {:ok, Channel.t()} | {:error, term()}
+  def get_channel(channel) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def get_channel(channel_id) do
     Rest.Base.queue(:get, Endpoints.channel(channel_id))
     |> create(Channel)
   end
@@ -597,7 +577,7 @@ defmodule Crux.Rest do
             optional(:bitrate) => non_neg_integer(),
             optional(:user_limit) => non_neg_integer() | nil,
             optional(:permission_overwrites) => [Overwrite.t()],
-            optional(:parent_id) => snowflake(),
+            optional(:parent_id) => snowflake() | nil,
             optional(:reason) => String.t()
           }
           | [
@@ -608,7 +588,7 @@ defmodule Crux.Rest do
               | {:bitrate, non_neg_integer()}
               | {:user_limit, integer() | nil}
               | {:overwrites, [Overwrite.t()]}
-              | {:parent_id, snowflake()}
+              | {:parent_id, snowflake() | nil}
               | {:reason, String.t()}
             ]
 
@@ -618,13 +598,12 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#modify-channel).
   """
   @spec modify_channel(
-          channel :: Channel.t(),
+          channel :: Util.channel_id_resolvable(),
           args :: modify_channel_data()
         ) :: {:ok, Channel.t()} | {:error, term()}
-  def modify_channel(channel, args)
-  def modify_channel(%Channel{id: channel_id}, args), do: modify_channel(channel_id, args)
+  def modify_channel(channel, args) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def modify_channel(channel_id, args) do
     Rest.Base.queue(:patch, Endpoints.channel(channel_id), Map.new(args))
     |> create(Channel)
   end
@@ -635,14 +614,13 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#deleteclose-channel).
   """
   @spec delete_channel(
-          channel :: Channel.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
           reason :: String.t()
-        ) :: {:ok, Channel} | {:error, term()}
+        ) :: {:ok, Channel.t()} | {:error, term()}
 
-  def delete_channel(channel, reason \\ nil)
-  def delete_channel(%Channel{id: channel_id}, reason), do: delete_channel(channel_id, reason)
+  def delete_channel(channel, reason \\ nil) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def delete_channel(channel_id, reason) do
     Rest.Base.queue(:delete, Endpoints.channel(channel_id), %{reason: reason})
     |> create(Channel)
   end
@@ -656,7 +634,7 @@ defmodule Crux.Rest do
           %{
             optional(:allow) => non_neg_integer(),
             optional(:deny) => non_neg_integer(),
-            optional(:type) => :member | :role | String.t(),
+            optional(:type) => String.t(),
             optional(:reason) => String.t()
           }
           | {{:allow, non_neg_integer()}
@@ -669,22 +647,21 @@ defmodule Crux.Rest do
 
   If an id is provided for `:target`, `:type` must be specified in `t:edit_channel_permissions_data`.
 
-
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#edit-channel-permissions).
   """
   @spec edit_channel_permissions(
-          channel :: Channel.t() | snowflake(),
-          target :: Overwrite.t() | Member.t() | User.t() | Role.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
+          target :: Util.overwrite_target_resolvable(),
           data :: edit_channel_permissions_data()
         ) :: :ok | {:error, :missing_target} | {:error, term()}
   def edit_channel_permissions(channel, target, data)
 
-  def edit_channel_permissions(%Channel{id: channel_id}, target, data),
-    do: edit_channel_permissions(channel_id, target, data)
+  def edit_channel_permissions(channel, target, data) when is_map(target) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def edit_channel_permissions(channel_id, target, data) when is_map(target) do
-    with {type, target_id} <- Util.resolve_overwrite_target(target),
-         true <- type != :unknown || data[:type] do
+    {type, target_id} = Util.resolve_overwrite_target(target)
+
+    if type != :unknown || data[:type] do
       data =
         data
         |> Map.new()
@@ -692,12 +669,16 @@ defmodule Crux.Rest do
 
       edit_channel_permissions(channel_id, target_id, data)
     else
-      _ -> {:error, :invalid_target}
+      {:error, :missing_target}
     end
   end
 
-  def edit_channel_permissions(channel_id, target_id, vals) do
-    Rest.Base.queue(:put, Endpoints.channel_permissions(channel_id, target_id), Map.new(vals))
+  def edit_channel_permissions(channel_id, target_id, data) do
+    if data[:type] do
+      Rest.Base.queue(:put, Endpoints.channel_permissions(channel_id, target_id), Map.new(data))
+    else
+      {:error, :missing_target}
+    end
   end
 
   @doc """
@@ -705,12 +686,11 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-channel-invites)
   """
-  @spec get_channel_invites(channel :: Channel.t() | snowflake()) ::
+  @spec get_channel_invites(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Invite.t()]} | {:error, term()}
-  def get_channel_invites(channel)
-  def get_channel_invites(%Channel{id: channel_id}), do: get_channel_invites(channel_id)
+  def get_channel_invites(channel) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def get_channel_invites(channel_id) do
     Rest.Base.queue(:get, Endpoints.channel(channel_id, "invites"))
     |> create(Invite)
   end
@@ -748,15 +728,12 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-channel-invite).
   """
   @spec create_channel_invite(
-          channel :: Channel.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
           args :: create_channel_invite_data()
         ) :: {:ok, Invite.t()} | {:error, term()}
-  def create_channel_invite(channel, args)
+  def create_channel_invite(channel, args) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def create_channel_invite(%Channel{id: channel_id}, args),
-    do: create_channel_invite(channel_id, args)
-
-  def create_channel_invite(channel_id, args) do
     Rest.Base.queue(:post, Endpoints.channel(channel_id, "invites"), Map.new(args))
     |> create(Invite)
   end
@@ -767,21 +744,17 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-channel-permission).
   """
   @spec delete_channel_permissions(
-          channel :: Channel.t() | snowflake(),
-          target :: Overwrite.t() | Role.t() | User.t() | Member.t() | snowflake(),
+          channel :: Util.channel_id_resolvable(),
+          target :: Util.overwrite_target_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
-  def delete_channel_permissions(channel, target, reason \\ nil)
+  def delete_channel_permissions(channel, target, reason \\ nil) do
+    channel_id = Util.resolve_channel_id(channel)
+    {_type, target_id} = Util.resolve_overwrite_target(target)
 
-  def delete_channel_permissions(%Channel{id: channel_id}, target, reason),
-    do: delete_channel_permissions(channel_id, target, reason)
-
-  def delete_channel_permissions(channel_id, target, reason) do
-    with {_type, target_id} <- Util.resolve_overwrite_target(target) do
-      Rest.Base.queue(:delete, Endpoints.channel_permissions(channel_id, target_id), %{
-        reason: reason
-      })
-    end
+    Rest.Base.queue(:delete, Endpoints.channel_permissions(channel_id, target_id), %{
+      reason: reason
+    })
   end
 
   @doc """
@@ -789,13 +762,11 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-pinned-messages).
   """
-  @spec get_pinned_messages(channel :: Channel.t() | snowflake()) ::
+  @spec get_pinned_messages(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Message.t()]} | {:error, term()}
-  def get_pinned_messages(channel)
+  def get_pinned_messages(channel) do
+    channel_id = Util.resolve_channel_id(channel)
 
-  def get_pinned_messages(%Channel{id: channel_id}), do: get_pinned_messages(channel_id)
-
-  def get_pinned_messages(channel_id) do
     Rest.Base.queue(:get, Endpoints.channel(channel_id, "pins"))
     |> create(Message)
   end
@@ -810,12 +781,11 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#list-guild-emojis).
   """
-  @spec list_guild_emojis(guild :: Guild.t() | snowflake()) ::
+  @spec list_guild_emojis(guild :: Util.guild_id_resolvable()) ::
           {:ok, [Emoji.t()]} | {:error, term()}
-  def list_guild_emojis(guild)
-  def list_guild_emojis(%Guild{id: guild_id}), do: list_guild_emojis(guild_id)
+  def list_guild_emojis(guild) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def list_guild_emojis(guild_id) do
     Rest.Base.queue(:get, Endpoints.guild_emojis(guild_id))
     |> create(Emoji)
   end
@@ -827,13 +797,13 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#get-guild-emoji).
   """
   @spec get_guild_emoji(
-          guild :: Guild.t() | snowflake(),
-          emoji :: snowflake()
+          guild :: Util.guild_id_resolvable(),
+          emoji :: Util.emoji_id_resolvable()
         ) :: {:ok, Emoji} | {:error, term()}
-  def get_guild_emoji(guild, emoji)
-  def get_guild_emoji(%Guild{id: guild_id}, emoji_id), do: get_guild_emoji(guild_id, emoji_id)
+  def get_guild_emoji(guild, emoji) do
+    guild_id = Util.resolve_guild_id(guild)
+    emoji_id = Util.resolve_emoji_id(emoji)
 
-  def get_guild_emoji(guild_id, emoji_id) do
     Rest.Base.queue(:get, Endpoints.guild_emojis(guild_id, emoji_id))
     |> create(Emoji)
   end
@@ -867,13 +837,12 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#create-guild-emoji).
   """
   @spec create_guild_emoji(
-          guild :: Guild | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           data :: create_guild_emoji_data()
         ) :: {:ok, Emoji} | {:error, term}
-  def create_guild_emoji(guild, data)
-  def create_guild_emoji(%Guild{id: guild_id}, data), do: create_guild_emoji(guild_id, data)
+  def create_guild_emoji(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def create_guild_emoji(guild_id, data) do
     data
     |> Map.new()
     |> Map.update!(:image, fn image ->
@@ -902,7 +871,7 @@ defmodule Crux.Rest do
             optional(:reason) => String.t()
           } :: [
             {:name, String.t()}
-            | {:roles, [Role | snowflake]}
+            | {:roles, [Role.t() | snowflake]}
             | {:reason, String.t()}
           ]
 
@@ -912,23 +881,21 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#modify-guild-emoji).
   """
   @spec modify_guild_emoji(
-          guild :: Guild.t() | snowflake(),
-          emoji :: Emoji.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
+          emoji :: Util.emoji_id_resolvable(),
           data :: modify_guild_emoji_data()
         ) :: {:ok, Emoji} | {:error, term()}
-  def modify_guild_emoji(guild, emoji, data)
+  def modify_guild_emoji(guild, emoji, data) do
+    guild_id = Util.resolve_guild_id(guild)
+    emoji_id = Util.resolve_emoji_id(emoji)
 
-  def modify_guild_emoji(%Guild{id: guild_id}, emoji, data),
-    do: modify_guild_emoji(guild_id, emoji, data)
+    case Map.new(data) do
+      %{roles: roles} ->
+        Map.put(data, :roles, Enum.map(roles, &Util.resolve_role_id/1))
 
-  def modify_guild_emoji(guild_id, %Emoji{id: emoji_id}, data),
-    do: modify_guild_emoji(guild_id, emoji_id, data)
-
-  def modify_guild_emoji(guild_id, emoji_id, data) do
-    data =
-      data
-      |> Map.new()
-      |> Map.update(:roles, [], &Enum.map(&1, fn role -> Util.resolve_role_id(role) end))
+      _ ->
+        data
+    end
 
     Rest.Base.queue(:patch, Endpoints.guild_emojis(guild_id, emoji_id), data)
     |> create(Emoji)
@@ -940,19 +907,14 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#delete-guild-emoji).
   """
   @spec delete_guild_emoji(
-          guild :: Guild.t() | snowflake(),
-          emoji :: Emoji.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
+          emoji :: Util.emoji_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
-  def delete_guild_emoji(guild, emoji, reason \\ nil)
+  def delete_guild_emoji(guild, emoji, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    emoji_id = Util.resolve_emoji_id(emoji)
 
-  def delete_guild_emoji(%Guild{id: guild_id}, emoji, reason),
-    do: delete_guild_emoji(guild_id, emoji, reason)
-
-  def delete_guild_emoji(guild_id, %Emoji{id: emoji_id}, reason),
-    do: delete_guild_emoji(guild_id, emoji_id, reason)
-
-  def delete_guild_emoji(guild_id, emoji_id, reason) do
     Rest.Base.queue(:delete, Endpoints.guild_emojis(guild_id, emoji_id), %{reason: reason})
   end
 
@@ -962,7 +924,6 @@ defmodule Crux.Rest do
 
   # @doc, maybe later
   # @spec, yeah no
-  # TODO: Well, yeah
   # https://discordapp.com/developers/docs/resources/guild#create-guild
   # ^ worth a read if planing to be used
   def create_guild(data) do
@@ -970,8 +931,7 @@ defmodule Crux.Rest do
       data
       |> Map.new()
       |> Map.update(:icon, nil, fn icon ->
-        if icon,
-          do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
+        if icon, do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
       end)
 
     Rest.Base.queue(:post, Endpoints.guild(), data)
@@ -984,11 +944,10 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild)
   """
-  @spec get_guild(guild :: Guild.t() | snowflake()) :: {:ok, Guild.t()} | {:error, term()}
-  def get_guild(guild)
-  def get_guild(%Guild{id: guild_id}), do: get_guild(guild_id)
+  @spec get_guild(guild :: Util.guild_id_resolvable()) :: {:ok, Guild.t()} | {:error, term()}
+  def get_guild(guild) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def get_guild(guild_id) do
     Rest.Base.queue(:get, Endpoints.guild(guild_id))
     |> create(Guild)
   end
@@ -1003,11 +962,12 @@ defmodule Crux.Rest do
             optional(:verification_level) => non_neg_integer(),
             optional(:default_message_notifications) => non_neg_integer(),
             optional(:explicit_content_filter) => non_neg_integer(),
-            optional(:afk_channel_id) => snowflake(),
+            optional(:afk_channel_id) => snowflake() | nil,
             optional(:afk_timeout) => non_neg_integer(),
-            optional(:icon) => String.t() | binary(),
+            optional(:icon) => String.t() | binary() | nil,
+            optional(:splash) => String.t() | binary() | nil,
             optional(:owner_id) => snowflake(),
-            optional(:system_channel_id) => snowflake(),
+            optional(:system_channel_id) => snowflake() | nil,
             optional(:reason) => String.t()
           }
           | [
@@ -1016,11 +976,12 @@ defmodule Crux.Rest do
               | {:verification_level, non_neg_integer()}
               | {:default_message_notifications, non_neg_integer()}
               | {:explicit_content_filter, non_neg_integer()}
-              | {:afk_channel_id, snowflake()}
+              | {:afk_channel_id, snowflake() | nil}
               | {:afk_timeout, non_neg_integer()}
-              | {:icon, String.t() | binary()}
+              | {:icon, String.t() | binary() | nil}
+              | {:splash, String.t() | binary() | nil}
               | {:owner_id, snowflake()}
-              | {:system_channel_id, snowflake()}
+              | {:system_channel_id, snowflake() | nil}
               | {:reason, String.t()}
             ]
 
@@ -1030,19 +991,17 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild).
   """
   @spec modify_guild(
-          guild :: Guild | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           data :: modify_guild_data()
-        ) :: {:ok, Guild} | {:error, term()}
-  def modify_guild(guild, data)
-  def modify_guild(%Guild{id: guild_id}, data), do: modify_guild(guild_id, data)
+        ) :: {:ok, Guild.t()} | {:error, term()}
+  def modify_guild(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def modify_guild(guild_id, data) do
     data =
       data
       |> Map.new()
       |> Map.update(:icon, nil, fn icon ->
-        if icon,
-          do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
+        if icon, do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
       end)
       |> Map.update(:splash, nil, fn splash ->
         if splash,
@@ -1067,11 +1026,10 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#delete-guild).
   """
-  @spec delete_guild(guild :: Guild.t() | snowflake()) :: :ok | {:error, term()}
-  def delete_guild(guild)
-  def delete_guild(%Guild{id: guild_id}), do: delete_guild(guild_id)
+  @spec delete_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  def delete_guild(guild) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def delete_guild(guild_id) do
     Rest.Base.queue(:delete, Endpoints.guild(guild_id))
   end
 
@@ -1081,12 +1039,11 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-channels)-
   """
-  @spec get_guild_channels(guild :: Guild.t() | snowflake()) ::
+  @spec get_guild_channels(guild :: Util.guild_id_resolvable()) ::
           {:ok, [Channel.t()]} | {:error, term()}
-  def get_guild_channels(guild)
-  def get_guild_channels(%Guild{id: guild_id}), do: get_guild_channels(guild_id)
+  def get_guild_channels(guild) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def get_guild_channels(guild_id) do
     Rest.Base.queue(:get, Endpoints.guild(guild_id, "channels"))
     |> create(Channel)
   end
@@ -1112,7 +1069,7 @@ defmodule Crux.Rest do
                   optional(:deny) => non_neg_integer()
                 }
             ],
-            optional(:parent_id) => snowflake(),
+            optional(:parent_id) => snowflake() | nil,
             optional(:nsfw) => boolean(),
             optional(:reason) => String.t()
           }
@@ -1121,8 +1078,17 @@ defmodule Crux.Rest do
               | {:type, pos_integer()}
               | {:bitrate, non_neg_integer() | nil}
               | {:user_limit, integer() | nil}
-              | {:permission_overwrites, [Overwrite.t()]}
-              | {:parent_id, snowflake()}
+              | {:permission_overwrites,
+                 [
+                   Overwrite.t()
+                   | %{
+                       required(:id) => snowflake(),
+                       required(:type) => String.t(),
+                       optional(:allow) => non_neg_integer(),
+                       optional(:deny) => non_neg_integer()
+                     }
+                 ]}
+              | {:parent_id, snowflake() | nil}
               | {:nsfw, boolean()}
               | {:reason, String.t()}
             ]
@@ -1133,13 +1099,12 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#create-guild-channel).
   """
   @spec create_guild_channel(
-          guild :: Guild | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           data :: create_guild_channel_data()
-        ) :: {:ok, Channel} | {:error, term()}
-  def create_guild_channel(guild, data)
-  def create_guild_channel(%Guild{id: guild_id}, data), do: create_guild_channel(guild_id, data)
+        ) :: {:ok, Channel.t()} | {:error, term()}
+  def create_guild_channel(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def create_guilad_channel(guild_id, data) do
     Rest.Base.queue(:post, Endpoints.guild(guild_id, "channels"), Map.new(data))
     |> create(Channel)
   end
@@ -1156,18 +1121,14 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel-positions).
   """
   @spec modify_guild_channel_positions(
-          guild :: Guild.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           channels :: [modify_guild_channel_positions_data_entry()]
         ) :: :ok | {:error, term()}
-  def modify_guild_channel_positions(guild, channels)
+  def modify_guild_channel_positions(guild, channels) do
+    guild_id = Util.resolve_guild_id(guild)
+    channel_positions = Enum.map(channels, &Util.resolve_channel_position/1)
 
-  def modify_guild_channel_positions(%Guild{id: guild_id}, channels),
-    do: modify_guild_channel_positions(guild_id, channels)
-
-  def modify_guild_channel_positions(guild_id, channels) do
-    channels = Enum.map(channels, &Util.resolve_channel_position/1)
-
-    Rest.Base.queue(:patch, Endpoints.guild(guild_id, "channels"), channels)
+    Rest.Base.queue(:patch, Endpoints.guild(guild_id, "channels"), channel_positions)
   end
 
   @doc """
@@ -1178,16 +1139,13 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-member).
   """
   @spec get_guild_member(
-          guild :: Guild.t() | snowflake(),
-          user :: User.t() | Member.t() | snowflake()
+          guild :: Util.guild_id_resolvable(),
+          user :: Util.user_id_resolvable()
         ) :: {:ok, Member.t()} | {:error, term()}
-  def get_guild_member(%Guild{id: guild_id}, user), do: get_guild_member(guild_id, user)
-  def get_guild_member(guild_id, %User{id: user_id}), do: get_guild_member(guild_id, user_id)
+  def get_guild_member(guild, user) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(user)
 
-  def get_guild_member(guild_id, %Member{user: %User{id: user_id}}),
-    do: get_guild_member(guild_id, user_id)
-
-  def get_guild_member(guild_id, user_id) do
     Rest.Base.queue(:get, Endpoints.guild_members(guild_id, user_id))
     |> create(Member)
   end
@@ -1200,7 +1158,7 @@ defmodule Crux.Rest do
           | [{:limit, pos_integer()} | {:after, snowflake()}]
 
   @spec list_guild_members(
-          guild :: Guild.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           options :: list_guild_members_options()
         ) :: {:ok, [Member.t()]} | {:error, term()}
 
@@ -1209,10 +1167,9 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#list-guild-members).
   """
-  def list_guild_members(guild, options \\ [])
-  def list_guild_members(%Guild{id: guild_id}, options), do: list_guild_members(guild_id, options)
+  def list_guild_members(guild, options \\ []) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def list_guild_members(guild_id, options) do
     data = Map.new(options)
 
     Rest.Base.queue(:get, Endpoints.guild_members(guild_id), data)
@@ -1225,7 +1182,7 @@ defmodule Crux.Rest do
   @type add_guild_member_data ::
           %{
             required(:access_token) => String.t(),
-            optional(:nick) => String.t(),
+            optional(:nick) => String.t() | nil,
             optional(:roles) => [snowflake()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
@@ -1233,7 +1190,7 @@ defmodule Crux.Rest do
           }
           | [
               {:access_token, String.t()}
-              | {:nick, String.t()}
+              | {:nick, String.t() | nil}
               | {:roles, [snowflake()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
@@ -1246,19 +1203,14 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#add-guild-member).
   """
   @spec add_guild_member(
-          guild :: Guild.t() | snowflake(),
-          user :: User.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
+          user :: Util.user_id_resolvable(),
           data :: add_guild_member_data()
         ) :: {:ok, Member.t()} | {:error, term()}
-  def add_guild_member(guild, user, data)
+  def add_guild_member(guild, user, data) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(user)
 
-  def add_guild_member(%Guild{id: guild_id}, user, data),
-    do: add_guild_member(guild_id, user, data)
-
-  def add_guild_member(guild_id, %User{id: user_id}, data),
-    do: add_guild_member(guild_id, user_id, data)
-
-  def add_guild_member(guild_id, user_id, data) do
     data = Map.new(data)
 
     Rest.Base.queue(:put, Endpoints.guild_members(guild_id, user_id), data)
@@ -1273,7 +1225,7 @@ defmodule Crux.Rest do
   """
   @type modify_guild_member_data ::
           %{
-            optional(:nick) => String.t(),
+            optional(:nick) => String.t() | nil,
             optional(:roles) => [snowflake()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
@@ -1281,7 +1233,7 @@ defmodule Crux.Rest do
             optional(:reason) => String.t()
           }
           | [
-              {:nick, String.t()}
+              {:nick, String.t() | nil}
               | {:roles, [snowflake()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
@@ -1295,22 +1247,14 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-member).
   """
   @spec modify_guild_member(
-          guild :: Guild.t() | snowflake(),
-          member_or_user :: Member.t() | User.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
+          member :: Util.user_id_resolvable(),
           data :: modify_guild_member_data()
         ) :: :ok | {:error, term()}
-  def modify_guild_member(guild, member_or_user, data)
+  def modify_guild_member(guild, member, data) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(member)
 
-  def modify_guild_member(%Guild{id: guild_id}, member_or_user, data),
-    do: modify_guild_member(guild_id, member_or_user, data)
-
-  def modify_guild_member(guild_id, %Member{user: user_id}, data),
-    do: modify_guild_member(guild_id, user_id, data)
-
-  def modify_guild_member(guild_id, %User{id: user_id}, data),
-    do: modify_guild_member(guild_id, user_id, data)
-
-  def modify_guild_member(guild_id, user_id, data) do
     data = Map.new(data)
 
     Rest.Base.queue(:patch, Endpoints.guild_members(guild_id, user_id), data)
@@ -1319,22 +1263,64 @@ defmodule Crux.Rest do
   @doc """
     Modifies the nickname of the current user in a guild.
 
-    Yes you read correctly, that has its own endpoint.
+    Yes, you read correctly, that has its own endpoint.
+    Great, isn't it?
 
     For more informations, but not an answer to the question why, see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-current-user-nick).
   """
   @spec modify_current_users_nick(
-          guild :: Guild.t() | snowflake(),
+          guild :: Util.guild_id_resolvable(),
           nick :: String.t(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
-  def modify_current_users_nick(guild, nick, reason \\ nil)
+  def modify_current_users_nick(guild, nick, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
 
-  def modify_current_users_nick(%Guild{id: guild_id}, nick, reason),
-    do: modify_current_users_nick(guild_id, nick, reason)
-
-  def modify_current_users_nick(guild_id, nick, reason) do
     Rest.Base.queue(:patch, Endpoints.guild_own_nick(guild_id), %{nick: nick, reason: reason})
+  end
+
+  @doc """
+    Adds a role to a member.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#add-guild-member-role).
+  """
+  @spec add_guild_member_role(
+          guild :: Util.guild_id_resolvable(),
+          member :: Util.user_id_resolvable(),
+          role :: Util.role_id_resolvable(),
+          reason :: String.t()
+        ) :: :ok | {:error, term()}
+
+  def add_guild_member_role(guild, member, role, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(member)
+    role_id = Util.resolve_role_id(role)
+
+    Rest.Base.queue(:put, Endpoints.guild_member_roles(guild_id, user_id, role_id), %{
+      reason: reason
+    })
+  end
+
+  @doc """
+    Removes a role from a member.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#remove-guild-member-role).
+  """
+  @spec remove_guild_member_role(
+          guild :: Util.guild_id_resolvable(),
+          member :: Util.user_id_resolvable(),
+          role :: Util.role_id_resolvable(),
+          reason :: String.t()
+        ) :: :ok | {:error, term()}
+
+  def remove_guild_member_role(guild, member, role, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(member)
+    role_id = Util.resolve_role_id(role)
+
+    Rest.Base.queue(:delete, Endpoints.guild_member_roles(guild_id, user_id, role_id), %{
+      reason: reason
+    })
   end
 
   ### End Guild

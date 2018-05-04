@@ -38,7 +38,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for channel related functions.
   """
-  @spec channel(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec channel(channel_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
   def channel(channel_id, suffix \\ nil)
   def channel(channel_id, nil), do: "/channels/#{channel_id}"
   def channel(channel_id, suffix), do: "#{channel(channel_id)}/#{suffix}"
@@ -46,7 +46,8 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for channel messages related functions.
   """
-  @spec channel_messages(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec channel_messages(channel_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) ::
+          String.t()
   def channel_messages(channel_id, suffix \\ nil)
   def channel_messages(channel_id, nil), do: channel(channel_id, "messages")
   def channel_messages(channel_id, suffix), do: "#{channel_messages(channel_id)}/#{suffix}"
@@ -55,8 +56,8 @@ defmodule Crux.Rest.Endpoints do
     Used for reactions related functions.
   """
   @spec message_reactions(
-          channel_id :: non_neg_integer,
-          message_id :: non_neg_integer,
+          channel_id :: Crux.Rest.snowflake(),
+          message_id :: Crux.Rest.snowflake(),
           emoji :: String.t(),
           suffix :: String.t() | nil
         ) :: String.t()
@@ -71,7 +72,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for pin related functions.
   """
-  @spec channel_pins(channel_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec channel_pins(channel_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
   def channel_pins(channel_id, suffix \\ nil)
   def channel_pins(channel_id, nil), do: channel(channel_id, "pins")
   def channel_pins(channel_id, suffix), do: "#{channel_pins(channel_id)}/#{suffix}"
@@ -79,15 +80,17 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for channel permissions related functions.
   """
-  @spec channel_permissions(channel_id :: non_neg_integer, target_id :: non_neg_integer) ::
-          String.t()
+  @spec channel_permissions(
+          channel_id :: Crux.Rest.snowflake(),
+          target_id :: Crux.Rest.snowflake()
+        ) :: String.t()
   def channel_permissions(channel_id, target_id),
     do: "#{channel(channel_id, "permissions")}/#{target_id}"
 
   @doc """
     Used for guild related functions.
   """
-  @spec guild(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec guild(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
   def guild(guild_id \\ nil, suffix \\ nil)
   def guild(nil, nil), do: "/guilds"
   def guild(guild_id, nil), do: "/guilds/#{guild_id}"
@@ -96,7 +99,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for guild emoji related functions.
   """
-  @spec guild_emojis(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec guild_emojis(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
   def guild_emojis(guild_id, suffix \\ nil)
   def guild_emojis(guild_id, nil), do: "#{guild(guild_id)}/emojis"
   def guild_emojis(guild_id, suffix), do: "#{guild_emojis(guild_id)}/#{suffix}"
@@ -104,15 +107,24 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for guild members related functions.
   """
-  @spec guild_members(guild_id :: non_neg_integer, suffix :: String.t() | nil) :: String.t()
+  @spec guild_members(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
   def guild_members(guild_id, suffix \\ nil)
   def guild_members(guild_id, nil), do: "#{guild(guild_id)}/members"
   def guild_members(guild_id, suffix), do: "#{guild_members(guild_id)}/#{suffix}"
 
   @doc """
+    Used for role related functions.
+  """
+  @spec guild_member_roles(guild_id :: Crux.Rest.snowflake(), member_id :: Crux.Rest.snowflake(), role_id :: Crux.Rest.snowflake()) :: String.t()
+
+  def guild_member_roles(guild_id, member_id, role_id \\ nil)
+  def guild_member_roles(guild_id, member_id, nil), do: "#{guild_members(guild_id, member_id)}/roles"
+  def guild_member_roles(guild_id, member_id, role_id), do: "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
+
+  @doc """
   Discord being special.
   """
   # I don't even
-  @spec guild_own_nick(guild_id :: non_neg_integer) :: String.t()
+  @spec guild_own_nick(guild_id :: Crux.Rest.snowflake()) :: String.t()
   def guild_own_nick(guild_id), do: "#{guild_members(guild_id, "@me")}/nick"
 end

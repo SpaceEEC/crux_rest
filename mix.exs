@@ -22,7 +22,7 @@ defmodule Crux.Rest.MixProject do
       maintainers: ["SpaceEEC"],
       links: %{
         "GitHub" => "https://github.com/SpaceEEC/crux_rest/",
-        "Docs" => "https://hexdocs.pm/crux_rest"
+        "Unified Developement Documentation" => "https://crux.randomly.space/"
       }
     ]
   end
@@ -39,7 +39,7 @@ defmodule Crux.Rest.MixProject do
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
-      {:crux_structs, "~> 0.1.0"},
+      {:crux_structs, "~> 0.1.1"},
       {:ex_doc, git: "https://github.com/spaceeec/ex_doc", only: :dev}
     ]
   end
