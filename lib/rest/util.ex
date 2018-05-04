@@ -318,7 +318,10 @@ defmodule Crux.Rest.Util do
           Channel.t()
           | %{channel: Channel.t(), position: integer()}
           | {Crux.Rest.snowflake(), integer()}
-          | %{id: Crux.Rest.snowflake, position: integer()} :: %{id: Crux.Rest.snowflake, position: integer()}
+          | %{id: Crux.Rest.snowflake(), position: integer()} :: %{
+            id: Crux.Rest.snowflake(),
+            position: integer()
+          }
 
   @doc ~S"""
     Resolves a `t:channel_poisition_resolvable/0` into a channel position.

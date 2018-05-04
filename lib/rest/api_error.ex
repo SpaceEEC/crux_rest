@@ -39,7 +39,12 @@ defmodule Crux.Rest.ApiError do
   @doc """
     Creates a full `Crux.Rest.ApiError` struct, returned / raised by all `Crux.Rest` functions in case of an API error.
   """
-  @spec exception(error :: map, status_code :: pos_integer, path :: String.t(), method :: String.t()) :: __MODULE__.t()
+  @spec exception(
+          error :: map,
+          status_code :: pos_integer,
+          path :: String.t(),
+          method :: String.t()
+        ) :: __MODULE__.t()
   def exception(%{"message" => message} = error, status_code, path, method) do
     code = Map.get(error, "code")
 
@@ -50,7 +55,13 @@ defmodule Crux.Rest.ApiError do
 
     message = if inner, do: "#{message}\n#{inner}", else: message
 
-    %__MODULE__{status_code: status_code, code: code, message: message, path: path, method: method}
+    %__MODULE__{
+      status_code: status_code,
+      code: code,
+      message: message,
+      path: path,
+      method: method
+    }
   end
 
   defp map_inner(error, key \\ nil)

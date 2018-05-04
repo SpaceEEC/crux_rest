@@ -16,7 +16,9 @@ defmodule Crux.Rest.Base do
   def process_request_headers(headers) do
     headers
     |> Keyword.put_new(:"content-type", "application/json")
-    |> Keyword.put_new_lazy(:authorization, fn -> "Bot #{Application.fetch_env!(:crux_rest, :token)}" end)
+    |> Keyword.put_new_lazy(:authorization, fn ->
+      "Bot #{Application.fetch_env!(:crux_rest, :token)}"
+    end)
     |> Keyword.put_new(:"user-agent", "Crux")
   end
 
@@ -28,14 +30,17 @@ defmodule Crux.Rest.Base do
     end
   end
 
-  defp handle_response({
-         :ok,
-         %HTTPoison.Response{
-           status_code: status_code,
-           body: body,
-           request_url: @api_base <> path
-         }
-       }, method) do
+  defp handle_response(
+         {
+           :ok,
+           %HTTPoison.Response{
+             status_code: status_code,
+             body: body,
+             request_url: @api_base <> path
+           }
+         },
+         method
+       ) do
     with {:ok, body} <- Poison.decode(body) do
       error = ApiError.exception(body, status_code, path, method)
 

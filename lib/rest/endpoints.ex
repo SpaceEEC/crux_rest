@@ -72,7 +72,10 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for pin related functions.
   """
-  @spec channel_pins(channel_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec channel_pins(
+          channel_id :: Crux.Rest.snowflake(),
+          suffix :: String.t() | nil
+        ) :: String.t()
   def channel_pins(channel_id, suffix \\ nil)
   def channel_pins(channel_id, nil), do: channel(channel_id, "pins")
   def channel_pins(channel_id, suffix), do: "#{channel_pins(channel_id)}/#{suffix}"
@@ -115,11 +118,19 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for role related functions.
   """
-  @spec guild_member_roles(guild_id :: Crux.Rest.snowflake(), member_id :: Crux.Rest.snowflake(), role_id :: Crux.Rest.snowflake()) :: String.t()
+  @spec guild_member_roles(
+          guild_id :: Crux.Rest.snowflake(),
+          member_id :: Crux.Rest.snowflake(),
+          role_id :: Crux.Rest.snowflake()
+        ) :: String.t()
 
   def guild_member_roles(guild_id, member_id, role_id \\ nil)
-  def guild_member_roles(guild_id, member_id, nil), do: "#{guild_members(guild_id, member_id)}/roles"
-  def guild_member_roles(guild_id, member_id, role_id), do: "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
+
+  def guild_member_roles(guild_id, member_id, nil),
+    do: "#{guild_members(guild_id, member_id)}/roles"
+
+  def guild_member_roles(guild_id, member_id, role_id),
+    do: "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
 
   @doc """
   Discord being special.

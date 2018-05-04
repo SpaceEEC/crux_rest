@@ -45,7 +45,7 @@ defmodule Crux.Rest.Handler.Global do
   @doc """
     Sets the global wait time if rate limited globally.
   """
-  @spec set_global_wait(retry_after :: pos_integer()) :: :ok 
+  @spec set_global_wait(retry_after :: pos_integer()) :: :ok
   def set_global_wait(retry_after) do
     GenServer.call(__MODULE__, {:retry, retry_after})
   end
