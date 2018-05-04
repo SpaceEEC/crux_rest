@@ -172,7 +172,10 @@ defmodule Crux.Rest.Handler do
 
           with {:ok, body} <- Poison.decode(body),
                # Incredible hacky
-               {true, _} <- {List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header, body},
+               {true, _} <- {
+                 List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header,
+                 body
+               },
                {:ok, retry_after} <- Map.fetch(body, "retry_after") do
             set_global_wait(retry_after)
             retry_after
