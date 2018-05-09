@@ -1323,6 +1323,384 @@ defmodule Crux.Rest do
     })
   end
 
+  @doc """
+    Fetches a map of banned users along their ban reasons.
+
+    For more informations see [discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-bans).
+  """
+  @spec get_guild_bans(guild :: Util.guild_id_resolvable()) ::
+          {:ok, %{snowflake() => %{user: User.t(), reason: String.t() | nil}}} | {:error, term()}
+  def get_guild_bans(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_bans(guild_id))
+    |> Map.new(fn entry ->
+      Map.update!(entry, :user, &Structs.create(&1, User))
+      {entry.user.id, entry}
+    end)
+  end
+
+  @doc """
+    Fetches a single ban entry by id.
+
+  > Returns {:error, %Crux.Rest.ApiError{status_code: 404, code: 10026, ...}} when the user is not banned.
+
+  For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-ban).
+  """
+  @spec get_guild_ban(guild :: Util.guild_id_resolvable(), user :: Util.user_id_resolvable()) ::
+          {:ok, %{user: User.t(), reason: String.t() | nil}} | {:error, term()}
+  def get_guild_ban(guild, user) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(user)
+
+    case Rest.Base.queue(:get, Endpoints.guild_bans(guild_id, user_id)) do
+      {:ok, entry} ->
+        {:ok, Map.update!(entry, :user, &Structs.create(&1, User))}
+        {:error}
+
+      other ->
+        other
+    end
+  end
+
+  @doc """
+    Bans a user  from a guild, the user does not have to be part of the guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#create-guild-ban).
+  """
+  @spec create_guild_ban(
+          guild :: Util.guild_id_resolvable(),
+          user :: Util.user_id_resolvable(),
+          reason :: String.t()
+        ) :: :ok | {:error, term()}
+  def create_guild_ban(guild, user, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(user)
+
+    Rest.Base.queue(:put, Endpoints.guild_bans(guild_id, user_id), %{reason: reason})
+  end
+
+  @doc """
+    Removes a ban for a user from a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#remove-guild-ban).
+  """
+  @type remove_guild_ban(
+          guild :: Util.guild_id_resolvable(),
+          user :: Util.user_id_resolvable(),
+          reason :: String.t()
+        ) :: :ok | {:error, term()}
+  def remove_guild_ban(guild, user, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    user_id = Util.resolve_user_id(user)
+
+    Rest.Base.queue(:delete, Endpoints.guild_bans(guild_id, user_id), %{reason: reason})
+  end
+
+  @doc """
+    Fetches a list of roles in a guild.
+    This should usually, duo caching, __NOT__ be necessary.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-roles).
+  """
+  @spec get_guild_roles(guild :: Util.guild_id_resolvable()) ::
+          {:ok, %{snowflake() => Role.t()}} | {:error, term()}
+  def get_guild_roles(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    with {:ok, data} <- Rest.Base.queue(:get, Endpoints.guild_roles(guild_id)) do
+      {:ok, Structs.Util.raw_data_to_map(data, Role)}
+    end
+  end
+
+  @typedoc """
+    Used to create a role in a guild with `create_guild_role/2`.
+  """
+  @type guild_role_data ::
+          %{
+            optional(:name) => String.t(),
+            optional(:permissions) => non_neg_integer(),
+            optional(:color) => non_neg_integer(),
+            optional(:hoist) => boolean(),
+            optional(:mentionable) => boolean(),
+            optional(:reason) => String.t()
+          }
+          | [
+              {:name, String.t()}
+              | {:permissions, non_neg_integer()}
+              | {:color, non_neg_integer()}
+              | {:hoist, boolean()}
+              | {:mentionable, boolean()}
+              | {:reason, String.t()}
+            ]
+
+  @doc """
+    Creates a role in a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#create-guild-role).
+  """
+  @spec create_role(guild :: Util.guild_id_resolvable(), data :: guild_role_data()) ::
+          {:ok, Role.t()} | {:error, term()}
+  def create_role(guild, %{} = data) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_roles(guild_id), Map.new(data))
+    |> create(Role)
+  end
+
+  @doc """
+    Modifies the positions of a list of role objects for a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions).
+  """
+  @spec modify_guild_role_positions(
+          guild :: Util.guild_id_resolvable(),
+          data :: Util.modify_guild_role_positions_data()
+        ) :: {:ok, %{snowflake() => Role.t()}} | {:error, term()}
+  def modify_guild_role_positions(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    data = Enum.map(data, &Util.resolve_guild_role_position/1)
+
+    Rest.Base.queue(:patch, Endpoints.guild_roles(guild_id), data)
+  end
+
+  @doc """
+    Modifies a role in a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-role).
+  """
+  @spec modify_guild_role(
+          guild :: Util.guild_id_resolvable(),
+          role :: Util.role_id_resolvable(),
+          data :: guild_role_data()
+        ) :: {:ok, Role.t()} | {:error, term()}
+  def modify_guild_role(guild, role, data) do
+    guild_id = Util.resolve_guild_id(guild)
+    role_id = Util.resolve_guild_id(role)
+
+    Rest.Base.queue(:patch, Endpoints.guild_roles(guild_id, role_id), Map.new(data))
+  end
+
+  @doc """
+    Deletes a role in a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#delete-guild-role).
+  """
+  @spec delete_guild_role(
+          guild :: Util.guild_id_resolvable(),
+          role :: Util.role_id_resolvable(),
+          reason :: String.t()
+        ) :: :ok | {:error, term()}
+  def delete_guild_role(guild, role, reason \\ nil) do
+    guild_id = Util.resolve_guild_id(guild)
+    role_id = Util.resolve_role_id(role)
+
+    Rest.Base.queue(:delete, Endpoints.guild_roles(guild_id, role_id), %{reason: reason})
+  end
+
+  @doc """
+    Fetches the number of members in a guild that would be removed when pruned.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-prune-count).
+  """
+  @spec get_guild_prune_count(guild :: Util.guild_id_resolvable(), days :: pos_integer()) ::
+          {:ok, non_neg_integer()} | {:error, term()}
+  def get_guild_prune_count(guild, days) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    case Rest.Base.queue(:get, Endpoints.guild(guild_id, "prune"), "", [], params: [days: days]) do
+      {:ok, %{pruned: not_actually_pruned}} ->
+        {:ok, not_actually_pruned}
+    end
+  end
+
+  @doc """
+    Prunes members in a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#begin-guild-prune).
+  """
+  @spec begin_guild_prune(guild :: Util.guild_id_resolvable(), days :: pos_integer()) ::
+          {:ok, non_neg_integer()} | {:error, term()}
+  def begin_guild_prune(guild, days) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    case Rest.Base.queue(:post, Endpoints.guild(guild_id, "prune"), "", [], params: [days: days]) do
+      {:ok, %{pruned: pruned}} ->
+        {:ok, pruned}
+    end
+  end
+
+  @doc """
+    Fetches a list of voice regions for a guild. Returns VIP servers when the guild is VIP-enabled.
+
+  > Returns a list of [Voice Region Objects](https://discordapp.com/developers/docs/resources/voice#voice-region-object).
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-voice-regions).
+  """
+  @spec get_guild_voice_regions(guild :: Util.guild_id_resolvable()) ::
+          {:ok, term()} | {:error, term()}
+  def get_guild_voice_regions(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    case Rest.Base.queue(:post, Endpoints.guild(guild_id, "regions")) do
+      {:ok, thing} ->
+        {:ok, thing}
+    end
+  end
+
+  @doc """
+    Fetches all available invites in a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-invites).
+  """
+  @spec get_guild_invites(guild :: Util.guild_id_resolvable()) ::
+          {:ok, %{String.t() => Invite.t()}} | {:error, term()}
+  def get_guild_invites(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    case Rest.Base.queue(:get, Endpoints.guild(guild_id, "invites")) do
+      {:ok, data} ->
+        Structs.Util.raw_data_to_map(data, Invite, :code)
+    end
+  end
+
+  @doc """
+    Fetches a list of guild integrations.
+
+  > Returns a list of [Integration Objects](https://discordapp.com/developers/docs/resources/guild#integration-object).
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-integration).
+  """
+  @spec get_guild_integrations(guild :: Util.guild_id_resolvable()) ::
+          {:ok, list()} | {:error, term()}
+  def get_guild_integrations(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_integrations(guild_id))
+  end
+
+  @doc """
+    Attaches an integration from the current user to a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#create-guild-integration).
+  """
+  @spec create_guild_integration(
+          guild :: Util.guild_id_resolvable(),
+          data ::
+            %{type: String.t(), id: snowflake()}
+            | [{:type, String.t()} | {:id, snowflake()}]
+        ) :: :ok | {:error, term()}
+  def create_guild_integration(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_integrations(guild_id), Map.new(data))
+  end
+
+  @doc """
+    Modifies an integreation for a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-integration).
+  """
+  @spec modify_guild_integration(
+          guild :: Util.guild_id_resolvable(),
+          integration_id :: snowflake(),
+          data ::
+            %{
+              optional(:expire_behavior) => integer(),
+              optional(:expire_grace_period) => integer(),
+              optional(:enable_emoticons) => boolean()
+            }
+            | [
+                {:expire_behavior, integer()}
+                | {:expire_grace_period, integer()}
+                | {:enable_emoticons, boolean()}
+              ]
+        ) :: :ok | {:error, term()}
+  def modify_guild_integration(guild, integration_id, data) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_integrations(guild_id, integration_id), Map.new(data))
+  end
+
+  @doc """
+    Deletes an integration from a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#delete-guild-integration).
+  """
+  @spec delete_guild_integration(
+          guild :: Util.guild_id_resolvable(),
+          integration_id :: snowflake()
+        ) :: :ok | {:error, term()}
+  def delete_guild_integration(guild, integration_id) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:delete, Endpoints.guild_integrations(guild_id, integration_id))
+  end
+
+  @doc """
+    Syncs an integration for a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#sync-guild-integration).
+  """
+  @spec sync_guild_integration(guild :: Util.guild_id_resolvable(), integration_id :: snowflake()) ::
+          :ok | {:error, term()}
+  def sync_guild_integration(guild, integration_id) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:post, Endpoints.guild_integrations(guild_id, integration_id))
+  end
+
+  @doc """
+    Fetches a guild's embed (server widget).
+
+  > Returns a [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+  """
+  @spec get_guild_embed(guild :: Util.guild_id_resolvable()) :: {:ok, term()} | {:error, term()}
+  def get_guild_embed(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild(guild_id, "embed"))
+  end
+
+  @doc """
+    Modifies a guild's embed (server widget).
+
+  > Returns the updated [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-embed).
+  """
+  @spec modify_guild_embed(
+          guild :: Util.guild_id_resolvable(),
+          data ::
+            %{
+              optional(:enabled) => boolean(),
+              optional(:channel_id) => snowflake()
+            }
+            | [{:enabled, boolean()} | {:channel_id, snowflake()}]
+        ) :: {:ok, term()} | {:error, term()}
+  def modify_guild_embed(guild, data) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:patch, Endpoints.guild(guild_id, "embed"), Map.new(data))
+  end
+
+  @doc """
+    Fetches the vanity url of a guild, if any
+  """
+  @spec get_guild_vanity_url(guild :: Util.guild_id_resolvable()) ::
+          {:ok, String.t()} | {:error, term()}
+  def get_guild_vanity_url(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    case Rest.Base.queue(:get, Endpoints.guild(guild_id, "vanity-url")) do
+      {:ok, %{code: code}} ->
+        {:ok, code}
+    end
+  end
+
   ### End Guild
 
   @doc """

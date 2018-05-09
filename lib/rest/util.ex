@@ -348,7 +348,7 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_channel_position(channel :: channel_position_resolvable()) :: %{
-          id: integer(),
+          id: Crux.Rest.snowflake(),
           position: integer()
         }
   def resolve_channel_position({%Channel{id: id}, position}), do: %{id: id, position: position}
@@ -358,4 +358,53 @@ defmodule Crux.Rest.Util do
 
   def resolve_channel_position({id, position}), do: %{id: id, position: position}
   def resolve_channel_position(%{id: id, position: position}), do: %{id: id, position: position}
+
+  @typedoc """
+    All available types which can be resolved into a role position.
+  """
+  @type guild_role_position_resolvable ::
+          {Role.t(), integer()}
+          | %{id: Crux.Rest.snowflake(), position: integer()}
+          | {Crux.Rest.snowflake(), integer()}
+          | %{role: Role.t(), position: integer}
+
+  @doc """
+    Resolves a `t:guild_role_position_resolvable/0` into a role position.
+
+  ## Examples
+    ```elixir
+  iex> {%Crux.Structs.Role{id: 373405430589816834}, 5}
+  ...> |> Crux.Rest.Util.resolve_guild_role_position()
+  %{id: 373405430589816834, position: 5}
+
+  iex> %{id: 373405430589816834, position: 5}
+  ...> |> Crux.Rest.Util.resolve_guild_role_position()
+  %{id: 373405430589816834, position: 5}
+
+  iex> %{role: %Crux.Structs.Role{id: 373405430589816834}, position: 5}
+  ...> |> Crux.Rest.Util.resolve_guild_role_position()
+  %{id: 373405430589816834, position: 5}
+
+  iex> {373405430589816834, 5}
+  ...> |> Crux.Rest.Util.resolve_guild_role_position()
+  %{id: 373405430589816834, position: 5}
+
+    ```
+  """
+  @spec resolve_guild_role_position(role :: guild_role_position_resolvable()) :: %{
+          id: Crux.Rest.snowflake(),
+          position: integer()
+        }
+  def resolve_guild_role_position({%Role{id: id}, position}), do: %{id: id, position: position}
+
+  def resolve_guild_role_position(%{id: id, position: position}),
+    do: %{id: id, position: position}
+
+  def resolve_guild_role_position(%{role: %Role{id: id}, position: position}),
+    do: %{
+      id: id,
+      position: position
+    }
+
+  def resolve_guild_role_position({id, position}), do: %{id: id, position: position}
 end

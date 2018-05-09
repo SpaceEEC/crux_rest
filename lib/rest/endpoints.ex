@@ -116,6 +116,31 @@ defmodule Crux.Rest.Endpoints do
   def guild_members(guild_id, suffix), do: "#{guild_members(guild_id)}/#{suffix}"
 
   @doc """
+    Used for ban related functions.
+  """
+  @spec guild_bans(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  def guild_bans(guild_id, suffix \\ nil)
+  def guild_bans(guild_id, nil), do: "#{guild(guild_id)}/bans"
+  def guild_bans(guild_id, suffix), do: "#{guild_bans(guild_id)}/#{suffix}"
+
+  @doc """
+    Used for role related functions.
+  """
+  @spec guild_roles(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  def guild_roles(guild_id, suffix \\ nil)
+  def guild_roles(guild_id, nil), do: "#{guild(guild_id)}/roles"
+  def guild_roles(guild_id, suffix), do: "#{guild_roles(guild_id)}/#{suffix}"
+
+  @doc """
+    Used for integration related functions.
+  """
+  @spec guild_integrations(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) ::
+          String.t()
+  def guild_integrations(guild_id, suffix \\ nil)
+  def guild_integrations(guild_id, nil), do: "#{guild(guild_id)}/integrations"
+  def guild_integrations(guild_id, suffix), do: "#{guild_integrations(guild_id)}/#{suffix}"
+
+  @doc """
     Used for role related functions.
   """
   @spec guild_member_roles(
