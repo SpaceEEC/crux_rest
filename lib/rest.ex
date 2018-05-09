@@ -1385,7 +1385,7 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#remove-guild-ban).
   """
-  @type remove_guild_ban(
+  @spec remove_guild_ban(
           guild :: Util.guild_id_resolvable(),
           user :: Util.user_id_resolvable(),
           reason :: String.t()
