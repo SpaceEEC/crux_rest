@@ -1356,7 +1356,6 @@ defmodule Crux.Rest do
     case Rest.Base.queue(:get, Endpoints.guild_bans(guild_id, user_id)) do
       {:ok, entry} ->
         {:ok, Map.update!(entry, :user, &Structs.create(&1, User))}
-        {:error}
 
       other ->
         other
