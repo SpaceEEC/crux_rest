@@ -6,7 +6,7 @@ defmodule Crux.Rest.MixProject do
       start_permanent: Mix.env() == :prod,
       package: package(),
       app: :crux_rest,
-      version: "0.1.1",
+      version: "0.1.2",
       elixir: "~> 1.6",
       description: "Package providing rest functions and rate limiting for the Discord API",
       source_url: "https://github.com/SpaceEEC/crux_rest/",
