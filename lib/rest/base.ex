@@ -8,6 +8,8 @@ defmodule Crux.Rest.Base do
 
   # Compile time constant so we can use it in guards
   @api_base Endpoints.api()
+  # See: https://discordapp.com/developers/docs/reference#user-agent
+  @user_agent "DiscordBot (#{Crux.Rest.MixProject.project()[:source_url]}, v#{Crux.Rest.MixProject.project()[:version]}"
 
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
@@ -19,7 +21,7 @@ defmodule Crux.Rest.Base do
     |> Keyword.put_new_lazy(:authorization, fn ->
       "Bot #{Application.fetch_env!(:crux_rest, :token)}"
     end)
-    |> Keyword.put_new(:"user-agent", "Crux")
+    |> Keyword.put_new(:"user-agent", @user_agent)
   end
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 204}}, _method), do: :ok
