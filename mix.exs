@@ -20,7 +20,7 @@ defmodule Crux.Rest.MixProject do
 
   def package do
     [
-      name: :crux_rest,
+      name: @name,
       licenses: ["MIT"],
       maintainers: ["SpaceEEC"],
       links: %{
