@@ -1,16 +1,19 @@
 defmodule Crux.Rest.MixProject do
   use Mix.Project
 
+  @vsn "0.1.2"
+  @name :crux_rest
+
   def project do
     [
       start_permanent: Mix.env() == :prod,
       package: package(),
-      app: :crux_rest,
-      version: "0.1.2",
+      app: @name,
+      version: @vsn,
       elixir: "~> 1.6",
       description: "Package providing rest functions and rate limiting for the Discord API",
-      source_url: "https://github.com/SpaceEEC/crux_rest/",
-      homepage_url: "https://github.com/SpaceEEC/crux_rest/",
+      source_url: "https://github.com/SpaceEEC/#{@name}/",
+      homepage_url: "https://github.com/SpaceEEC/#{@name}/",
       deps: deps()
     ]
   end
@@ -21,8 +24,9 @@ defmodule Crux.Rest.MixProject do
       licenses: ["MIT"],
       maintainers: ["SpaceEEC"],
       links: %{
-        "GitHub" => "https://github.com/SpaceEEC/crux_rest/",
-        "Unified Development Documentation" => "https://crux.randomly.space/"
+        "GitHub" => "https://github.com/SpaceEEC/#{@name}/",
+        "Changelog" => "https://github.com/SpaceEEC/#{@name}/releases/tag/#{@vsn}",
+        "Unified Development Documentation" => "https://crux.randomly.space/",
       }
     ]
   end
