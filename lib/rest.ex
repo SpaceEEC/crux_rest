@@ -702,7 +702,7 @@ defmodule Crux.Rest do
     * `:max_age` 0 indicates no max age, defaults to 86_400 (1 day)
     * `:max_uses` 0 indicates no max uses, defaults to 0
     * `:temporary` if true, members which do not get a role assigned within 24 hours get automatically kicked, defaults to false
-    * `:unique` if true, always creates a new invite instead of maybe returning a similar one, defaults to false 
+    * `:unique` if true, always creates a new invite instead of maybe returning a similar one, defaults to false
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-channel-invite-json-params).
   """
@@ -777,7 +777,7 @@ defmodule Crux.Rest do
 
   @doc """
     Gets a list of emojis in a guild.
-    This should usually, duo cache, __NOT__ be necessary.
+    This should usually, due to cache, __NOT__ be necessary.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#list-guild-emojis).
   """
@@ -792,7 +792,7 @@ defmodule Crux.Rest do
 
   @doc """
     Gets an emoji from a guild
-    This should usually, duo cache, __NOT__ be necessary.
+    This should usually, due to cache, __NOT__ be necessary.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/emoji#get-guild-emoji).
   """
@@ -861,7 +861,7 @@ defmodule Crux.Rest do
 
   @typedoc """
    Used to modify a guild emoji via `modify_guild_emoji/3`.
-   
+
    See `t:create_guild_emoji_data` for name restrictions.
   """
   @type modify_guild_emoji_data ::
@@ -940,7 +940,7 @@ defmodule Crux.Rest do
 
   @doc """
     Gets a guild from the api.
-    This should usually, duo cache, __NOT__ be necessary.
+    This should usually, due to cache, __NOT__ be necessary.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild)
   """
@@ -1035,7 +1035,7 @@ defmodule Crux.Rest do
 
   @doc """
     Gets all channels from a guild via the api.
-    This should usually, duo caching, __NOT__ be necessary.
+    This should usually, due to caching, __NOT__ be necessary.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-channels)-
   """
@@ -1051,7 +1051,7 @@ defmodule Crux.Rest do
   @typedoc """
     Used to create a channel via `create_guild_channel/2`.
 
-    Notes: 
+    Notes:
    * `:name` has to be [2-100] chars and may only contain [a-Z_-]
   """
   @type create_guild_channel_data ::
@@ -1398,7 +1398,7 @@ defmodule Crux.Rest do
 
   @doc """
     Fetches a list of roles in a guild.
-    This should usually, duo caching, __NOT__ be necessary.
+    This should usually, due to caching, __NOT__ be necessary.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-roles).
   """
