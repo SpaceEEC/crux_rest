@@ -26,7 +26,7 @@ defmodule Crux.Rest.MixProject do
       links: %{
         "GitHub" => "https://github.com/SpaceEEC/#{@name}/",
         "Changelog" => "https://github.com/SpaceEEC/#{@name}/releases/tag/#{@vsn}",
-        "Unified Development Documentation" => "https://crux.randomly.space/",
+        "Unified Development Documentation" => "https://crux.randomly.space/"
       }
     ]
   end
