@@ -1,7 +1,7 @@
 defmodule Crux.Rest.MixProject do
   use Mix.Project
 
-  @vsn "0.1.2"
+  @vsn "0.1.3"
   @name :crux_rest
 
   def project do
