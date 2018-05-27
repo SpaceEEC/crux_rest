@@ -1,7 +1,7 @@
 %{
   "certifi": {:hex, :certifi, "2.3.1", "d0f424232390bf47d82da8478022301c561cf6445b5b5fb6a84d49a9e76d2639", [:rebar3], [{:parse_trans, "3.2.0", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"},
   "combine": {:hex, :combine, "0.10.0", "eff8224eeb56498a2af13011d142c5e7997a80c8f5b97c499f84c841032e429f", [:mix], [], "hexpm"},
-  "crux_structs": {:hex, :crux_structs, "0.1.1", "b24c989d306aa8a8981b927d35da3c4af47853ec65a3d1ade2f4d032e83b7359", [:mix], [], "hexpm"},
+  "crux_structs": {:hex, :crux_structs, "0.1.4", "7f53f6f3541516e2fb582d6d7607fece9eb4a9c65bf282a1cf05f70593a8f560", [:mix], [], "hexpm"},
   "earmark": {:hex, :earmark, "1.2.5", "4d21980d5d2862a2e13ec3c49ad9ad783ffc7ca5769cf6ff891a4553fbaae761", [:mix], [], "hexpm"},
   "ex_doc": {:git, "https://github.com/spaceeec/ex_doc", "1bd99cc96d8ff03e0b2edb2b2f04c6357b233ba4", []},
   "gettext": {:hex, :gettext, "0.15.0", "40a2b8ce33a80ced7727e36768499fc9286881c43ebafccae6bab731e2b2b8ce", [:mix], [], "hexpm"},
