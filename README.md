@@ -28,7 +28,7 @@ After providing a token to use via either your [config.exs](/config/config.exs),
 For example:
 
 ```elixir
-  iex> Crux.Structs.Rest.create_message(445290716198076427, content: "Hello there!")
+  iex> Crux.Rest.create_message(445290716198076427, content: "Hello there!")
   %Crux.Structs.Message{
     content: "Hello there!",
     author: %Crux.Structs.User{...},
