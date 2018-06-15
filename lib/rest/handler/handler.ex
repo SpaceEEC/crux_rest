@@ -11,6 +11,8 @@ defmodule Crux.Rest.Handler do
   import Crux.Rest.Handler.Global,
     only: [fetch_offset: 0, add_offset: 1, fetch_global_wait: 0, set_global_wait: 1]
 
+  @max_retries_on_5xx 5
+
   @registry Crux.Rest.Handler.Registry
 
   @doc """
@@ -114,11 +116,9 @@ defmodule Crux.Rest.Handler do
     # Wait if globally rate limited
     wait(fetch_global_wait(), "global - " <> route)
 
-    {res, new_state} =
+    {res, state} =
       apply(Crux.Rest.Base, :request, request_data)
       |> handle_headers(state)
-
-    state = Map.merge(state, new_state)
 
     cond do
       is_number(res) ->
@@ -144,10 +144,7 @@ defmodule Crux.Rest.Handler do
     end
   end
 
-  defp handle_headers(
-         {:ok, %HTTPoison.Response{headers: headers, status_code: code, body: body}} = tuple,
-         %{route: route}
-       ) do
+  defp handle_headers({:ok, %HTTPoison.Response{headers: headers}} = tuple, state) do
     List.keyfind(headers, "Date", 0)
     |> parse_header
     |> add_offset
@@ -160,53 +157,76 @@ defmodule Crux.Rest.Handler do
       List.keyfind(headers, "X-RateLimit-Reset", 0)
       |> parse_header
 
-    new_state =
+    state =
       if remaining && reset,
-        do: %{remaining: remaining, reset: reset * 1000},
-        else: %{}
+        do: Map.merge(state, %{remaining: remaining, reset: reset * 1000}),
+        else: state
 
-    res =
-      cond do
-        code === 429 ->
-          Logger.warn("[Crux][Rest][Handler] Received a (429) for route #{route}")
-
-          with {:ok, body} <- Poison.decode(body),
-               # Incredible hacky
-               {true, _} <- {
-                 List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header,
-                 body
-               },
-               {:ok, retry_after} <- Map.fetch(body, "retry_after") do
-            set_global_wait(retry_after)
-            retry_after
-          else
-            # Payload is not valid json, fallback to reset
-            {:error, _} ->
-              reset + fetch_offset() - :os.system_time(:milli_seconds)
-
-            # Not Global
-            {nil, %{"retry_after" => retry_after}} ->
-              retry_after
-
-            # Payload does not contain a retry_after, fallback to reset
-            _ ->
-              reset + fetch_offset() - :os.system_time(:milli_seconds)
-          end
-
-        # Retry on 5xx
-        code >= 500 && code < 600 ->
-          1500
-
-        # Success
-        true ->
-          tuple
-      end
-
-    {res, new_state}
+    handle_response(tuple, state, reset)
   end
 
+  # Rate limited
+  defp handle_response(
+         {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}},
+         %{route: route} = state,
+         reset
+       ) do
+    Logger.warn("[Crux][Rest][Handler][#{route}] Received a 429")
+
+    time =
+      with {:ok, body} <- Poison.decode(body),
+           # Incredible hacky
+           {true, _} <- {
+             List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header,
+             body
+           },
+           {:ok, retry_after} <- Map.fetch(body, "retry_after") do
+        set_global_wait(retry_after)
+        retry_after
+      else
+        # Payload is not valid json, fallback to reset
+        {:error, _} ->
+          reset + fetch_offset() - :os.system_time(:milli_seconds)
+
+        # Not Global
+        {nil, %{"retry_after" => retry_after}} ->
+          retry_after
+
+        # Payload does not contain a retry_after, fallback to reset
+        _ ->
+          reset + fetch_offset() - :os.system_time(:milli_seconds)
+      end
+
+    {time, state}
+  end
+
+  # Retried too often, aborthing this
+  defp handle_response(tuple, %{retries: retries} = state, _)
+       when retries > @max_retries_on_5xx do
+    {tuple, state}
+  end
+
+  # Retry on 5xx
+  defp handle_response(
+         {:ok, %HTTPoison.Response{status_code: code}},
+         %{route: route} = state,
+         _
+       )
+       when code >= 500 and code < 600 do
+    Logger.warn(
+      "[Crux][Rest][Handler][#{route}] Received a #{code} [#{Map.get(state, :retries, 0)}/#{
+        @max_retries_on_5xx
+      }]"
+    )
+
+    {1500, Map.update(state, :retries, 1, &(&1 + 1))}
+  end
+
+  # Success
+  defp handle_response(tuple, state, _), do: {tuple, state}
+
   defp wait(timeout, route) when timeout > 0 do
-    Logger.debug("[Crux][Rest][Handler]: Rate limited, waiting #{timeout}ms for #{route}")
+    Logger.debug("[Crux][Rest][Handler][#{route}]: Rate limited, waiting #{timeout}ms")
 
     :timer.sleep(timeout)
   end
