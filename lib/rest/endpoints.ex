@@ -163,4 +163,20 @@ defmodule Crux.Rest.Endpoints do
   # I don't even
   @spec guild_own_nick(guild_id :: Crux.Rest.snowflake()) :: String.t()
   def guild_own_nick(guild_id), do: "#{guild_members(guild_id, "@me")}/nick"
+
+  @doc """
+    Used for functions related to the current user.
+  """
+  @spec me(suffix :: String.t()) :: String.t()
+  def me(suffix \\ nil)
+  def me(nil), do: "/users/@me"
+  def me(suffix), do: "#{me()}/#{suffix}"
+
+  @doc """
+    Used for functions related to the current user's guilds.
+  """
+  @spec me_guilds(suffix :: String.t()) :: String.t()
+  def me_guilds(suffix \\ nil)
+  def me_guilds(nil), do: "#{me()}/guilds"
+  def me_guilds(suffix), do: "#{me_guilds()}/suffix"
 end

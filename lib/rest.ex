@@ -1728,6 +1728,129 @@ defmodule Crux.Rest do
   end
 
   @doc """
+    Fetches a user from the api.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user).
+  """
+  @spec get_user(user :: Util.user_id_resolvable() | String.t()) :: {:ok, User.t()} | {:error, term()}
+  def get_user(user) do
+    Rest.Base.queue(:get, Endpoints.users(user))
+    |> create(User)
+  end
+
+  @typedoc """
+    Used to modify the currently logged in `modify_current_user/1`.
+
+    - `:avatar` is similarly to `u:file_list_entry/0` except you obviously can't "rename" the avatar.
+  """
+  @type modify_current_user_data ::
+          %{
+            optional(:username) => String.t(),
+            optional(:avatar) => String.t() | binary() | nil
+          }
+          | [{:username, String.t()} | {:avatar, String.t() | binary() | nil}]
+
+  @doc """
+    Modifes the currently logged in user.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#modify-current-user).
+  """
+  @spec modify_current_user(data :: modify_current_user_data()) ::
+          {:ok, User.t()} | {:error, term()}
+  def modify_current_user(data) do
+    data = Map.new(data)
+
+    Rest.Base.queue(:post, Endpoints.me(), data)
+    |> create(User)
+  end
+
+  @typedoc """
+    Used to list the current user's guilds in `get_current_user_guild_/1`.
+  """
+  @type get_current_user_guild_data :: %{
+          optional(:before) => snowflake(),
+          optional(:after) => snowflake(),
+          optional(:limit) => pos_integer()
+        }
+
+  @doc """
+    Fetches a list of partial `Crux.Structs.Guilds` the current user is a member of.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-current-user-guilds).
+  """
+  @spec get_current_user_guilds(data :: get_current_user_guild_data()) ::
+          {:ok, [Guild.t()]} | {:error, term()}
+  def get_current_user_guilds(data) do
+    Rest.Base.queue(:get, Endpoints.me("guilds"), Map.new(data))
+    |> create(Guild)
+  end
+
+  @doc """
+    Leaves a guild.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#leave-guild).
+  """
+  @spec leave_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  def leave_guild(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:delete, Endpoints.me("guilds", guild_id))
+  end
+
+  @doc """
+    Fetches a list of `Crux.Structs.Channel`. (DMChannels in this case)
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user-dms).
+  """
+  @spec get_user_dms() :: {:ok, [Channel.t()]} | {:error, term()}
+  def get_user_dms() do
+    Rest.Base.queue(:get, Endpoints.me())
+    |> create(Channel)
+  end
+
+  @doc """
+    Creates a new dm channel with a user.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-dm).
+  """
+  @spec create_dm(user :: Util.user_id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
+  def create_dm(user) do
+    user_id = Util.resolve_user_id(user)
+
+    Rest.Base.queue(:post, Endpoints.user_channels(), %{recipient_id: user_id})
+    |> create(Channel)
+  end
+
+  @typedoc """
+    Used to create a group dm with `create_group_dm/1 `.
+
+    - `:access_tokens` are meant to be obtained on your own via oauth2, they have to have the `gdm.join` scope.
+    - `:nicks` is a map of ids and their respective nicknames to give a user.
+  """
+  @type create_group_dm_data ::
+          %{
+            required(:access_tokens) => [String.t()],
+            optional(:nicks) => %{required(Util.user_id_resolvable()) => String.t()}
+          }
+          | [{:access_tokens, String.t()} | {:nicks, %{}}]
+
+  @doc """
+    Creates a group dm with multiple users.
+
+    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-group-dm).
+  """
+  @spec create_group_dm(data :: create_group_dm_data()) :: {:ok, Channel.t()} | {:error, term()}
+  def create_group_dm(data) do
+    data =
+      data
+      |> Map.new()
+      |> Map.update(:nicks, %{}, &Enum.map(&1, fn user -> Util.resolve_user_id(user) end))
+
+    Rest.Base.queue(:post, Endpoints.me(), data)
+    |> create(Channel)
+  end
+
+  @doc """
     Fetches the gateway url from the api.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
