@@ -165,6 +165,14 @@ defmodule Crux.Rest.Endpoints do
   def guild_own_nick(guild_id), do: "#{guild_members(guild_id, "@me")}/nick"
 
   @doc """
+    Used for functions related to users.
+  """
+  @spec users(suffix :: String.t()) :: String.t()
+  def users(suffix \\ nil)
+  def users(nil), do: "/users/"
+  def users(suffix), do: "#{users()}/#{suffix}"
+
+  @doc """
     Used for functions related to the current user.
   """
   @spec me(suffix :: String.t()) :: String.t()
@@ -178,5 +186,5 @@ defmodule Crux.Rest.Endpoints do
   @spec me_guilds(suffix :: String.t()) :: String.t()
   def me_guilds(suffix \\ nil)
   def me_guilds(nil), do: "#{me()}/guilds"
-  def me_guilds(suffix), do: "#{me_guilds()}/suffix"
+  def me_guilds(suffix), do: "#{me_guilds()}/#{suffix}"
 end

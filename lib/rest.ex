@@ -1732,7 +1732,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user).
   """
-  @spec get_user(user :: Util.user_id_resolvable() | String.t()) :: {:ok, User.t()} | {:error, term()}
+  @spec get_user(user :: Util.user_id_resolvable() | String.t()) ::
+          {:ok, User.t()} | {:error, term()}
   def get_user(user) do
     Rest.Base.queue(:get, Endpoints.users(user))
     |> create(User)
@@ -1781,7 +1782,7 @@ defmodule Crux.Rest do
   @spec get_current_user_guilds(data :: get_current_user_guild_data()) ::
           {:ok, [Guild.t()]} | {:error, term()}
   def get_current_user_guilds(data) do
-    Rest.Base.queue(:get, Endpoints.me("guilds"), Map.new(data))
+    Rest.Base.queue(:get, Endpoints.me_guilds(), Map.new(data))
     |> create(Guild)
   end
 
@@ -1794,7 +1795,7 @@ defmodule Crux.Rest do
   def leave_guild(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
-    Rest.Base.queue(:delete, Endpoints.me("guilds", guild_id))
+    Rest.Base.queue(:delete, Endpoints.me_guilds(guild_id))
   end
 
   @doc """
@@ -1817,7 +1818,7 @@ defmodule Crux.Rest do
   def create_dm(user) do
     user_id = Util.resolve_user_id(user)
 
-    Rest.Base.queue(:post, Endpoints.user_channels(), %{recipient_id: user_id})
+    Rest.Base.queue(:post, Endpoints.me("channels"), %{recipient_id: user_id})
     |> create(Channel)
   end
 
