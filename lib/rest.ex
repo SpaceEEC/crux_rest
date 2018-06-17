@@ -1709,7 +1709,7 @@ defmodule Crux.Rest do
   """
   @spec get_invite(code :: String.t()) :: {:ok, Invite.t()} | {:error, term()}
   def get_invite(code) do
-    Rest.Base.queue(:get, Endpoints.invite(code))
+    Rest.Base.queue(:get, Endpoints.invite(code), "", [], params: %{with_counts: true})
     |> create(Invite)
   end
 
