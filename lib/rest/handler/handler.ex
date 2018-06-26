@@ -159,8 +159,8 @@ defmodule Crux.Rest.Handler do
 
     state =
       if remaining && reset do
-        reset = reset * 1000 + fetch_offset()
-        Map.merge(state, %{remaining: remaining, reset: reset})
+        reset_milli_seconds = reset * 1000 + fetch_offset()
+        Map.merge(state, %{remaining: remaining, reset: reset_milli_seconds})
       else
         state
       end
