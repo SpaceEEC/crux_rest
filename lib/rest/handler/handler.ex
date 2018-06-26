@@ -128,9 +128,9 @@ defmodule Crux.Rest.Handler do
         handle_call({:queue, request_data}, from, state)
 
       true ->
-        wait_time =
+        reset_time =
           case state do
-            %{reset: reset} when not is_nil(reset) ->
+            %{reset: reset} when is_integer(reset) ->
               reset - :os.system_time(:milli_seconds)
 
             _ ->
@@ -138,7 +138,7 @@ defmodule Crux.Rest.Handler do
               500
           end
 
-        {:ok, ref} = :timer.send_after(wait_time, :shutdown)
+        {:ok, ref} = :timer.send_after(reset_time, :shutdown)
 
         {:reply, res, Map.put(state, :timer, ref)}
     end
@@ -158,9 +158,12 @@ defmodule Crux.Rest.Handler do
       |> parse_header
 
     state =
-      if remaining && reset,
-        do: Map.merge(state, %{remaining: remaining, reset: reset * 1000}),
-        else: state
+      if remaining && reset do
+        reset = reset * 1000 + fetch_offset()
+        Map.merge(state, %{remaining: remaining, reset: reset})
+      else
+        state
+      end
 
     handle_response(tuple, state, reset)
   end
