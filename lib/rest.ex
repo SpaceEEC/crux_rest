@@ -108,12 +108,12 @@ defmodule Crux.Rest do
     do: create_message(channel_id, Map.new(not_map))
 
   def create_message(channel_id, %{files: files} = args) when is_number(channel_id) do
-    Enum.reduce_while(files, [], fn file ->
+    Enum.reduce_while(files, [], fn file, acc ->
       with {:error, error} <- Util.map_file(file) do
         {:halt, error}
       else
         tuple ->
-          {:cont, tuple}
+          {:cont, [tuple | acc]}
       end
     end)
     |> case do

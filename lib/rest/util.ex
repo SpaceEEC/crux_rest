@@ -21,7 +21,7 @@ defmodule Crux.Rest.Util do
           {:ok, response.body}
         end
 
-      String.valid?(file) ->
+      File.exists?(file) && File.stat!(file).type == :regular ->
         File.read(file)
 
       is_binary(file) ->
@@ -63,7 +63,7 @@ defmodule Crux.Rest.Util do
     cond do
       Regex.match?(~r{^https?://}, bin_or_path) ->
         with {:ok, %{body: file}} <- HTTPoison.get(bin_or_path) do
-          map_file({Path.basename(name, file), Path.basename(name)})
+          map_file({file, Path.basename(name)})
         else
           {:error, inner} ->
             {:error, inner}
@@ -72,8 +72,7 @@ defmodule Crux.Rest.Util do
             {:error, other}
         end
 
-      # Not sure whether this is actually a good idea
-      String.valid?(bin_or_path) ->
+      File.exists?(bin_or_path) && File.stat!(bin_or_path).type == :regular ->
         map_file({:file, bin_or_path, Path.basename(name)})
 
       true ->
@@ -82,7 +81,7 @@ defmodule Crux.Rest.Util do
   end
 
   def map_file({name_or_atom, bin_or_path, name}) do
-    disposition = {"form-data", [{"filename", "\"#{name}\""}]}
+    disposition = {"form-data", [{"filename", "\"#{name}\""}, {"name", "\"#{name}\""}]}
     headers = [{"content-type", :mimerl.filename(name)}]
 
     {name_or_atom, bin_or_path, disposition, headers}
