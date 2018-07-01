@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Endpoints do
   @moduledoc """
-    The endpoints being used by the `Crux.Rest` module, you do not need to worry about it.
+    Endpoints being used by the `Crux.Rest` module, you do not need to worry about it.
   """
 
   @doc """
@@ -11,7 +11,10 @@ defmodule Crux.Rest.Endpoints do
 
   @doc """
     Base CDN address.
+
+    Deprecated, use `Crux.Rest.CDN.cdn/0` instead.
   """
+  @deprecated "Use Crux.Structs.CDN.cdn/0 instead"
   @spec cdn() :: String.t()
   def cdn, do: "https://cdn.discordapp.com"
 
