@@ -231,7 +231,7 @@ defmodule Crux.Rest.CDN do
   # A struct without an avatar
   iex> %Crux.Structs.User{id: 218348062828003328, avatar: nil, discriminator: "0001"}
   ...> |> Crux.Rest.CDN.user_avatar()
-  "#{@cdn}/embed/avatars/1.webp"
+  "#{@cdn}/embed/avatars/1.png"
 
   ```
   """
