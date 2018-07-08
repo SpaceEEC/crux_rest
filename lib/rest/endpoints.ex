@@ -3,20 +3,31 @@ defmodule Crux.Rest.Endpoints do
     Endpoints being used by the `Crux.Rest` module, you do not need to worry about it.
   """
 
+  @base_url "https://discordapp.com/api/v7"
+
   @doc """
     Base API address.
+
+    Deprecated, use `base_url/0` instead.
   """
+  @deprecated "Use Crux.Structs.Endpoints.base_url/0 instead"
   @spec api() :: String.t()
-  def api, do: "https://discordapp.com/api/v7"
+  def api, do: base_url()
 
   @doc """
     Base CDN address.
 
     Deprecated, use `Crux.Rest.CDN.cdn/0` instead.
   """
-  @deprecated "Use Crux.Structs.CDN.cdn/0 instead"
+  @deprecated "Use Crux.Structs.CDN.base_url/0 instead"
   @spec cdn() :: String.t()
-  def cdn, do: "https://cdn.discordapp.com"
+  def cdn, do: Crux.Rest.CDN.base_url()
+
+  @doc """
+    Base API address.
+  """
+  @spec base_url() :: String.t()
+  def base_url, do: @base_url
 
   @doc """
     Used to obtain the gateway address.

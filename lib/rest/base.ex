@@ -7,7 +7,7 @@ defmodule Crux.Rest.Base do
   alias Crux.Rest.{ApiError, Endpoints, Handler}
 
   # Compile time constant so we can use it in guards
-  @api_base Endpoints.api()
+  @api_base Endpoints.base_url()
   # See: https://discordapp.com/developers/docs/reference#user-agent
   @user_agent "DiscordBot (#{Crux.Rest.MixProject.project()[:source_url]}, v#{
                 Crux.Rest.MixProject.project()[:version]

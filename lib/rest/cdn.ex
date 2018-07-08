@@ -16,14 +16,14 @@ defmodule Crux.Rest.CDN do
           optional(:extension) => String.t()
         }
 
-  @cdn "https://cdn.discordapp.com"
+  @base_url "https://cdn.discordapp.com"
 
   @doc """
     Base CDN address.
   """
-  @spec cdn() :: String.t()
+  @spec base_url() :: String.t()
   @since "0.1.5"
-  def cdn, do: @cdn
+  def base_url, do: @base_url
 
   @doc """
     Generates the url to an emoji.
@@ -34,12 +34,12 @@ defmodule Crux.Rest.CDN do
   # A struct
   iex> %Crux.Structs.Emoji{id: 438226248293154816, animated: false}
   ...> |> Crux.Rest.CDN.custom_emoji()
-  "#{@cdn}/emojis/438226248293154816.png"
+  "#{@base_url}/emojis/438226248293154816.png"
 
   # A plain map
   iex> %{id: 438226248293154816, animated: true}
   ...> |> Crux.Rest.CDN.custom_emoji()
-  "#{@cdn}/emojis/438226248293154816.gif"
+  "#{@base_url}/emojis/438226248293154816.gif"
 
     ```
   """
@@ -48,7 +48,7 @@ defmodule Crux.Rest.CDN do
   def custom_emoji(emoji)
 
   def custom_emoji(%{id: id, animated: animated}),
-    do: "#{@cdn}/emojis/#{id}.#{if animated, do: "gif", else: "png"}"
+    do: "#{@base_url}/emojis/#{id}.#{if animated, do: "gif", else: "png"}"
 
   @doc """
     Generates a url to group dm channel icon.
@@ -59,17 +59,17 @@ defmodule Crux.Rest.CDN do
   # A struct
   iex> %Crux.Structs.Channel{id: 354042501201526786, icon: "ecd7839b9eed535f1ae3a545c5d5f3c8"}
   ...> |> Crux.Rest.CDN.group_dm_icon()
-  "#{@cdn}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp"
+  "#{@base_url}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp"
 
   # A plain map
   iex> %{id: 354042501201526786, icon: "ecd7839b9eed535f1ae3a545c5d5f3c8"}
   ...> |> Crux.Rest.CDN.group_dm_icon()
-  "#{@cdn}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp"
+  "#{@base_url}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp"
 
     # With format options
   iex> %Crux.Structs.Channel{id: 354042501201526786, icon: "ecd7839b9eed535f1ae3a545c5d5f3c8"}
   ...> |> Crux.Rest.CDN.group_dm_icon(size: 16, extension: "png")
-  "#{@cdn}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.png?size=16"
+  "#{@base_url}/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.png?size=16"
 
   # Without icon
   iex> %{icon: nil}
@@ -90,7 +90,7 @@ defmodule Crux.Rest.CDN do
   def group_dm_icon(%{id: id, icon: icon}, options) do
     extension = options[:extension] || "webp"
     qs = if options[:size], do: "?size=#{options[:size]}", else: ""
-    "#{@cdn}/channel-icons/#{id}/#{icon}.#{extension}#{qs}"
+    "#{@base_url}/channel-icons/#{id}/#{icon}.#{extension}#{qs}"
   end
 
   @doc """
@@ -104,17 +104,17 @@ defmodule Crux.Rest.CDN do
   # A guild struct
   iex> %Crux.Structs.Guild{id: 269508806759809042, icon: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_icon()
-  "#{@cdn}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
+  "#{@base_url}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
 
   # A plain map
   iex> %{id: 269508806759809042, icon: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_icon()
-  "#{@cdn}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
+  "#{@base_url}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
 
   # With format_options
   iex> %Crux.Structs.Guild{id: 269508806759809042, icon: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_icon(size: 16, extension: "png")
-  "#{@cdn}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16"
+  "#{@base_url}/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16"
 
   # Without icon
   iex> %Crux.Structs.Guild{id: 269508806759809042, icon: nil}
@@ -134,7 +134,7 @@ defmodule Crux.Rest.CDN do
   def guild_icon(%{id: id, icon: icon}, options) do
     extension = options[:extension] || "webp"
     qs = if options[:size], do: "?size=#{options[:size]}", else: ""
-    "#{@cdn}/icons/#{id}/#{icon}.#{extension}#{qs}"
+    "#{@base_url}/icons/#{id}/#{icon}.#{extension}#{qs}"
   end
 
   @doc """
@@ -146,17 +146,17 @@ defmodule Crux.Rest.CDN do
   # A struct
   iex> %Crux.Structs.Guild{id: 269508806759809042, splash: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_splash()
-  "#{@cdn}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
+  "#{@base_url}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
 
     # A plain map
   iex> %{id: 269508806759809042, splash: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_splash()
-  "#{@cdn}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
+  "#{@base_url}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp"
 
   # With format_options
   iex> %Crux.Structs.Guild{id: 269508806759809042, splash: "15abb45cf1c59f90ea291185b99ab1dd"}
   ...> |> Crux.Rest.CDN.guild_splash(size: 16, extension: "png")
-  "#{@cdn}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16"
+  "#{@base_url}/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16"
 
   # Without splash
   iex> %Crux.Structs.Guild{id: 269508806759809042, splash: nil}
@@ -176,7 +176,7 @@ defmodule Crux.Rest.CDN do
   def guild_splash(%{id: id, splash: splash}, options) do
     extension = options[:extension] || "webp"
     qs = if options[:size], do: "?size=#{options[:size]}", else: ""
-    "#{@cdn}/splashes/#{id}/#{splash}.#{extension}#{qs}"
+    "#{@base_url}/splashes/#{id}/#{splash}.#{extension}#{qs}"
   end
 
   @doc """
@@ -186,12 +186,12 @@ defmodule Crux.Rest.CDN do
   # A struct
   iex> %Crux.Structs.User{discriminator: "0001"}
   ...> |> Crux.Rest.CDN.default_user_avatar()
-  "#{@cdn}/embed/avatars/1.png"
+  "#{@base_url}/embed/avatars/1.png"
 
   # A plain map
   iex> %{discriminator: "0001"}
   ...> |> Crux.Rest.CDN.default_user_avatar()
-  "#{@cdn}/embed/avatars/1.png"
+  "#{@base_url}/embed/avatars/1.png"
 
     ```
 
@@ -202,7 +202,7 @@ defmodule Crux.Rest.CDN do
 
   def default_user_avatar(%{discriminator: discrim}) do
     user_discriminator = String.to_integer(discrim) |> rem(5)
-    "#{@cdn}/embed/avatars/#{user_discriminator}.png"
+    "#{@base_url}/embed/avatars/#{user_discriminator}.png"
   end
 
   @doc """
@@ -216,22 +216,22 @@ defmodule Crux.Rest.CDN do
   # A struct with an avatar
   iex> %Crux.Structs.User{id: 218348062828003328, avatar: "646a356e237350bf8b8dfde15667dfc4"}
   ...> |> Crux.Rest.CDN.user_avatar()
-  "#{@cdn}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp"
+  "#{@base_url}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp"
 
   # A plain map with an avatar
   iex> %{id: 218348062828003328, avatar: "646a356e237350bf8b8dfde15667dfc4"}
   ...> |> Crux.Rest.CDN.user_avatar()
-  "#{@cdn}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp"
+  "#{@base_url}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp"
 
   # With format options
   iex> %Crux.Structs.User{id: 218348062828003328, avatar: "646a356e237350bf8b8dfde15667dfc4"}
   ...> |> Crux.Rest.CDN.user_avatar(extension: "png", size: 2048)
-  "#{@cdn}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.png?size=2048"
+  "#{@base_url}/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.png?size=2048"
 
   # A struct without an avatar
   iex> %Crux.Structs.User{id: 218348062828003328, avatar: nil, discriminator: "0001"}
   ...> |> Crux.Rest.CDN.user_avatar()
-  "#{@cdn}/embed/avatars/1.png"
+  "#{@base_url}/embed/avatars/1.png"
 
   ```
   """
@@ -260,6 +260,6 @@ defmodule Crux.Rest.CDN do
 
     qs = if options[:size], do: "?size=#{options[:size]}", else: ""
 
-    "#{@cdn}/avatars/#{id}/#{avatar}.#{extension}#{qs}"
+    "#{@base_url}/avatars/#{id}/#{avatar}.#{extension}#{qs}"
   end
 end
