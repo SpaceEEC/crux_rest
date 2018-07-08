@@ -17,8 +17,8 @@ defmodule Mix.Tasks.Bangify do
   @function_template """
     @doc "The same as \`__name__/__arity__\`, but raises an exception if it fails."
     __maybe_spec__
-    def __name__!(__argumements_with_defaults__) do
-      case Crux.Rest.__name__(__argumements__) do
+    def __name__!(__arguments_with_defaults__) do
+      case Crux.Rest.__name__(__arguments__) do
         :ok ->
           :ok
 
@@ -75,8 +75,8 @@ defmodule Mix.Tasks.Bangify do
       |> String.replace("__maybe_spec__", maybe_spec)
       |> String.replace("__name__", name |> to_string())
       |> String.replace("__arity__", arity |> to_string())
-      |> String.replace("__argumements_with_defaults__", argument_with_defaults)
-      |> String.replace("__argumements__", arguments)
+      |> String.replace("__arguments_with_defaults__", argument_with_defaults)
+      |> String.replace("__arguments__", arguments)
     end
   end
 
