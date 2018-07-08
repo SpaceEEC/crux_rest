@@ -7,6 +7,8 @@ defmodule Crux.Rest do
   alias Crux.Rest
   alias Crux.Rest.{Endpoints, Util}
 
+  use Crux.Rest.Bang
+
   defp create(:ok, _to), do: :ok
   defp create({:ok, res}, to), do: {:ok, Structs.create(res, to)}
   defp create({:error, _} = res, _to), do: res
@@ -105,7 +107,7 @@ defmodule Crux.Rest do
   def create_message(%Channel{id: channel_id}, args), do: create_message(channel_id, args)
 
   def create_message(channel_id, not_map) when not is_map(not_map),
-    do: create_message(channel_id, Map.new(not_map))
+    do: real_create_message(channel_id, Map.new(not_map))
 
   def create_message(channel_id, %{files: files} = args) when is_number(channel_id) do
     Enum.reduce_while(files, [], fn file, acc ->
@@ -125,7 +127,7 @@ defmodule Crux.Rest do
             do: [{"payload_json", Poison.encode!(args)} | form_data],
             else: form_data
 
-        create_message(channel_id, {:multipart, form_data}, [
+        real_create_message(channel_id, {:multipart, form_data}, [
           {"content-type", "multipart/form-data"}
         ])
 
@@ -134,8 +136,7 @@ defmodule Crux.Rest do
     end
   end
 
-  @doc false
-  def create_message(channel_id, args, disposition \\ []) do
+  defp real_create_message(channel_id, args, disposition \\ []) do
     Rest.Base.queue(:post, Endpoints.channel_messages(channel_id), args, disposition)
     |> create(Message)
   end
