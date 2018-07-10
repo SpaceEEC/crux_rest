@@ -72,8 +72,10 @@ defmodule Crux.Rest.Util do
             {:error, other}
         end
 
-      File.exists?(bin_or_path) && File.stat!(bin_or_path).type == :regular ->
-        map_file({:file, bin_or_path, Path.basename(name)})
+      File.exists?(bin_or_path) ->
+        with {:ok, %{type: :regular}} <- File.stat(bin_or_path) do
+          map_file({:file, bin_or_path, Path.basename(name)})
+        end
 
       true ->
         map_file({Path.basename(name), bin_or_path, Path.basename(name)})
