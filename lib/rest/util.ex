@@ -65,8 +65,8 @@ defmodule Crux.Rest.Util do
         with {:ok, %{body: file}} <- HTTPoison.get(bin_or_path) do
           map_file({file, Path.basename(name)})
         else
-          {:error, inner} ->
-            {:error, inner}
+          {:error, _error} = error ->
+            error
 
           other ->
             {:error, other}
