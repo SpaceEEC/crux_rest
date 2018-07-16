@@ -26,6 +26,43 @@ defmodule Crux.Rest.Base do
     |> Keyword.put_new(:"user-agent", @user_agent)
   end
 
+  @spec request(
+          method :: String.t(),
+          route :: String.t(),
+          body :: term(),
+          headers :: [{String.t() | atom(), String.t()}],
+          Keyword.t()
+        ) :: :ok | {:ok, term()} | {:error, term()}
+  def request(method, route, body \\ "", headers \\ [], options \\ []) do
+    [headers, body] =
+      case body do
+        %{reason: reason} ->
+          headers = [{"x-audit-log-reason", URI.encode(reason)} | headers]
+          body = Map.delete(body, :reason)
+
+          [headers, body]
+
+        _ ->
+          [headers, body]
+      end
+
+    super(method, @api_base <> route, body, headers, options)
+  end
+
+  @spec queue(
+          method :: String.t(),
+          route :: String.t(),
+          body :: term(),
+          headers :: [{String.t() | atom(), String.t()}],
+          Keyword.t()
+        ) :: :ok | {:ok, term()} | {:error, term()}
+  def queue(method, route, body \\ "", headers \\ [], options \\ []) do
+    {route, [method, route, body, headers, options]}
+    |> Crux.Rest.Handler.queue()
+    |> handle_response(method)
+  end
+
+  defp handle_response({:error, _} = error, _method), do: error
   defp handle_response({:ok, %HTTPoison.Response{status_code: 204}}, _method), do: :ok
 
   defp handle_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}, _method) do
@@ -53,29 +90,5 @@ defmodule Crux.Rest.Base do
       {:error, _} ->
         {:error, {:decoding, body}}
     end
-  end
-
-  defp handle_response({:error, _} = error, _method), do: error
-
-  def queue(method, route, body \\ "", headers \\ [], options \\ []) do
-    {route, [method, route, body, headers, options]}
-    |> Handler.queue()
-    |> handle_response(method)
-  end
-
-  def request(method, route, body \\ "", headers \\ [], options \\ []) do
-    [headers, body] =
-      case body do
-        %{reason: reason} ->
-          headers = [{"x-audit-log-reason", URI.encode(reason)} | headers]
-          body = Map.delete(body, :reason)
-
-          [headers, body]
-
-        _ ->
-          [headers, body]
-      end
-
-    super(method, @api_base <> route, body, headers, options)
   end
 end

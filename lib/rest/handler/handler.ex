@@ -91,7 +91,7 @@ defmodule Crux.Rest.Handler do
 
   @doc false
   def handle_call(
-        {:queue, request_data},
+        {:queue, request_data} = message,
         from,
         %{
           route: route,
@@ -125,7 +125,7 @@ defmodule Crux.Rest.Handler do
         Logger.debug("[Crux][Rest][Handler][#{route}]: Waiting #{res}ms")
         :timer.sleep(res)
 
-        handle_call({:queue, request_data}, from, state)
+        handle_call(message, from, state)
 
       true ->
         reset_time =
