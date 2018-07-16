@@ -3,7 +3,7 @@ defmodule Crux.Rest.Bang do
   # Generated 2018-07-08T18:00:29.900000Z
 
   defmacro __using__(_) do
-    quote do
+    quote location: :keep do
       @doc "The same as `add_guild_member/3`, but raises an exception if it fails."
       @spec add_guild_member!(
               guild :: Crux.Rest.Util.guild_id_resolvable(),

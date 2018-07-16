@@ -7,7 +7,7 @@ defmodule Mix.Tasks.Bangify do
     # Generated __generated__
 
     defmacro __using__(_) do
-      quote do
+      quote location: :keep do
         __functions__
       end
     end
