@@ -168,6 +168,8 @@ defmodule Crux.Rest.Handler do
     handle_response(tuple, state, reset)
   end
 
+  defp handle_headers({:error, _} = tuple, state), do: handle_response(tuple, state, nil)
+
   # Rate limited
   defp handle_response(
          {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}},
