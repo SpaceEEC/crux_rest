@@ -107,7 +107,7 @@ defmodule Crux.Rest do
   def create_message(%Channel{id: channel_id}, args), do: create_message(channel_id, args)
 
   def create_message(channel_id, not_map) when not is_map(not_map),
-    do: real_create_message(channel_id, Map.new(not_map))
+    do: create_message(channel_id, Map.new(not_map))
 
   def create_message(channel_id, %{files: files} = args) when is_number(channel_id) do
     Enum.reduce_while(files, [], fn file, acc ->
@@ -135,6 +135,9 @@ defmodule Crux.Rest do
         error
     end
   end
+
+  def create_message(channel_id, args),
+    do: real_create_message(channel_id, Map.new(not_map))
 
   defp real_create_message(channel_id, args, disposition \\ []) do
     Rest.Base.queue(:post, Endpoints.channel_messages(channel_id), args, disposition)
