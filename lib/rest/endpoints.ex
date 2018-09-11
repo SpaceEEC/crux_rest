@@ -183,7 +183,7 @@ defmodule Crux.Rest.Endpoints do
   """
   @spec users(suffix :: String.t()) :: String.t()
   def users(suffix \\ nil)
-  def users(nil), do: "/users/"
+  def users(nil), do: "/users"
   def users(suffix), do: "#{users()}/#{suffix}"
 
   @doc """
