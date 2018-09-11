@@ -18,7 +18,7 @@ defmodule Crux.Rest.Handler.Global do
   @doc """
     Fetches the average out of the last ten offsets to discord servers in milliseconds.
   """
-  @spec fetch_offset() :: integer
+  @spec fetch_offset() :: integer()
   def fetch_offset do
     GenServer.call(__MODULE__, :offset)
   end
@@ -26,7 +26,7 @@ defmodule Crux.Rest.Handler.Global do
   @doc """
     Adds an offset to the list of offsets.
   """
-  @spec add_offset(offset :: integer) :: :ok
+  @spec add_offset(offset :: integer()) :: :ok
   def add_offset(nil), do: :ok
 
   def add_offset(offset) do
@@ -37,7 +37,7 @@ defmodule Crux.Rest.Handler.Global do
     Fetches how long to wait until the global rate limit is over.
     Is not positive when not rate limited.
   """
-  @spec fetch_global_wait() :: integer
+  @spec fetch_global_wait() :: integer()
   def fetch_global_wait do
     GenServer.call(__MODULE__, :retry)
   end

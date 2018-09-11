@@ -21,8 +21,8 @@ defmodule Crux.Rest.ApiError do
   | `path`        | Path of the request                                                                                                            | `/invites/broken`   |
   """
   @type t :: %{
-          status_code: integer,
-          code: integer | nil,
+          status_code: integer(),
+          code: integer() | nil,
           message: String.t(),
           path: String.t(),
           method: String.t()
@@ -40,8 +40,8 @@ defmodule Crux.Rest.ApiError do
     Creates a full `Crux.Rest.ApiError` struct, returned / raised by all `Crux.Rest` functions in case of an API error.
   """
   @spec exception(
-          error :: map,
-          status_code :: pos_integer,
+          error :: map(),
+          status_code :: pos_integer(),
           path :: String.t(),
           method :: String.t()
         ) :: __MODULE__.t()

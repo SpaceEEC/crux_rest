@@ -27,34 +27,34 @@ defmodule Crux.Rest.Base do
   end
 
   @spec request(
-          method :: String.t(),
+          method :: atom(),
           route :: String.t(),
           body :: term(),
-          headers :: [{String.t() | atom(), String.t()}],
-          Keyword.t()
+          headers :: [{name :: String.t() | atom(), value :: String.t()}],
+          options :: Keyword.t()
         ) :: :ok | {:ok, term()} | {:error, term()}
-  def request(method, route, body \\ "", headers \\ [], options \\ []) do
-    [headers, body] =
-      case body do
-        %{reason: reason} ->
-          headers = [{"x-audit-log-reason", URI.encode(reason)} | headers]
-          body = Map.delete(body, :reason)
+  def request(method, route, body \\ "", headers \\ [], options \\ [])
 
-          [headers, body]
+  def request(method, route, %{reason: reason} = body, headers, options) do
+    request(
+      method,
+      route,
+      Map.delete(body, :reason),
+      [{"x-audit-log-reason", URI.encode(reason)} | headers],
+      options
+    )
+  end
 
-        _ ->
-          [headers, body]
-      end
-
+  def request(method, route, body, headers, options) do
     super(method, @api_base <> route, body, headers, options)
   end
 
   @spec queue(
-          method :: String.t(),
+          method :: atom(),
           route :: String.t(),
           body :: term(),
-          headers :: [{String.t() | atom(), String.t()}],
-          Keyword.t()
+          headers :: [{name :: String.t() | atom(), value :: String.t()}],
+          options :: Keyword.t()
         ) :: :ok | {:ok, term()} | {:error, term()}
   def queue(method, route, body \\ "", headers \\ [], options \\ []) do
     {route, [method, route, body, headers, options]}
