@@ -44,7 +44,7 @@ defmodule Crux.Rest.MixProject do
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
-      {:ex_doc, git: "https://github.com/spaceeec/ex_doc", only: :dev}
+      {:ex_doc, git: "https://github.com/spaceeec/ex_doc", only: :dev, runtime: false}
     ]
   end
 end
