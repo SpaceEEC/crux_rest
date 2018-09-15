@@ -568,31 +568,36 @@ defmodule Crux.Rest do
   * `:topic` has to be [0-1024] chars long
   * `:bitrate` is in bits [8_000-96_000] (128_000 for VIP servers)
   * `:user_limit` has to be [0-99], 0 refers to no limit
+  * `:rate_limit_per_user` has to be [0-120], 0 refers to no limit
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#modify-channel-json-params).
   """
   @type modify_channel_data ::
           %{
-            optional(:name) => String.t() | nil,
-            optional(:position) => non_neg_integer(),
-            optional(:topic) => String.t() | nil,
-            optional(:nsfw) => boolean(),
             optional(:bitrate) => non_neg_integer(),
-            optional(:user_limit) => non_neg_integer() | nil,
-            optional(:permission_overwrites) => [Overwrite.t()],
+            optional(:icon) => String.t() | binary() | nil,
+            optional(:name) => String.t() | nil,
+            optional(:nsfw) => boolean(),
             optional(:parent_id) => snowflake() | nil,
-            optional(:reason) => String.t()
+            optional(:permission_overwrites) => [Overwrite.t()],
+            optional(:position) => non_neg_integer(),
+            optional(:rate_limit_per_user) => non_neg_integer(),
+            optional(:reason) => String.t(),
+            optional(:topic) => String.t() | nil,
+            optional(:user_limit) => non_neg_integer() | nil
           }
           | [
-              {:name, String.t() | nil}
-              | {:position, non_neg_integer()}
-              | {:topic, String.t() | nil}
+              {:bitrate, non_neg_integer()}
+              | {:icon, String.t() | binary() | nil}
+              | {:name, String.t() | nil}
               | {:nsfw, boolean()}
-              | {:bitrate, non_neg_integer()}
-              | {:user_limit, integer() | nil}
-              | {:overwrites, [Overwrite.t()]}
               | {:parent_id, snowflake() | nil}
+              | {:permission_overwrites, [Overwrite.t()]}
+              | {:position, non_neg_integer()}
+              | {:rate_limit_per_user, non_neg_integer()}
               | {:reason, String.t()}
+              | {:topic, String.t() | nil}
+              | {:user_limit, integer() | nil}
             ]
 
   @doc """
