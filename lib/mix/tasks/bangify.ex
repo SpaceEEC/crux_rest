@@ -1,6 +1,8 @@
 defmodule Mix.Tasks.Bangify do
   use Mix.Task
 
+  alias Code.Typespec
+
   @module_template """
   defmodule Crux.Rest.Bang do
     @moduledoc false
@@ -32,13 +34,14 @@ defmodule Mix.Tasks.Bangify do
   """
 
   def run(_) do
-    specs =
-      Crux.Rest
-      |> Kernel.Typespec.beam_specs()
-      |> Map.new(fn {{name, arity}, _} = spec -> {{name, arity}, spec} end)
+    {:ok, specs} = Typespec.fetch_specs(Crux.Rest)
+    specs = Map.new(specs)
+
+    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, functions} =
+      Code.fetch_docs(Crux.Rest)
 
     functions =
-      Code.get_docs(Crux.Rest, :docs)
+      functions
       |> Enum.map_join("\n", &map_docs(&1, specs))
       |> String.slice(0..-2)
 
@@ -53,7 +56,11 @@ defmodule Mix.Tasks.Bangify do
     |> File.write!(content)
   end
 
-  defp map_docs({{name, arity}, _line_number, :def, arguments, _docs}, specs) do
+  defp map_docs({{:function, name, arity}, _anno, [signature], _doc, _meta}, specs) do
+    signature =
+      signature
+      |> String.replace(~r{^.+?\(|\)$}, "")
+
     if String.ends_with?(name |> to_string(), "!") do
       ""
     else
@@ -61,24 +68,26 @@ defmodule Mix.Tasks.Bangify do
         specs
         |> Map.get({name, arity})
         |> case do
-          {_, [spec]} ->
+          [spec] ->
             "@spec #{name}!#{format_type(spec)}"
 
           nil ->
             ""
         end
 
-      argument_with_defaults = Enum.map_join(arguments, ", ", &map_defaults/1)
-      arguments = Enum.map_join(arguments, ", ", &map_arguments/1)
-
       @function_template
       |> String.replace("__maybe_spec__", maybe_spec)
       |> String.replace("__name__", name |> to_string())
       |> String.replace("__arity__", arity |> to_string())
-      |> String.replace("__arguments_with_defaults__", argument_with_defaults)
-      |> String.replace("__arguments__", arguments)
+      |> String.replace("__arguments_with_defaults__", signature)
+      |> String.replace(
+        "__arguments__",
+        signature |> String.replace(~r{ \\\\ .*?(?=,|$)}, "")
+      )
     end
   end
+
+  defp map_docs(_, _), do: ""
 
   defp format_type({:type, _, :fun, [params, {:type, _, :union, types}]}) do
     return =
@@ -162,12 +171,4 @@ defmodule Mix.Tasks.Bangify do
   defp format_type({:type, _, :map_field_exact, [key, value]}) do
     "required(#{format_type(key)}) => #{format_type(value)}"
   end
-
-  defp map_defaults({:\\, [], [{name, [], _nil}, default]}),
-    do: "#{name} \\\\ #{inspect(default)}"
-
-  defp map_defaults({name, [], _nil}), do: name |> to_string()
-
-  defp map_arguments({:\\, [], [{name, [], _nil}, _default]}), do: name |> to_string()
-  defp map_arguments({name, [], _nil}), do: name |> to_string()
 end
