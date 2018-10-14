@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Bang do
   @moduledoc false
-  # Generated 2018-10-14T12:00:55.331000Z
+  # Generated 2018-10-14T12:07:23.869000Z
 
   defmacro __using__(_) do
     quote location: :keep do

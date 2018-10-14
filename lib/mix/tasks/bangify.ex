@@ -122,15 +122,10 @@ defmodule Mix.Tasks.Bangify do
       types
       |> Enum.slice(0..-2)
       |> Enum.map(&format_type/1)
-      |> Enum.map(
-        &case &1 do
-          ":" <> name ->
-            name
-
-          name ->
-            name
-        end
-      )
+      |> Enum.map(fn
+        ":" <> name -> name
+        name -> name
+      end)
       |> Enum.join(".")
 
     "#{types}()"
