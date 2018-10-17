@@ -49,7 +49,9 @@ defmodule Mix.Tasks.Bangify do
       @module_template
       |> String.replace("__generated__", DateTime.utc_now() |> DateTime.to_iso8601())
       |> String.replace("__functions__", functions)
-      |> Code.format_string!()
+      |> Code.format_string!(file: "bang.ex", line: 0)
+      |> :erlang.iolist_to_binary()
+      |> Kernel.<>("\n")
 
     ["lib", "rest", "bang.ex"]
     |> Path.join()
