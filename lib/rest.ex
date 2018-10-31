@@ -3,7 +3,20 @@ defmodule Crux.Rest do
     Collection of Rest functions.
   """
   alias Crux.Structs
-  alias Crux.Structs.{Channel, Emoji, Guild, Invite, Member, Message, Role, User}
+
+  alias Crux.Structs.{
+    AuditLog,
+    Channel,
+    Emoji,
+    Guild,
+    Invite,
+    Member,
+    Message,
+    Role,
+    User,
+    Webhook
+  }
+
   alias Crux.Rest
   alias Crux.Rest.{Endpoints, Util}
 
@@ -1041,6 +1054,33 @@ defmodule Crux.Rest do
     Rest.Base.queue(:delete, Endpoints.guild(guild_id))
   end
 
+  @type audit_log_options ::
+          %{
+            optional(:user_id) => snowflake(),
+            optional(:action_type) => pos_integer(),
+            optional(:before) => snowflake(),
+            optional(:limit) => pos_integer()
+          }
+          | [
+              {:user_id, snowflake()},
+              {:action_type, pos_integer()},
+              {:before, snowflake()},
+              {:limit, pos_integer}
+            ]
+
+  @doc """
+    Gets the audit logs for a guild
+  """
+  @spec get_audit_logs(guild :: Util.guild_id_resolvable(), options :: audit_log_options() | nil) ::
+          {:ok, AuditLog.t()} | {:error, term()}
+  def get_audit_logs(guild, options \\ []) do
+    guild_id = Util.resolve_guild_id(guild)
+    body = Map.new(options)
+
+    Rest.Base.queue(:get, Endpoints.guild_audit_logs(guild_id), "", [], params: body)
+    |> create(AuditLog)
+  end
+
   @doc """
     Gets all channels from a guild via the api.
     This should usually, due to caching, __NOT__ be necessary.
@@ -1709,6 +1749,178 @@ defmodule Crux.Rest do
   end
 
   ### End Guild
+
+  ### Start Webhook
+
+  @doc """
+    Fetches a guild's webhook list
+
+  > Returns a list of [Webhook Objects](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-guild-webhooks)
+  """
+  @spec list_guild_webhooks(guild :: Util.guild_id_resolvable()) ::
+          {:ok, [Webhook.t()]} | {:error, term()}
+  def list_guild_webhooks(guild) do
+    guild_id = Util.resolve_guild_id(guild)
+
+    Rest.Base.queue(:get, Endpoints.guild_webhooks(guild_id))
+    |> create(Webhook)
+  end
+
+  @doc """
+    Fetches a channel's webhook list
+
+  > Returns a list of [Webhook Objects](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-channel-webhooks)
+  """
+  @spec list_channel_webhooks(channel :: Util.channel_id_resolvable()) ::
+          {:ok, [Webhook.t()]} | {:error, term()}
+  def list_channel_webhooks(channel) do
+    channel_id = Util.resolve_guild_id(channel)
+
+    Rest.Base.queue(:get, Endpoints.channel_webhooks(channel_id))
+    |> create(Webhook)
+  end
+
+  @doc """
+    Fetches a webhook
+
+  > Returns a [Webhook Object](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-webhook)
+  """
+  @spec get_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
+          {:ok, [Webhook.t()]} | {:error, term()}
+  def get_webhook(user, token \\ nil) do
+    user_id = Util.resolve_user_id(user)
+
+    Rest.Base.queue(:get, Endpoints.webhook(user_id, token))
+    |> create(Webhook)
+  end
+
+  @doc """
+    Updates a webhook
+
+  > Returns the updated [Webhook Object](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#modify-webhook)
+  """
+  @spec update_webhook(
+          user :: Util.user_id_resolvable(),
+          token :: String.t() | nil,
+          data ::
+            %{
+              optional(:name) => String.t(),
+              optional(:avatar) => String.t(),
+              optional(:channel_id) => snowflake()
+            }
+            | [{:name, String.t()} | {:avatar, String.t()} | {:channel_id, snowflake()}]
+        ) :: {:ok, Webhook.t()} | {:error, term()}
+  def update_webhook(user, token \\ nil, data) do
+    user_id = Util.resolve_user_id(user)
+    body = Map.new(data)
+
+    Rest.Base.queue(:patch, Endpoints.webhook(user_id, token), body)
+    |> create(Webhook)
+  end
+
+  @doc """
+    Deletes a webhook
+
+  > Returns :ok on success, otherwise an error tuple
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#delete-webhook)
+  """
+  @spec delete_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
+          :ok | {:error, term()}
+  def delete_webhook(user, token \\ nil) do
+    user_id = Util.resolve_user_id(user)
+    Rest.Base.queue(:delete, Endpoints.webhook(user_id, token))
+  end
+
+  @type execute_webhook_options :: %{
+          optional(:content) => String.t(),
+          optional(:username) => String.t(),
+          optional(:avatar_url) => String.t(),
+          optional(:tts) => boolean(),
+          optional(:file) => file_list_entry(),
+          optional(:embeds) => [embed()]
+        }
+  @doc """
+    Executes a webhook
+
+  > Returns :ok by default. If wait parameter is set to true, returns a tuple returning the message object or error
+
+    For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#execute-webhook)
+  """
+  @spec execute_webhook(
+          user :: Util.user_id_resolvable(),
+          token :: String.t(),
+          wait :: boolean | nil,
+          data :: execute_webhook_options()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+
+  def execute_webhook(user, token, wait \\ false, data) do
+    user_id = Util.resolve_user_id(user)
+    body = Map.new(data)
+    Rest.Base.queue(:post, "#{Endpoints.webhook(user_id, token)}", body, [], params: [wait: wait])
+  end
+
+  @doc """
+    Executes a slack webhook
+
+  > Returns :ok by default. If wait parameter is set to true, returns a tuple returning the message object or error
+
+    For more information see [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks)
+  """
+  @spec execute_slack_webhook(
+          user :: Util.user_id_resolvable(),
+          token :: String.t(),
+          wait :: boolean | nil,
+          data :: term()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+  def execute_slack_webhook(user, token, wait \\ false, data) do
+    user_id = Util.resolve_user_id(user)
+    body = Map.new(data)
+
+    Rest.Base.queue(
+      :post,
+      "#{Endpoints.webhook_slack(user_id, token)}",
+      body,
+      [],
+      params: [wait: wait]
+    )
+  end
+
+  @doc """
+    Executes a github webhook
+
+  > Returns :ok by default. If wait parameter is set to true, returns a tuple returning the message object or error
+
+    For more information see [Github Docs](https://developer.github.com/webhooks/)
+  """
+  @spec execute_github_webhook(
+          user :: Util.user_id_resolvable(),
+          token :: String.t(),
+          wait :: boolean | nil,
+          data :: term()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+  def execute_github_webhook(user, token, wait \\ false, data) do
+    user_id = Util.resolve_user_id(user)
+    body = Map.new(data)
+
+    Rest.Base.queue(
+      :post,
+      "#{Endpoints.webhook_github(user_id, token)}",
+      body,
+      [],
+      params: [wait: wait]
+    )
+  end
+
+  ### End Webhook
 
   @doc """
     Fetches an invite from the api.
