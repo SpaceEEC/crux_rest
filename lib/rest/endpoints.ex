@@ -198,13 +198,13 @@ defmodule Crux.Rest.Endpoints do
   def webhook(webhook_id, token), do: "#{webhook(webhook_id)}/#{token}"
 
   @doc """
-    Used to send slack formatted webhooks
+    Used to send slack formatted webhooks.
   """
   @spec webhook_slack(webhook_id :: Crux.Rest.snowflake(), token :: String.t()) :: String.t()
   def webhook_slack(webhook_id, token), do: "#{webhook(webhook_id, token)}/slack"
 
   @doc """
-    Used to send github formatted webhooks
+    Used to send github formatted webhooks.
   """
   @spec webhook_github(webhook_id :: Crux.Rest.snowflake(), token :: String.t()) :: String.t()
   def webhook_github(webhook_id, token), do: "#{webhook(webhook_id, token)}/github"

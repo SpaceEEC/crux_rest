@@ -1062,10 +1062,10 @@ defmodule Crux.Rest do
             optional(:limit) => pos_integer()
           }
           | [
-              {:user_id, snowflake()},
-              {:action_type, pos_integer()},
-              {:before, snowflake()},
-              {:limit, pos_integer}
+              {:user_id, snowflake()}
+              | {:action_type, pos_integer()}
+              | {:before, snowflake()}
+              | {:limit, pos_integer}
             ]
 
   @doc """
@@ -1840,6 +1840,11 @@ defmodule Crux.Rest do
     Rest.Base.queue(:delete, Endpoints.webhook(user_id, token))
   end
 
+  @typedoc """
+    Used for sending discord webhooks. For more information on non-discord webhooks, check
+    [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks) or
+    [Github Docs](https://developer.github.com/webhooks/)
+  """
   @type execute_webhook_options :: %{
           optional(:content) => String.t(),
           optional(:username) => String.t(),
@@ -1856,16 +1861,30 @@ defmodule Crux.Rest do
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#execute-webhook)
   """
   @spec execute_webhook(
+          webhook :: Webhook.t(),
+          wait :: boolean | nil,
+          data :: execute_webhook_options()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+  @spec execute_webhook(
           user :: Util.user_id_resolvable(),
           token :: String.t(),
           wait :: boolean | nil,
           data :: execute_webhook_options()
         ) :: :ok | {:ok, Message.t()} | {:error, term}
+  def execute_webhook(webhook = %Webhook{}, data) do
+    execute_webhook(webhook.id, webhook.token, false, data)
+  end
 
-  def execute_webhook(user, token, wait \\ false, data) do
+  def execute_webhook(user, token, wait \\ false, data)
+
+  def execute_webhook(webhook = %Webhook{}, wait, _, data) do
+    execute_webhook(webhook.id, webhook.token, wait, data)
+  end
+
+  def execute_webhook(user, token, wait, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
-    Rest.Base.queue(:post, "#{Endpoints.webhook(user_id, token)}", body, [], params: [wait: wait])
+    Rest.Base.queue(:post, Endpoints.webhook(user_id, token), body, [], params: [wait: wait])
   end
 
   @doc """
@@ -1876,18 +1895,33 @@ defmodule Crux.Rest do
     For more information see [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks)
   """
   @spec execute_slack_webhook(
+          webhook :: Webhook.t(),
+          wait :: boolean | nil,
+          data :: term()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+  @spec execute_slack_webhook(
           user :: Util.user_id_resolvable(),
           token :: String.t(),
           wait :: boolean | nil,
           data :: term()
         ) :: :ok | {:ok, Message.t()} | {:error, term}
+  def execute_slack_webhook(webhook = %Webhook{}, data) do
+    execute_slack_webhook(webhook.id, webhook.token, false, data)
+  end
+
+  def execute_slack_webhook(user, token, wait \\ false, data)
+
+  def execute_slack_webhook(webhook = %Webhook{}, wait, _, data) do
+    execute_slack_webhook(webhook.id, webhook.token, wait, data)
+  end
+
   def execute_slack_webhook(user, token, wait \\ false, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
     Rest.Base.queue(
       :post,
-      "#{Endpoints.webhook_slack(user_id, token)}",
+      Endpoints.webhook_slack(user_id, token),
       body,
       [],
       params: [wait: wait]
@@ -1902,18 +1936,33 @@ defmodule Crux.Rest do
     For more information see [Github Docs](https://developer.github.com/webhooks/)
   """
   @spec execute_github_webhook(
+          webhook :: Webhook.t(),
+          wait :: boolean | nil,
+          data :: term()
+        ) :: :ok | {:ok, Message.t()} | {:error, term}
+  @spec execute_github_webhook(
           user :: Util.user_id_resolvable(),
           token :: String.t(),
           wait :: boolean | nil,
           data :: term()
         ) :: :ok | {:ok, Message.t()} | {:error, term}
+  def execute_github_webhook(webhook = %Webhook{}, data) do
+    execute_github_webhook(webhook.id, webhook.token, false, data)
+  end
+
+  def execute_github_webhook(user, token, wait \\ false, data)
+
+  def execute_github_webhook(webhook = %Webhook{}, wait, _, data) do
+    execute_github_webhook(webhook.id, webhook.token, wait, data)
+  end
+
   def execute_github_webhook(user, token, wait \\ false, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
     Rest.Base.queue(
       :post,
-      "#{Endpoints.webhook_github(user_id, token)}",
+      Endpoints.webhook_github(user_id, token),
       body,
       [],
       params: [wait: wait]
