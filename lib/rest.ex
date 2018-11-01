@@ -1054,6 +1054,10 @@ defmodule Crux.Rest do
     Rest.Base.queue(:delete, Endpoints.guild(guild_id))
   end
 
+  @typedoc """
+    Used to filter audit log results via `get_audit_logs/2`.
+    The `:user_id` field refers to the executor and not the target of the log.
+  """
   @type audit_log_options ::
           %{
             optional(:user_id) => snowflake(),
@@ -1778,7 +1782,7 @@ defmodule Crux.Rest do
   @spec list_channel_webhooks(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Webhook.t()]} | {:error, term()}
   def list_channel_webhooks(channel) do
-    channel_id = Util.resolve_guild_id(channel)
+    channel_id = Util.resolve_channel_id(channel)
 
     Rest.Base.queue(:get, Endpoints.channel_webhooks(channel_id))
     |> create(Webhook)
@@ -1915,7 +1919,7 @@ defmodule Crux.Rest do
     execute_slack_webhook(webhook.id, webhook.token, wait, data)
   end
 
-  def execute_slack_webhook(user, token, wait \\ false, data) do
+  def execute_slack_webhook(user, token, wait, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
@@ -1956,7 +1960,7 @@ defmodule Crux.Rest do
     execute_github_webhook(webhook.id, webhook.token, wait, data)
   end
 
-  def execute_github_webhook(user, token, wait \\ false, data) do
+  def execute_github_webhook(user, token, wait, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
