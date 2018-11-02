@@ -220,7 +220,7 @@ defmodule Crux.Rest.Handler do
          %{route: route} = state,
          _
        )
-       when code >= 500 and code < 600 do
+       when code in 500..599 do
     Logger.warn(
       "[Crux][Rest][Handler][#{route}] Received a #{code}" <>
         " [#{Map.get(state, :retries, 0)}/#{@max_retries_on_5xx}]"

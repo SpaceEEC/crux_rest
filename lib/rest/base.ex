@@ -65,7 +65,8 @@ defmodule Crux.Rest.Base do
   defp handle_response({:error, _} = error, _method), do: error
   defp handle_response({:ok, %HTTPoison.Response{status_code: 204}}, _method), do: :ok
 
-  defp handle_response({:ok, %HTTPoison.Response{status_code: 200, body: body}}, _method) do
+  defp handle_response({:ok, %HTTPoison.Response{status_code: code, body: body}}, _method)
+       when code in 200..299 do
     with {:error, _} <- Poison.decode(body) do
       {:error, {:decoding, body}}
     end
