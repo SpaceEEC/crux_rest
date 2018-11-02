@@ -4,14 +4,13 @@ defmodule Crux.Rest.Base do
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
 
-  alias Crux.Rest.{ApiError, Endpoints, Handler}
+  alias Crux.Rest.{ApiError, Endpoints, MixProject, Handler}
 
   # Compile time constant so we can use it in guards
   @api_base Endpoints.base_url()
   # See: https://discordapp.com/developers/docs/reference#user-agent
-  @user_agent "DiscordBot (#{Crux.Rest.MixProject.project()[:source_url]}, v#{
-                Crux.Rest.MixProject.project()[:version]
-              }"
+  @user_agent "DiscordBot (#{MixProject.project()[:source_url]}, " <>
+                "v#{MixProject.project()[:version]}"
 
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
@@ -58,7 +57,7 @@ defmodule Crux.Rest.Base do
         ) :: :ok | {:ok, term()} | {:error, term()}
   def queue(method, route, body \\ "", headers \\ [], options \\ []) do
     {route, [method, route, body, headers, options]}
-    |> Crux.Rest.Handler.queue()
+    |> Handler.queue()
     |> handle_response(method)
   end
 
