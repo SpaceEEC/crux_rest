@@ -1934,6 +1934,7 @@ defmodule Crux.Rest do
         params: [wait: wait]
       )
 
+    # returns "ok" in the response string, not json
     case response do
       {:ok, _} -> :ok
       _ -> response
@@ -1976,19 +1977,13 @@ defmodule Crux.Rest do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
-    response =
-      Rest.Base.queue(
-        :post,
-        Endpoints.webhook_github(user_id, token),
-        body,
-        [{"x-github-event", event}],
-        params: [wait: wait]
-      )
-
-    case response do
-      {:ok, _} -> :ok
-      _ -> response
-    end
+    Rest.Base.queue(
+      :post,
+      Endpoints.webhook_github(user_id, token),
+      body,
+      [{"x-github-event", event}],
+      params: [wait: wait]
+    )
   end
 
   ### End Webhook
