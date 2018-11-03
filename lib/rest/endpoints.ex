@@ -114,6 +114,12 @@ defmodule Crux.Rest.Endpoints do
   def guild(guild_id, suffix), do: "#{guild(guild_id)}/#{suffix}"
 
   @doc """
+    Used for guild audit logs fetching.
+  """
+  @spec guild_audit_logs(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  def guild_audit_logs(guild_id), do: guild(guild_id, "audit-logs")
+
+  @doc """
     Used for guild emoji related functions.
   """
   @spec guild_emojis(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
@@ -170,6 +176,38 @@ defmodule Crux.Rest.Endpoints do
 
   def guild_member_roles(guild_id, member_id, role_id),
     do: "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
+
+  @doc """
+    Used to fetch channel webhooks.
+  """
+  @spec channel_webhooks(channel_id :: Crux.Rest.snowflake()) :: String.t()
+  def channel_webhooks(channel_id), do: channel(channel_id, "webhooks")
+
+  @doc """
+    Used to fetch guild webhooks.
+  """
+  @spec guild_webhooks(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  def guild_webhooks(guild_id), do: guild(guild_id, "webhooks")
+
+  @doc """
+    Used for webhook related functions.
+  """
+  @spec webhook(guild_id :: Crux.Rest.snowflake(), token :: String.t() | nil) :: String.t()
+  def webhook(webhook_id, token \\ nil)
+  def webhook(webhook_id, nil), do: "/webhooks/#{webhook_id}"
+  def webhook(webhook_id, token), do: "#{webhook(webhook_id)}/#{token}"
+
+  @doc """
+    Used to send slack formatted webhooks.
+  """
+  @spec webhook_slack(webhook_id :: Crux.Rest.snowflake(), token :: String.t()) :: String.t()
+  def webhook_slack(webhook_id, token), do: "#{webhook(webhook_id, token)}/slack"
+
+  @doc """
+    Used to send github formatted webhooks.
+  """
+  @spec webhook_github(webhook_id :: Crux.Rest.snowflake(), token :: String.t()) :: String.t()
+  def webhook_github(webhook_id, token), do: "#{webhook(webhook_id, token)}/github"
 
   @doc """
   Discord being special.
