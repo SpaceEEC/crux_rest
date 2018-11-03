@@ -1889,13 +1889,8 @@ defmodule Crux.Rest do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
-    response =
-      Rest.Base.queue(:post, Endpoints.webhook(user_id, token), body, [], params: [wait: wait])
-
-    case response do
-      {:ok, _} -> create(response, Message)
-      _ -> response
-    end
+    Rest.Base.queue(:post, Endpoints.webhook(user_id, token), body, [], params: [wait: wait])
+    |> create(Message)
   end
 
   @doc """
