@@ -1888,13 +1888,20 @@ defmodule Crux.Rest do
   def execute_webhook(user, token, wait, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
-    Rest.Base.queue(:post, Endpoints.webhook(user_id, token), body, [], params: [wait: wait])
+
+    response =
+      Rest.Base.queue(:post, Endpoints.webhook(user_id, token), body, [], params: [wait: wait])
+
+    case response do
+      {:ok, _} -> create(response, Message)
+      _ -> response
+    end
   end
 
   @doc """
     Executes a slack webhook
 
-  > Returns :ok by default. If wait parameter is set to true, returns a tuple returning the message object or error
+  > Returns :ok by default. If wait parameter is set to true, it will either return :ok or an error tuple. Discord does not return the message object unlike the regular webhook endpoint.
 
     For more information see [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks)
   """
@@ -1902,13 +1909,13 @@ defmodule Crux.Rest do
           webhook :: Webhook.t(),
           wait :: boolean | nil,
           data :: term()
-        ) :: :ok | {:ok, Message.t()} | {:error, term}
+        ) :: :ok | {:error, term}
   @spec execute_slack_webhook(
           user :: Util.user_id_resolvable(),
           token :: String.t(),
           wait :: boolean | nil,
           data :: term()
-        ) :: :ok | {:ok, Message.t()} | {:error, term}
+        ) :: :ok | {:error, term}
   def execute_slack_webhook(webhook = %Webhook{}, data) do
     execute_slack_webhook(webhook.id, webhook.token, false, data)
   end
@@ -1923,54 +1930,70 @@ defmodule Crux.Rest do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
-    Rest.Base.queue(
-      :post,
-      Endpoints.webhook_slack(user_id, token),
-      body,
-      [],
-      params: [wait: wait]
-    )
+    response =
+      Rest.Base.queue(
+        :post,
+        Endpoints.webhook_slack(user_id, token),
+        body,
+        [],
+        params: [wait: wait]
+      )
+
+    case response do
+      {:ok, _} -> :ok
+      _ -> response
+    end
   end
 
   @doc """
     Executes a github webhook
 
-  > Returns :ok by default. If wait parameter is set to true, returns a tuple returning the message object or error
+  > Returns :ok by default. If wait parameter is set to true, it will either return :ok or an error tuple. Discord does not return the message object unlike the regular webhook endpoint.
+
+    The event parameter is passed into the "x-github-event" header. If this is not set to a valid event (e.g, "push", "issue"), discord will not send the webhook but still return 204 OK
 
     For more information see [Github Docs](https://developer.github.com/webhooks/)
   """
   @spec execute_github_webhook(
           webhook :: Webhook.t(),
+          event :: String.t(),
           wait :: boolean | nil,
           data :: term()
-        ) :: :ok | {:ok, Message.t()} | {:error, term}
+        ) :: :ok | {:error, term}
   @spec execute_github_webhook(
           user :: Util.user_id_resolvable(),
           token :: String.t(),
+          event :: String.t(),
           wait :: boolean | nil,
           data :: term()
-        ) :: :ok | {:ok, Message.t()} | {:error, term}
-  def execute_github_webhook(webhook = %Webhook{}, data) do
-    execute_github_webhook(webhook.id, webhook.token, false, data)
+        ) :: :ok | {:error, term}
+  def execute_github_webhook(webhook = %Webhook{}, event, data) do
+    execute_github_webhook(webhook.id, webhook.token, event, false, data)
   end
 
-  def execute_github_webhook(user, token, wait \\ false, data)
+  def execute_github_webhook(user, token, event, wait \\ false, data)
 
-  def execute_github_webhook(webhook = %Webhook{}, wait, _, data) do
-    execute_github_webhook(webhook.id, webhook.token, wait, data)
+  def execute_github_webhook(webhook = %Webhook{}, event, wait, _, data) do
+    execute_github_webhook(webhook.id, webhook.token, event, wait, data)
   end
 
-  def execute_github_webhook(user, token, wait, data) do
+  def execute_github_webhook(user, token, event, wait, data) do
     user_id = Util.resolve_user_id(user)
     body = Map.new(data)
 
-    Rest.Base.queue(
-      :post,
-      Endpoints.webhook_github(user_id, token),
-      body,
-      [],
-      params: [wait: wait]
-    )
+    response =
+      Rest.Base.queue(
+        :post,
+        Endpoints.webhook_github(user_id, token),
+        body,
+        [{"x-github-event", event}],
+        params: [wait: wait]
+      )
+
+    case response do
+      {:ok, _} -> :ok
+      _ -> response
+    end
   end
 
   ### End Webhook
