@@ -32,13 +32,36 @@ defmodule Crux.Rest.Util do
     end
   end
 
+  @doc """
+    Resolves and encodes a file resolvable under a key in a map.
+    If the key is not in the map nothing is done.
+  """
+  @spec encode_map_key(map(), atom()) :: map()
+  def encode_map_key(%{} = map, key) when is_atom(key) do
+    case map do
+      %{^key => file} when not is_nil(file) ->
+        with {:ok, binary} <- resolve_file(file) do
+          Map.put(map, key, "data:image/jpg;base64,#{Base.encode64(binary)}")
+        end
+
+      _ ->
+        map
+    end
+  end
+
   @typedoc """
     Used when sending files via `Rest.create_message/2`.
+
+    The elements are:
+    1. Name of the file or :file for a local file
+    2. Binary of the file or the file path
+    3. Disposition (for form-data)
+    4. Headers (content-type)
   """
   @type resolved_file ::
           {
             String.t() | :file,
-            String.t() | binary(),
+            binary() | String.t(),
             {String.t(), [{String.t(), binary()}]},
             [{String.t(), String.t()}]
           }
@@ -48,22 +71,25 @@ defmodule Crux.Rest.Util do
     Resolves a:
     * path to a file
     * tuple of path to a file or binary of one, and a file name
-    to a `resolved_file` automatically used by `Rest.create_message/2`
+    to a `t:resolved_file/0` automatically used by `Rest.create_message/2`
   """
-  # path
   @spec map_file(
           path ::
-            String.t()
-            | {String.t() | binary(), String.t()}
+            Crux.Rest.file_list_entry()
             | {String.t() | :file, String.t() | binary(), String.t()}
         ) :: resolved_file() | {:error, term()}
-  def(map_file(path) when is_bitstring(path), do: map_file({path, Path.basename(path)}))
+  # path
+  def map_file(path) when is_binary(path) do
+    map_file({Path.basename(path), path, Path.basename(path)})
+  end
+
   # {binary | path, name}
-  def map_file({bin_or_path, name}) when is_binary(bin_or_path) do
+  def map_file({bin_or_path, name})
+      when is_bitstring(bin_or_path) and is_binary(name) do
     cond do
       Regex.match?(~r{^https?://}, bin_or_path) ->
         with {:ok, %{body: file}} <- HTTPoison.get(bin_or_path) do
-          map_file({file, Path.basename(name)})
+          map_file({Path.basename(name), file, Path.basename(name)})
         else
           {:error, _error} = error ->
             error
@@ -75,6 +101,12 @@ defmodule Crux.Rest.Util do
       File.exists?(bin_or_path) ->
         with {:ok, %{type: :regular}} <- File.stat(bin_or_path) do
           map_file({:file, bin_or_path, Path.basename(name)})
+        else
+          {:error, _error} = error ->
+            error
+
+          other ->
+            {:error, other}
         end
 
       true ->
@@ -82,7 +114,9 @@ defmodule Crux.Rest.Util do
     end
   end
 
-  def map_file({name_or_atom, bin_or_path, name}) do
+  def map_file({name_or_atom, bin_or_path, name})
+      when (is_binary(name_or_atom) or name_or_atom == :file) and is_bitstring(bin_or_path) and
+             is_binary(name) do
     disposition = {"form-data", [{"filename", "\"#{name}\""}, {"name", "\"#{name}\""}]}
     headers = [{"content-type", :mimerl.filename(name)}]
 
@@ -325,7 +359,7 @@ defmodule Crux.Rest.Util do
           }
 
   @doc ~S"""
-    Resolves a `t:channel_poisition_resolvable/0` into a channel position.
+    Resolves a `t:channel_position_resolvable/0` into a channel position.
 
   ## Examples
 

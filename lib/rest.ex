@@ -621,13 +621,22 @@ defmodule Crux.Rest do
   """
   @spec modify_channel(
           channel :: Util.channel_id_resolvable(),
-          args :: modify_channel_data()
+          data :: modify_channel_data()
         ) :: {:ok, Channel.t()} | {:error, term()}
-  def modify_channel(channel, args) do
+  def modify_channel(channel, data) do
     channel_id = Util.resolve_channel_id(channel)
 
-    Rest.Base.queue(:patch, Endpoints.channel(channel_id), Map.new(args))
-    |> create(Channel)
+    data
+    |> Map.new()
+    |> Util.encode_map_key(:icon)
+    |> case do
+      %{icon: {:error, _} = error} ->
+        error
+
+      data ->
+        Rest.Base.queue(:patch, Endpoints.channel(channel_id), data)
+        |> create(Channel)
+    end
   end
 
   @doc """
@@ -867,9 +876,7 @@ defmodule Crux.Rest do
 
     data
     |> Map.new()
-    |> Map.update!(:image, fn image ->
-      with {:ok, binary} <- Util.resolve_file(image), do: binary
-    end)
+    |> Util.encode_map_key(:image)
     |> Map.update(:roles, [], &Enum.map(&1, fn role -> Util.resolve_role_id(role) end))
     |> case do
       %{image: {:error, error}} ->
@@ -952,9 +959,7 @@ defmodule Crux.Rest do
     data =
       data
       |> Map.new()
-      |> Map.update(:icon, nil, fn icon ->
-        if icon, do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
-      end)
+      |> Util.encode_map_key(:icon)
 
     Rest.Base.queue(:post, Endpoints.guild(), data)
     |> create(Guild)
@@ -1019,26 +1024,19 @@ defmodule Crux.Rest do
   def modify_guild(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
-    data =
-      data
-      |> Map.new()
-      |> Map.update(:icon, nil, fn icon ->
-        if icon, do: with({:ok, binary} <- Util.resolve_file(icon), do: binary |> Base.encode64())
-      end)
-      |> Map.update(:splash, nil, fn splash ->
-        if splash,
-          do: with({:ok, binary} <- Util.resolve_file(splash), do: binary |> Base.encode64())
-      end)
+    data
+    |> Map.new()
+    |> Util.encode_map_key(:icon)
+    |> Util.encode_map_key(:splash)
+    |> case do
+      %{icon: {:error, _error} = error} ->
+        error
 
-    case data do
-      %{icon: {:error, error}} ->
-        {:error, error}
-
-      %{splash: {:error, error}} ->
-        {:error, error}
+      %{splash: {:error, _error} = error} ->
+        error
 
       _ ->
-        Rest.Base.queue(:post, Endpoints.guild(guild_id), data)
+        Rest.Base.queue(:patch, Endpoints.guild(guild_id), data)
         |> create(Guild)
     end
   end
@@ -1387,7 +1385,7 @@ defmodule Crux.Rest do
     guild_id = Util.resolve_guild_id(guild)
 
     Rest.Base.queue(:get, Endpoints.guild_bans(guild_id))
-    |> Map.new(fn %{user: user}=entry ->
+    |> Map.new(fn %{user: user} = entry ->
       user = Structs.create(user, User)
       {user.id, %{entry | user: user}}
     end)
@@ -1750,6 +1748,9 @@ defmodule Crux.Rest do
     case Rest.Base.queue(:get, Endpoints.guild(guild_id, "vanity-url")) do
       {:ok, %{code: code}} ->
         {:ok, code}
+
+      {:error, _error} = error ->
+        error
     end
   end
 
@@ -1759,8 +1760,6 @@ defmodule Crux.Rest do
 
   @doc """
     Fetches a guild's webhook list
-
-  > Returns a list of [Webhook Objects](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
 
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-guild-webhooks)
   """
@@ -1776,8 +1775,6 @@ defmodule Crux.Rest do
   @doc """
     Fetches a channel's webhook list
 
-  > Returns a list of [Webhook Objects](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
-
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-channel-webhooks)
   """
   @spec list_channel_webhooks(channel :: Util.channel_id_resolvable()) ::
@@ -1792,8 +1789,6 @@ defmodule Crux.Rest do
   @doc """
     Fetches a webhook
 
-  > Returns a [Webhook Object](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
-
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#get-webhook)
   """
   @spec get_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
@@ -1807,8 +1802,6 @@ defmodule Crux.Rest do
 
   @doc """
     Updates a webhook
-
-  > Returns the updated [Webhook Object](https://discordapp.com/developers/docs/resources/webhook#webhook-object)
 
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#modify-webhook)
   """
@@ -1825,16 +1818,22 @@ defmodule Crux.Rest do
         ) :: {:ok, Webhook.t()} | {:error, term()}
   def update_webhook(user, token \\ nil, data) do
     user_id = Util.resolve_user_id(user)
-    body = Map.new(data)
 
-    Rest.Base.queue(:patch, Endpoints.webhook(user_id, token), body)
-    |> create(Webhook)
+    data
+    |> Map.new()
+    |> Util.encode_map_key(:avatar)
+    |> case do
+      %{avatar: {:error, _error} = error} ->
+        error
+
+      data ->
+        Rest.Base.queue(:patch, Endpoints.webhook(user_id, token), data)
+        |> create(Webhook)
+    end
   end
 
   @doc """
     Deletes a webhook
-
-  > Returns :ok on success, otherwise an error tuple
 
     For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/webhook#delete-webhook)
   """
@@ -2046,10 +2045,17 @@ defmodule Crux.Rest do
   @spec modify_current_user(data :: modify_current_user_data()) ::
           {:ok, User.t()} | {:error, term()}
   def modify_current_user(data) do
-    data = Map.new(data)
+    data
+    |> Map.new()
+    |> Util.encode_map_key(:avatar)
+    |> case do
+      %{avatar: {:error, _error} = error} ->
+        error
 
-    Rest.Base.queue(:post, Endpoints.me(), data)
-    |> create(User)
+      data ->
+        Rest.Base.queue(:post, Endpoints.me(), data)
+        |> create(User)
+    end
   end
 
   @typedoc """
