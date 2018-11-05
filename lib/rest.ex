@@ -2,6 +2,7 @@ defmodule Crux.Rest do
   @moduledoc """
     Collection of Rest functions.
   """
+
   alias Crux.Structs
 
   alias Crux.Structs.{
@@ -1386,9 +1387,9 @@ defmodule Crux.Rest do
     guild_id = Util.resolve_guild_id(guild)
 
     Rest.Base.queue(:get, Endpoints.guild_bans(guild_id))
-    |> Map.new(fn entry ->
-      Map.update!(entry, :user, &Structs.create(&1, User))
-      {entry.user.id, entry}
+    |> Map.new(fn %{user: user}=entry ->
+      user = Structs.create(user, User)
+      {user.id, %{entry | user: user}}
     end)
   end
 
