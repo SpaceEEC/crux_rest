@@ -2,8 +2,9 @@ defmodule Crux.Rest.ApiError do
   @moduledoc """
     Represents a Discord API error.
 
-    Raised or returned whenever the api responded with a non `200` / `204` status code
+    Raised or returned whenever the api responded with a non `2xx` status code
   """
+
   defexception(
     status_code: nil,
     code: nil,
