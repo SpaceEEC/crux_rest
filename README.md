@@ -16,7 +16,7 @@ The package can be installed by adding `crux_rest` to your list of dependencies 
 ```elixir
 def deps do
   [
-    {:crux_rest, "~> 0.1.5"}
+    {:crux_rest, "~> 0.1.6"}
   ]
 end
 ```
