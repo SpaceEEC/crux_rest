@@ -1,9 +1,6 @@
 defmodule Crux.Rest.Handler do
-  @moduledoc """
-    Handles per route rate limiting.
+  @moduledoc false
 
-    All functions in `Crux.Rest` automatically use this module, you do not need to worry about it.
-  """
   use GenServer
 
   require Logger

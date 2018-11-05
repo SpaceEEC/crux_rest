@@ -1,9 +1,5 @@
 defmodule Crux.Rest.Handler.Global do
-  @moduledoc """
-    Handles global rate limits and the average time offset to discord.
-
-    All functions in `Crux.Rest` automatically use this module, you do not need to worry about it.
-  """
+  @moduledoc false
 
   use GenServer
 
