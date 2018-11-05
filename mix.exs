@@ -40,7 +40,7 @@ defmodule Crux.Rest.MixProject do
 
   defp deps do
     [
-      {:crux_structs, "~> 0.1.4"},
+      {:crux_structs, "~> 0.1.6"},
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
