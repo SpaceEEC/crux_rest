@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Bang do
   @moduledoc false
-  # Generated 2018-10-17T20:43:41.217000Z
+  # Generated 2018-11-05T17:38:55.373000Z
 
   defmacro __using__(_) do
     quote location: :keep do
@@ -581,6 +581,24 @@ defmodule Crux.Rest.Bang do
         end
       end
 
+      @doc "The same as `delete_webhook/2`, but raises an exception if it fails."
+      @spec delete_webhook!(
+              user :: Crux.Rest.Util.user_id_resolvable(),
+              token :: String.t() | nil
+            ) :: :ok | no_return()
+      def delete_webhook!(user, token \\ nil) do
+        case Crux.Rest.delete_webhook(user, token) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
       @doc "The same as `edit_channel_permissions/3`, but raises an exception if it fails."
       @spec edit_channel_permissions!(
               channel :: Crux.Rest.Util.channel_id_resolvable(),
@@ -635,6 +653,112 @@ defmodule Crux.Rest.Bang do
         end
       end
 
+      @doc "The same as `execute_github_webhook/3`, but raises an exception if it fails."
+
+      def execute_github_webhook!(webhook, event, data) do
+        case Crux.Rest.execute_github_webhook(webhook, event, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `execute_github_webhook/5`, but raises an exception if it fails."
+      @spec execute_github_webhook!(
+              user :: Crux.Rest.Util.user_id_resolvable(),
+              token :: String.t(),
+              event :: String.t(),
+              wait :: boolean() | nil,
+              data :: term()
+            ) :: :ok | no_return()
+      def execute_github_webhook!(user, token, event, wait \\ false, data) do
+        case Crux.Rest.execute_github_webhook(user, token, event, wait, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `execute_slack_webhook/2`, but raises an exception if it fails."
+
+      def execute_slack_webhook!(webhook, data) do
+        case Crux.Rest.execute_slack_webhook(webhook, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `execute_slack_webhook/4`, but raises an exception if it fails."
+      @spec execute_slack_webhook!(
+              user :: Crux.Rest.Util.user_id_resolvable(),
+              token :: String.t(),
+              wait :: boolean() | nil,
+              data :: term()
+            ) :: :ok | no_return()
+      def execute_slack_webhook!(user, token, wait \\ false, data) do
+        case Crux.Rest.execute_slack_webhook(user, token, wait, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `execute_webhook/2`, but raises an exception if it fails."
+
+      def execute_webhook!(webhook, data) do
+        case Crux.Rest.execute_webhook(webhook, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `execute_webhook/4`, but raises an exception if it fails."
+      @spec execute_webhook!(
+              user :: Crux.Rest.Util.user_id_resolvable(),
+              token :: String.t(),
+              wait :: boolean() | nil,
+              data :: execute_webhook_options()
+            ) :: :ok | no_return()
+      def execute_webhook!(user, token, wait \\ false, data) do
+        case Crux.Rest.execute_webhook(user, token, wait, data) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
       @doc "The same as `gateway/0`, but raises an exception if it fails."
       @spec gateway!() :: term() | no_return()
       def gateway!() do
@@ -654,6 +778,24 @@ defmodule Crux.Rest.Bang do
       @spec gateway_bot!() :: term() | no_return()
       def gateway_bot!() do
         case Crux.Rest.gateway_bot() do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `get_audit_logs/2`, but raises an exception if it fails."
+      @spec get_audit_logs!(
+              guild :: Crux.Rest.Util.guild_id_resolvable(),
+              options :: audit_log_options() | nil
+            ) :: Crux.Structs.AuditLog.t() | no_return()
+      def get_audit_logs!(guild, options \\ []) do
+        case Crux.Rest.get_audit_logs(guild, options) do
           :ok ->
             :ok
 
@@ -1065,10 +1207,42 @@ defmodule Crux.Rest.Bang do
         end
       end
 
+      @doc "The same as `get_webhook/2`, but raises an exception if it fails."
+      @spec get_webhook!(user :: Crux.Rest.Util.user_id_resolvable(), token :: String.t() | nil) ::
+              [Crux.Structs.Webhook.t()] | no_return()
+      def get_webhook!(user, token \\ nil) do
+        case Crux.Rest.get_webhook(user, token) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
       @doc "The same as `leave_guild/1`, but raises an exception if it fails."
       @spec leave_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
       def leave_guild!(guild) do
         case Crux.Rest.leave_guild(guild) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `list_channel_webhooks/1`, but raises an exception if it fails."
+      @spec list_channel_webhooks!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
+              [Crux.Structs.Webhook.t()] | no_return()
+      def list_channel_webhooks!(channel) do
+        case Crux.Rest.list_channel_webhooks(channel) do
           :ok ->
             :ok
 
@@ -1103,6 +1277,22 @@ defmodule Crux.Rest.Bang do
             ) :: [Crux.Structs.Member.t()] | no_return()
       def list_guild_members!(guild, options \\ []) do
         case Crux.Rest.list_guild_members(guild, options) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `list_guild_webhooks/1`, but raises an exception if it fails."
+      @spec list_guild_webhooks!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+              [Crux.Structs.Webhook.t()] | no_return()
+      def list_guild_webhooks!(guild) do
+        case Crux.Rest.list_guild_webhooks(guild) do
           :ok ->
             :ok
 
@@ -1389,6 +1579,31 @@ defmodule Crux.Rest.Bang do
               :ok | no_return()
       def trigger_typing!(channel) do
         case Crux.Rest.trigger_typing(channel) do
+          :ok ->
+            :ok
+
+          {:ok, res} ->
+            res
+
+          {:error, error} ->
+            raise error
+        end
+      end
+
+      @doc "The same as `update_webhook/3`, but raises an exception if it fails."
+      @spec update_webhook!(
+              user :: Crux.Rest.Util.user_id_resolvable(),
+              token :: String.t() | nil,
+              data ::
+                %{
+                  optional(:name) => String.t(),
+                  optional(:avatar) => String.t(),
+                  optional(:channel_id) => snowflake()
+                }
+                | [{:name, String.t()} | {:avatar, String.t()} | {:channel_id, snowflake()}]
+            ) :: Crux.Structs.Webhook.t() | no_return()
+      def update_webhook!(user, token \\ nil, data) do
+        case Crux.Rest.update_webhook(user, token, data) do
           :ok ->
             :ok
 
