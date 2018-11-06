@@ -5,6 +5,11 @@ defmodule Crux.Rest.ApiError do
     Raised or returned whenever the api responded with a non `2xx` status code
   """
 
+  alias Crux.Rest.Version
+  require Version
+
+  Version.modulesince("0.1.0")
+
   defexception(
     status_code: nil,
     code: nil,
@@ -21,6 +26,8 @@ defmodule Crux.Rest.ApiError do
   | `message`     | Message describing the error                                                                                                   | `Unknown Invite`    |
   | `path`        | Path of the request                                                                                                            | `/invites/broken`   |
   """
+  Version.typesince("0.1.0")
+
   @type t :: %{
           status_code: integer(),
           code: integer() | nil,
@@ -32,6 +39,7 @@ defmodule Crux.Rest.ApiError do
   @doc """
     Default implementation only providing a `message` for `raise/2`
   """
+  Version.since("0.1.0")
   @spec exception(message :: String.t()) :: __MODULE__.t()
   def exception(message) when is_bitstring(message) do
     %__MODULE__{message: message}
@@ -40,6 +48,8 @@ defmodule Crux.Rest.ApiError do
   @doc """
     Creates a full `Crux.Rest.ApiError` struct, returned / raised by all `Crux.Rest` functions in case of an API error.
   """
+  Version.since("0.1.0")
+
   @spec exception(
           error :: map(),
           status_code :: pos_integer(),

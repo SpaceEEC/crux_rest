@@ -3,6 +3,11 @@ defmodule Crux.Rest.CDN do
     Functions to generate cdn urls pointing to avatars, icons, etc.
   """
 
+  alias Crux.Rest.Version
+  require Version
+
+  Version.modulesince("0.1.5")
+
   @typedoc """
     Specifies the file type / extension and size of the resource url to generate.
 
@@ -11,6 +16,8 @@ defmodule Crux.Rest.CDN do
   * `:extension` has to be one of "jpg", "jpeg", "png", "webp", "gif"
   * See the docs of each function for information what sizes / extensions are valid there.
   """
+  Version.typesince("0.1.5")
+
   @type format_options :: %{
           optional(:size) => pos_integer(),
           optional(:extension) => String.t()
@@ -22,7 +29,7 @@ defmodule Crux.Rest.CDN do
     Base CDN address.
   """
   @spec base_url() :: String.t()
-  @since "0.1.5"
+  Version.since("0.1.5")
   def base_url, do: @base_url
 
   @doc """
@@ -44,7 +51,7 @@ defmodule Crux.Rest.CDN do
     ```
   """
   @spec custom_emoji(Crux.Structs.Emoji.t() | %{id: Crux.Rest.snowflake()}) :: String.t()
-  @since "0.1.5"
+  Version.since("0.1.5")
   def custom_emoji(emoji)
 
   def custom_emoji(%{id: id, animated: animated}),
@@ -76,14 +83,14 @@ defmodule Crux.Rest.CDN do
   ...> |> Crux.Rest.CDN.group_dm_icon()
   nil
 
-  ```
+    ```
   """
   @spec group_dm_icon(
           Crux.Structs.Channel.t()
           | %{id: Crux.Rest.snowflake(), icon: String.t() | nil},
           format_options()
         ) :: String.t() | nil
-  @since "0.1.5"
+  Version.since("0.1.5")
   def group_dm_icon(group_dm, options \\ [])
   def group_dm_icon(%{icon: nil}, _options), do: nil
 
@@ -127,7 +134,7 @@ defmodule Crux.Rest.CDN do
           Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), icon: String.t() | nil},
           format_options()
         ) :: String.t() | nil
-  @since "0.1.5"
+  Version.since("0.1.5")
   def guild_icon(guild, options \\ [])
   def guild_icon(%{icon: nil}, _options), do: nil
 
@@ -169,7 +176,7 @@ defmodule Crux.Rest.CDN do
           Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), splash: String.t() | nil},
           format_options()
         ) :: String.t() | nil
-  @since "0.1.5"
+  Version.since("0.1.5")
   def guild_splash(guild, options \\ [])
   def guild_splash(%{splash: nil}, _options), do: nil
 
@@ -194,10 +201,9 @@ defmodule Crux.Rest.CDN do
   "#{@base_url}/embed/avatars/1.png"
 
     ```
-
   """
   @spec default_user_avatar(Crux.Structs.User.t() | %{discriminator: String.t()}) :: String.t()
-  @since "0.1.5"
+  Version.since("0.1.5")
   def default_user_avatar(user)
 
   def default_user_avatar(%{discriminator: discrim}) do
@@ -233,14 +239,14 @@ defmodule Crux.Rest.CDN do
   ...> |> Crux.Rest.CDN.user_avatar()
   "#{@base_url}/embed/avatars/1.png"
 
-  ```
+    ```
   """
   @spec user_avatar(
           Crux.Structs.User.t()
           | %{id: Crux.Rest.snowflake(), discriminator: String.t(), avatar: String.t() | nil},
           format_options()
         ) :: String.t()
-  @since "0.1.5"
+  Version.since("0.1.5")
   def user_avatar(user, options \\ [])
 
   def user_avatar(%{avatar: nil} = user, _options), do: default_user_avatar(user)

@@ -18,6 +18,11 @@ defmodule Crux.Rest do
     Webhook
   }
 
+  alias Crux.Rest.Version
+  require Version
+
+  Version.modulesince("0.1.0")
+
   alias Crux.Rest
   alias Crux.Rest.{Endpoints, Util}
 
@@ -35,6 +40,7 @@ defmodule Crux.Rest do
 
   > They are normalized to integers via `Crux.Structs`.
   """
+  Version.typesince("0.1.0")
   @type snowflake :: non_neg_integer()
 
   @typedoc """
@@ -47,6 +53,7 @@ defmodule Crux.Rest do
     | `{path, name}`   | `{one of the above, "other_name.png"}`                   |
     | `{binary, name}` | `{<<0, 0, 0, 0>>, "other_name.png"}`                     |
   """
+  Version.typesince("0.1.0")
   @type file_list_entry :: String.t() | {String.t(), String.t()}
 
   @typedoc """
@@ -56,6 +63,8 @@ defmodule Crux.Rest do
     The nonce has to fit in a 64 bit integer.
     The whole message payload may not be larger than 8mb, this should only be possible when attaching (a) large file(s).
   """
+  Version.typesince("0.1.0")
+
   @type create_message_data ::
           %{
             optional(:content) => String.t(),
@@ -77,6 +86,8 @@ defmodule Crux.Rest do
 
     You should probably consult the [Embed Limits](https://discordapp.com/developers/docs/resources/channel#embed-limits) page.
   """
+  Version.typesince("0.1.0")
+
   @type embed :: %{
           optional(:title) => String.t(),
           optional(:description) => String.t(),
@@ -112,6 +123,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-message)
   """
+  Version.since("0.1.0")
+
   @spec create_message(
           channel :: Util.channel_id_resolvable(),
           args :: create_message_data()
@@ -162,6 +175,8 @@ defmodule Crux.Rest do
 
     The content my not exceed 2000 chars, this limit is enfored on discord's end.
   """
+  Version.typesince("0.1.0")
+
   @type message_edit_data ::
           %{
             optional(:content) => String.t() | nil,
@@ -174,6 +189,8 @@ defmodule Crux.Rest do
 
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#edit-message).
   """
+  Version.since("0.1.0")
+
   @spec edit_message(
           target :: Message.t(),
           args :: message_edit_data()
@@ -195,6 +212,8 @@ defmodule Crux.Rest do
           message_id :: Util.message_id_resolvable(),
           args :: message_edit_data()
         ) :: {:ok, Message.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def edit_message(channel, message, args) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -211,6 +230,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-message).
   """
   @spec delete_message(message :: Message.t()) :: {:ok, Message.t()} | {:error, term()}
+  Version.since("0.1.0")
   def delete_message(message)
 
   def delete_message(%Message{channel_id: channel_id, id: message_id}),
@@ -225,6 +245,8 @@ defmodule Crux.Rest do
           channel_id :: Util.channel_id_resolvable(),
           message_id :: Util.message_id_resolvable()
         ) :: {:ok, Message} | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_message(channel, message) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -241,6 +263,8 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           messages :: [Util.message_id_resolvable()]
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_messages(channel, messages) do
     channel_id = Util.resolve_channel_id(channel)
     messages = Enum.map(messages, &Util.resolve_message_id/1)
@@ -259,6 +283,8 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           message_id :: Util.message_id_resolvable()
         ) :: {:ok, Message} | {:error, term()}
+  Version.since("0.1.0")
+
   def get_message(channel, message) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -275,6 +301,8 @@ defmodule Crux.Rest do
   * `:before` and `:after` are exclusive
   * `:limit` has to be [1-100], defaults to 50
   """
+  Version.typesince("0.1.0")
+
   @type get_messages_data ::
           %{
             optional(:around) => snowflake(),
@@ -298,6 +326,7 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           args :: get_messages_data()
         ) :: {:ok, [Message.t()]} | {:error, term()}
+  Version.since("0.1.0")
 
   def get_messages(channel, args \\ []) do
     channel_id = Util.resolve_channel_id(channel)
@@ -319,6 +348,7 @@ defmodule Crux.Rest do
           message :: Util.message_id_resolvable(),
           emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
 
   def create_reaction(%Message{channel_id: channel_id, id: message_id}, emoji),
     do: create_reaction(channel_id, message_id, emoji)
@@ -333,6 +363,8 @@ defmodule Crux.Rest do
           message :: Util.message_id_resolvable(),
           emoji :: Util.emoji_id_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def create_reaction(channel, message, emoji) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -352,6 +384,8 @@ defmodule Crux.Rest do
     * `:before` seems currently broken on discord's end
     * `:after` is exclusive
   """
+  Version.typesince("0.1.0")
+
   @type get_reactions_data ::
           %{
             optional(:before) => snowflake(),
@@ -377,6 +411,8 @@ defmodule Crux.Rest do
           emoji :: Util.emoji_identifier_resolvable(),
           args :: get_reactions_data()
         ) :: {:ok, [User.t()]} | {:error, term()}
+  Version.since("0.1.0")
+
   def get_reactions(
         channel_or_message,
         emoji_or_message_id,
@@ -389,6 +425,8 @@ defmodule Crux.Rest do
           emoji :: Util.emoji_identifier_resolvable(),
           args :: get_reactions_data()
         ) :: {:ok, [User.t()]} | {:error, term()}
+  Version.since("0.1.0")
+
   def get_reactions(%Message{channel_id: channel_id, id: message_id}, emoji, args, _),
     do: get_reactions(channel_id, message_id, emoji, args)
 
@@ -424,6 +462,8 @@ defmodule Crux.Rest do
           emoji :: Util.emoji_identifier_resolvable(),
           user :: Util.user_id_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_reaction(
         message_or_channel,
         emoji_or_message_id,
@@ -457,6 +497,7 @@ defmodule Crux.Rest do
           message :: Message.t(),
           emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
   def delete_all_reactions(message, emoji)
 
   def delete_all_reactions(%Message{channel_id: channel_id, id: message_id}, emoji),
@@ -472,6 +513,8 @@ defmodule Crux.Rest do
           message :: Util.message_id_resolvable(),
           emoji :: Util.emoji_identifier_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_all_reactions(channel, message, emoji) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -497,6 +540,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#trigger-typing-indicator).
   """
   @spec trigger_typing(channel :: Util.channel_id_resolvable()) :: :ok | {:error, term()}
+  Version.since("0.1.1")
+
   def trigger_typing(channel) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -510,6 +555,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#add-pinned-channel-message).
   """
   @spec add_pinned_message(message :: Message.t()) :: :ok | {:error, term()}
+  Version.since("0.1.0")
   def add_pinned_message(message)
 
   def add_pinned_message(%Message{channel_id: channel_id, id: message_id}),
@@ -525,6 +571,8 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           message :: Util.message_id_resolvable()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def add_pinned_message(channel, message) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -538,6 +586,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#delete-pinned-channel-message).
   """
   @spec delete_pinned_message(message :: Message.t()) :: :ok | {:error, term()}
+  Version.since("0.1.0")
   def delete_pinned_message(message)
 
   def delete_pinned_message(%Message{channel_id: channel_id, id: message_id}),
@@ -553,6 +602,8 @@ defmodule Crux.Rest do
           message :: Util.message_id_resolvable()
         ) :: :ok | {:error, term()}
 
+  Version.since("0.1.0")
+
   def delete_pinned_message(channel, message) do
     channel_id = Util.resolve_channel_id(channel)
     message_id = Util.resolve_message_id(message)
@@ -567,6 +618,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#get-channel)
   """
   @spec get_channel(channel :: Util.resolve_channel_id()) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_channel(channel) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -586,6 +639,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#modify-channel-json-params).
   """
+  Version.typesince("0.1.0")
+
   @type modify_channel_data ::
           %{
             optional(:bitrate) => non_neg_integer(),
@@ -623,6 +678,8 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           data :: modify_channel_data()
         ) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_channel(channel, data) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -648,6 +705,7 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           reason :: String.t()
         ) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.0")
 
   def delete_channel(channel, reason \\ nil) do
     channel_id = Util.resolve_channel_id(channel)
@@ -661,6 +719,8 @@ defmodule Crux.Rest do
 
     See [Permissions](https://discordapp.com/developers/docs/topics/permissions#permissions-bitwise-permission-flags) for available bitflags.
   """
+  Version.typesince("0.1.0")
+
   @type edit_channel_permissions_data ::
           %{
             optional(:allow) => non_neg_integer(),
@@ -685,6 +745,7 @@ defmodule Crux.Rest do
           target :: Util.overwrite_target_resolvable(),
           data :: edit_channel_permissions_data()
         ) :: :ok | {:error, :missing_target} | {:error, term()}
+  Version.since("0.1.0")
   def edit_channel_permissions(channel, target, data)
 
   def edit_channel_permissions(channel, target, data) when is_map(target) do
@@ -719,6 +780,8 @@ defmodule Crux.Rest do
   """
   @spec get_channel_invites(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Invite.t()]} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_channel_invites(channel) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -737,6 +800,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#create-channel-invite-json-params).
   """
+  Version.typesince("0.1.0")
+
   @type create_channel_invite_data ::
           %{
             optional(:max_age) => non_neg_integer(),
@@ -762,6 +827,8 @@ defmodule Crux.Rest do
           channel :: Util.channel_id_resolvable(),
           args :: create_channel_invite_data()
         ) :: {:ok, Invite.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def create_channel_invite(channel, args) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -779,6 +846,8 @@ defmodule Crux.Rest do
           target :: Util.overwrite_target_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_channel_permissions(channel, target, reason \\ nil) do
     channel_id = Util.resolve_channel_id(channel)
     {_type, target_id} = Util.resolve_overwrite_target(target)
@@ -795,6 +864,8 @@ defmodule Crux.Rest do
   """
   @spec get_pinned_messages(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Message.t()]} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_pinned_messages(channel) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -814,6 +885,8 @@ defmodule Crux.Rest do
   """
   @spec list_guild_emojis(guild :: Util.guild_id_resolvable()) ::
           {:ok, [Emoji.t()]} | {:error, term()}
+  Version.since("0.1.1")
+
   def list_guild_emojis(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -831,6 +904,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           emoji :: Util.emoji_id_resolvable()
         ) :: {:ok, Emoji} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_guild_emoji(guild, emoji) do
     guild_id = Util.resolve_guild_id(guild)
     emoji_id = Util.resolve_emoji_id(emoji)
@@ -848,6 +923,8 @@ defmodule Crux.Rest do
     * `:image` may not be larger than 256kb
     * `:roles`, if present limits the emoji to only those roles
   """
+  Version.typesince("0.1.0")
+
   @type create_guild_emoji_data ::
           %{
             required(:name) => String.t(),
@@ -871,6 +948,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           data :: create_guild_emoji_data()
         ) :: {:ok, Emoji} | {:error, term}
+  Version.since("0.1.0")
+
   def create_guild_emoji(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -893,6 +972,8 @@ defmodule Crux.Rest do
 
    See `t:create_guild_emoji_data` for name restrictions.
   """
+  Version.typesince("0.1.0")
+
   @type modify_guild_emoji_data ::
           %{
             optional(:name) => String.t(),
@@ -914,6 +995,8 @@ defmodule Crux.Rest do
           emoji :: Util.emoji_id_resolvable(),
           data :: modify_guild_emoji_data()
         ) :: {:ok, Emoji} | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_guild_emoji(guild, emoji, data) do
     guild_id = Util.resolve_guild_id(guild)
     emoji_id = Util.resolve_emoji_id(emoji)
@@ -940,6 +1023,8 @@ defmodule Crux.Rest do
           emoji :: Util.emoji_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def delete_guild_emoji(guild, emoji, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
     emoji_id = Util.resolve_emoji_id(emoji)
@@ -955,6 +1040,8 @@ defmodule Crux.Rest do
   # @spec, yeah no
   # https://discordapp.com/developers/docs/resources/guild#create-guild
   # ^ worth a read if planing to be used
+  Version.since("0.1.0")
+
   def create_guild(data) do
     data =
       data
@@ -972,6 +1059,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild)
   """
   @spec get_guild(guild :: Util.guild_id_resolvable()) :: {:ok, Guild.t()} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_guild(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -979,9 +1068,12 @@ defmodule Crux.Rest do
     |> create(Guild)
   end
 
+  # TODO: :that:
   @typedoc """
     TBD, see `modify_guild/2`
   """
+  Version.typesince("0.1.0")
+
   @type modify_guild_data ::
           %{
             optional(:name) => String.t(),
@@ -1021,6 +1113,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           data :: modify_guild_data()
         ) :: {:ok, Guild.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_guild(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1047,6 +1141,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#delete-guild).
   """
   @spec delete_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  Version.since("0.1.1")
+
   def delete_guild(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1057,6 +1153,8 @@ defmodule Crux.Rest do
     Used to filter audit log results via `get_audit_logs/2`.
     The `:user_id` field refers to the executor and not the target of the log.
   """
+  Version.typesince("0.1.7")
+
   @type audit_log_options ::
           %{
             optional(:user_id) => snowflake(),
@@ -1076,6 +1174,8 @@ defmodule Crux.Rest do
   """
   @spec get_audit_logs(guild :: Util.guild_id_resolvable(), options :: audit_log_options() | nil) ::
           {:ok, AuditLog.t()} | {:error, term()}
+  Version.since("0.1.7")
+
   def get_audit_logs(guild, options \\ []) do
     guild_id = Util.resolve_guild_id(guild)
     body = Map.new(options)
@@ -1092,6 +1192,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_channels(guild :: Util.guild_id_resolvable()) ::
           {:ok, [Channel.t()]} | {:error, term()}
+  Version.since("0.1.1")
+
   def get_guild_channels(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1105,6 +1207,8 @@ defmodule Crux.Rest do
     Notes:
    * `:name` has to be [2-100] chars and may only contain [a-Z_-]
   """
+  Version.typesince("0.1.0")
+
   @type create_guild_channel_data ::
           %{
             optional(:name) => String.t(),
@@ -1153,12 +1257,19 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           data :: create_guild_channel_data()
         ) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def create_guild_channel(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
     Rest.Base.queue(:post, Endpoints.guild(guild_id, "channels"), Map.new(data))
     |> create(Channel)
   end
+
+  @typedoc """
+    Used to change a channel's position via `modify_guild_channel_positions/2`.
+  """
+  Version.typesince("0.1.0")
 
   @type modify_guild_channel_positions_data_entry ::
           {Channel.t(), integer()}
@@ -1175,6 +1286,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           channels :: [modify_guild_channel_positions_data_entry()]
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_guild_channel_positions(guild, channels) do
     guild_id = Util.resolve_guild_id(guild)
     channel_positions = Enum.map(channels, &Util.resolve_channel_position/1)
@@ -1193,6 +1306,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           user :: Util.user_id_resolvable()
         ) :: {:ok, Member.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def get_guild_member(guild, user) do
     guild_id = Util.resolve_guild_id(guild)
     user_id = Util.resolve_user_id(user)
@@ -1201,6 +1316,11 @@ defmodule Crux.Rest do
     |> create(Member)
   end
 
+  @typedoc """
+    Used to list guild members via `listt_guild_members/2`.
+  """
+  Version.typesince("0.1.0")
+
   @type list_guild_members_options ::
           %{
             optional(:limit) => pos_integer(),
@@ -1208,16 +1328,17 @@ defmodule Crux.Rest do
           }
           | [{:limit, pos_integer()} | {:after, snowflake()}]
 
-  @spec list_guild_members(
-          guild :: Util.guild_id_resolvable(),
-          options :: list_guild_members_options()
-        ) :: {:ok, [Member.t()]} | {:error, term()}
-
   @doc """
     Gets a list of members from the guild.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#list-guild-members).
   """
+  @spec list_guild_members(
+          guild :: Util.guild_id_resolvable(),
+          options :: list_guild_members_options()
+        ) :: {:ok, [Member.t()]} | {:error, term()}
+  Version.since("0.1.0")
+
   def list_guild_members(guild, options \\ []) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1230,6 +1351,8 @@ defmodule Crux.Rest do
   @typedoc """
     Used to add a member to a guild via `add_guild_member/3`.
   """
+  Version.typesince("0.1.0")
+
   @type add_guild_member_data ::
           %{
             required(:access_token) => String.t(),
@@ -1253,6 +1376,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#add-guild-member).
   """
+  Version.since("0.1.0")
+
   @spec add_guild_member(
           guild :: Util.guild_id_resolvable(),
           user :: Util.user_id_resolvable(),
@@ -1272,8 +1397,10 @@ defmodule Crux.Rest do
     Used to modify a member with `modify_guild_member/3`.
 
     Notes:
-      * `:mute`, `:deaf`, and `:channel_id` will silently be discarded by discord if the member is not connected to a voice channel.
+    - `:mute`, `:deaf`, and `:channel_id` will silently be discarded by discord if the member is not connected to a voice channel.
   """
+  Version.typesince("0.1.0")
+
   @type modify_guild_member_data ::
           %{
             optional(:nick) => String.t() | nil,
@@ -1302,6 +1429,8 @@ defmodule Crux.Rest do
           member :: Util.user_id_resolvable(),
           data :: modify_guild_member_data()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_guild_member(guild, member, data) do
     guild_id = Util.resolve_guild_id(guild)
     user_id = Util.resolve_user_id(member)
@@ -1324,6 +1453,8 @@ defmodule Crux.Rest do
           nick :: String.t(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.0")
+
   def modify_current_users_nick(guild, nick, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1341,6 +1472,7 @@ defmodule Crux.Rest do
           role :: Util.role_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.1")
 
   def add_guild_member_role(guild, member, role, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
@@ -1363,6 +1495,7 @@ defmodule Crux.Rest do
           role :: Util.role_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.1")
 
   def remove_guild_member_role(guild, member, role, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
@@ -1381,6 +1514,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_bans(guild :: Util.guild_id_resolvable()) ::
           {:ok, %{snowflake() => %{user: User.t(), reason: String.t() | nil}}} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_bans(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1400,6 +1535,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_ban(guild :: Util.guild_id_resolvable(), user :: Util.user_id_resolvable()) ::
           {:ok, %{user: User.t(), reason: String.t() | nil}} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_ban(guild, user) do
     guild_id = Util.resolve_guild_id(guild)
     user_id = Util.resolve_user_id(user)
@@ -1423,6 +1560,8 @@ defmodule Crux.Rest do
           user :: Util.user_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def create_guild_ban(guild, user, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
     user_id = Util.resolve_user_id(user)
@@ -1440,6 +1579,8 @@ defmodule Crux.Rest do
           user :: Util.user_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def remove_guild_ban(guild, user, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
     user_id = Util.resolve_user_id(user)
@@ -1455,6 +1596,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_roles(guild :: Util.guild_id_resolvable()) ::
           {:ok, %{snowflake() => Role.t()}} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_roles(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1466,6 +1609,8 @@ defmodule Crux.Rest do
   @typedoc """
     Used to create a role in a guild with `create_guild_role/2`.
   """
+  Version.typesince("0.1.2")
+
   @type guild_role_data ::
           %{
             optional(:name) => String.t(),
@@ -1489,6 +1634,8 @@ defmodule Crux.Rest do
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#create-guild-role).
   """
+  Version.since("0.1.2")
+
   @spec create_role(guild :: Util.guild_id_resolvable(), data :: guild_role_data()) ::
           {:ok, Role.t()} | {:error, term()}
   def create_role(guild, %{} = data) do
@@ -1507,6 +1654,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           data :: Util.modify_guild_role_positions_data()
         ) :: {:ok, %{snowflake() => Role.t()}} | {:error, term()}
+  Version.since("0.1.2")
+
   def modify_guild_role_positions(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1525,6 +1674,8 @@ defmodule Crux.Rest do
           role :: Util.role_id_resolvable(),
           data :: guild_role_data()
         ) :: {:ok, Role.t()} | {:error, term()}
+  Version.since("0.1.2")
+
   def modify_guild_role(guild, role, data) do
     guild_id = Util.resolve_guild_id(guild)
     role_id = Util.resolve_guild_id(role)
@@ -1542,6 +1693,8 @@ defmodule Crux.Rest do
           role :: Util.role_id_resolvable(),
           reason :: String.t()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def delete_guild_role(guild, role, reason \\ nil) do
     guild_id = Util.resolve_guild_id(guild)
     role_id = Util.resolve_role_id(role)
@@ -1556,6 +1709,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_prune_count(guild :: Util.guild_id_resolvable(), days :: pos_integer()) ::
           {:ok, non_neg_integer()} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_prune_count(guild, days) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1572,6 +1727,8 @@ defmodule Crux.Rest do
   """
   @spec begin_guild_prune(guild :: Util.guild_id_resolvable(), days :: pos_integer()) ::
           {:ok, non_neg_integer()} | {:error, term()}
+  Version.since("0.1.2")
+
   def begin_guild_prune(guild, days) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1590,6 +1747,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_voice_regions(guild :: Util.guild_id_resolvable()) ::
           {:ok, term()} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_voice_regions(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1606,6 +1765,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_invites(guild :: Util.guild_id_resolvable()) ::
           {:ok, %{String.t() => Invite.t()}} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_invites(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1624,6 +1785,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_integrations(guild :: Util.guild_id_resolvable()) ::
           {:ok, list()} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_integrations(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1641,6 +1804,8 @@ defmodule Crux.Rest do
             %{type: String.t(), id: snowflake()}
             | [{:type, String.t()} | {:id, snowflake()}]
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def create_guild_integration(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1667,6 +1832,8 @@ defmodule Crux.Rest do
                 | {:enable_emoticons, boolean()}
               ]
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def modify_guild_integration(guild, integration_id, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1682,6 +1849,8 @@ defmodule Crux.Rest do
           guild :: Util.guild_id_resolvable(),
           integration_id :: snowflake()
         ) :: :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def delete_guild_integration(guild, integration_id) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1695,6 +1864,8 @@ defmodule Crux.Rest do
   """
   @spec sync_guild_integration(guild :: Util.guild_id_resolvable(), integration_id :: snowflake()) ::
           :ok | {:error, term()}
+  Version.since("0.1.2")
+
   def sync_guild_integration(guild, integration_id) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1709,6 +1880,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
   """
   @spec get_guild_embed(guild :: Util.guild_id_resolvable()) :: {:ok, term()} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_embed(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1731,6 +1904,8 @@ defmodule Crux.Rest do
             }
             | [{:enabled, boolean()} | {:channel_id, snowflake()}]
         ) :: {:ok, term()} | {:error, term()}
+  Version.since("0.1.2")
+
   def modify_guild_embed(guild, data) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1742,6 +1917,8 @@ defmodule Crux.Rest do
   """
   @spec get_guild_vanity_url(guild :: Util.guild_id_resolvable()) ::
           {:ok, String.t()} | {:error, term()}
+  Version.since("0.1.2")
+
   def get_guild_vanity_url(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1765,6 +1942,8 @@ defmodule Crux.Rest do
   """
   @spec list_guild_webhooks(guild :: Util.guild_id_resolvable()) ::
           {:ok, [Webhook.t()]} | {:error, term()}
+  Version.since("0.1.7")
+
   def list_guild_webhooks(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -1779,6 +1958,8 @@ defmodule Crux.Rest do
   """
   @spec list_channel_webhooks(channel :: Util.channel_id_resolvable()) ::
           {:ok, [Webhook.t()]} | {:error, term()}
+  Version.since("0.1.7")
+
   def list_channel_webhooks(channel) do
     channel_id = Util.resolve_channel_id(channel)
 
@@ -1793,6 +1974,8 @@ defmodule Crux.Rest do
   """
   @spec get_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
           {:ok, [Webhook.t()]} | {:error, term()}
+  Version.since("0.1.7")
+
   def get_webhook(user, token \\ nil) do
     user_id = Util.resolve_user_id(user)
 
@@ -1816,6 +1999,8 @@ defmodule Crux.Rest do
             }
             | [{:name, String.t()} | {:avatar, String.t()} | {:channel_id, snowflake()}]
         ) :: {:ok, Webhook.t()} | {:error, term()}
+  Version.since("0.1.7")
+
   def update_webhook(user, token \\ nil, data) do
     user_id = Util.resolve_user_id(user)
 
@@ -1839,6 +2024,8 @@ defmodule Crux.Rest do
   """
   @spec delete_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
           :ok | {:error, term()}
+  Version.since("0.1.7")
+
   def delete_webhook(user, token \\ nil) do
     user_id = Util.resolve_user_id(user)
     Rest.Base.queue(:delete, Endpoints.webhook(user_id, token))
@@ -1849,6 +2036,8 @@ defmodule Crux.Rest do
     [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks) or
     [Github Docs](https://developer.github.com/webhooks/)
   """
+  Version.typesince("0.1.7")
+
   @type execute_webhook_options :: %{
           optional(:content) => String.t(),
           optional(:username) => String.t(),
@@ -1875,10 +2064,13 @@ defmodule Crux.Rest do
           wait :: boolean | nil,
           data :: execute_webhook_options()
         ) :: :ok | {:ok, Message.t()} | {:error, term}
+  Version.since("0.1.7")
+
   def execute_webhook(webhook = %Webhook{}, data) do
     execute_webhook(webhook.id, webhook.token, false, data)
   end
 
+  Version.since("0.1.7")
   def execute_webhook(user, token, wait \\ false, data)
 
   def execute_webhook(webhook = %Webhook{}, wait, _, data) do
@@ -1911,10 +2103,13 @@ defmodule Crux.Rest do
           wait :: boolean | nil,
           data :: term()
         ) :: :ok | {:error, term}
+  Version.since("0.1.7")
+
   def execute_slack_webhook(webhook = %Webhook{}, data) do
     execute_slack_webhook(webhook.id, webhook.token, false, data)
   end
 
+  Version.since("0.1.7")
   def execute_slack_webhook(user, token, wait \\ false, data)
 
   def execute_slack_webhook(webhook = %Webhook{}, wait, _, data) do
@@ -1963,10 +2158,13 @@ defmodule Crux.Rest do
           wait :: boolean | nil,
           data :: term()
         ) :: :ok | {:error, term}
+  Version.since("0.1.7")
+
   def execute_github_webhook(webhook = %Webhook{}, event, data) do
     execute_github_webhook(webhook.id, webhook.token, event, false, data)
   end
 
+  Version.since("0.1.7")
   def execute_github_webhook(user, token, event, wait \\ false, data)
 
   def execute_github_webhook(webhook = %Webhook{}, event, wait, _, data) do
@@ -1994,6 +2192,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/invite#get-invite).
   """
   @spec get_invite(code :: String.t()) :: {:ok, Invite.t()} | {:error, term()}
+  Version.since("0.1.0")
+
   def get_invite(code) do
     Rest.Base.queue(:get, Endpoints.invite(code), "", [], params: %{with_counts: true})
     |> create(Invite)
@@ -2006,6 +2206,7 @@ defmodule Crux.Rest do
   """
   @spec delete_invite(invite_or_code :: String.t() | Invite.t()) ::
           {:ok, Invite.t()} | {:error, term()}
+  Version.since("0.1.0")
   def delete_invite(%Invite{code: code}), do: delete_invite(code)
 
   def delete_invite(code) do
@@ -2020,6 +2221,8 @@ defmodule Crux.Rest do
   """
   @spec get_user(user :: Util.user_id_resolvable() | String.t()) ::
           {:ok, User.t()} | {:error, term()}
+  Version.since("0.1.4")
+
   def get_user(user) do
     Rest.Base.queue(:get, Endpoints.users(user))
     |> create(User)
@@ -2030,6 +2233,8 @@ defmodule Crux.Rest do
 
     - `:avatar` is similarly to `u:file_list_entry/0` except you obviously can't "rename" the avatar.
   """
+  Version.typesince("0.1.4")
+
   @type modify_current_user_data ::
           %{
             optional(:username) => String.t(),
@@ -2044,6 +2249,8 @@ defmodule Crux.Rest do
   """
   @spec modify_current_user(data :: modify_current_user_data()) ::
           {:ok, User.t()} | {:error, term()}
+  Version.since("0.1.4")
+
   def modify_current_user(data) do
     data
     |> Map.new()
@@ -2061,6 +2268,8 @@ defmodule Crux.Rest do
   @typedoc """
     Used to list the current user's guilds in `get_current_user_guild_/1`.
   """
+  Version.typesince("0.1.4")
+
   @type get_current_user_guild_data :: %{
           optional(:before) => snowflake(),
           optional(:after) => snowflake(),
@@ -2074,6 +2283,8 @@ defmodule Crux.Rest do
   """
   @spec get_current_user_guilds(data :: get_current_user_guild_data()) ::
           {:ok, [Guild.t()]} | {:error, term()}
+  Version.since("0.1.4")
+
   def get_current_user_guilds(data) do
     Rest.Base.queue(:get, Endpoints.me_guilds(), Map.new(data))
     |> create(Guild)
@@ -2085,6 +2296,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#leave-guild).
   """
   @spec leave_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  Version.since("0.1.4")
+
   def leave_guild(guild) do
     guild_id = Util.resolve_guild_id(guild)
 
@@ -2097,6 +2310,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user-dms).
   """
   @spec get_user_dms() :: {:ok, [Channel.t()]} | {:error, term()}
+  Version.since("0.1.4")
+
   def get_user_dms() do
     Rest.Base.queue(:get, Endpoints.me())
     |> create(Channel)
@@ -2108,6 +2323,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-dm).
   """
   @spec create_dm(user :: Util.user_id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.4")
+
   def create_dm(user) do
     user_id = Util.resolve_user_id(user)
 
@@ -2121,6 +2338,8 @@ defmodule Crux.Rest do
     - `:access_tokens` are meant to be obtained on your own via oauth2, they have to have the `gdm.join` scope.
     - `:nicks` is a map of ids and their respective nicknames to give a user.
   """
+  Version.typesince("0.1.4")
+
   @type create_group_dm_data ::
           %{
             required(:access_tokens) => [String.t()],
@@ -2134,6 +2353,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-group-dm).
   """
   @spec create_group_dm(data :: create_group_dm_data()) :: {:ok, Channel.t()} | {:error, term()}
+  Version.since("0.1.4")
+
   def create_group_dm(data) do
     data =
       data
@@ -2150,6 +2371,8 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
   """
   @spec gateway() :: {:ok, term()} | {:error, term()}
+  Version.since("0.1.0")
+
   def gateway() do
     Rest.Base.queue(:get, Endpoints.gateway())
   end
@@ -2160,6 +2383,8 @@ defmodule Crux.Rest do
      For more informations see [Discord Docs](https://discordapp.com/developers/docs/topics/gateway#get-gateway-bot).
   """
   @spec gateway_bot() :: {:ok, term()} | {:error, term()}
+  Version.since("0.1.0")
+
   def gateway_bot() do
     Rest.Base.queue(:get, Endpoints.gateway_bot())
   end

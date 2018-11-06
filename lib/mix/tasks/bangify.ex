@@ -8,6 +8,9 @@ defmodule Mix.Tasks.Bangify do
     @moduledoc false
     # Generated __generated__
 
+    alias Crux.Rest.Version
+    require Version
+
     defmacro __using__(_) do
       quote location: :keep do
         __functions__
@@ -19,6 +22,7 @@ defmodule Mix.Tasks.Bangify do
   @function_template """
     @doc "The same as \`__name__/__arity__\`, but raises an exception if it fails."
     __maybe_spec__
+    __maybe_version__
     def __name__!(__arguments_with_defaults__) do
       case Crux.Rest.__name__(__arguments__) do
         :ok ->
@@ -58,7 +62,7 @@ defmodule Mix.Tasks.Bangify do
     |> File.write!(content)
   end
 
-  defp map_docs({{:function, name, arity}, _anno, [signature], _doc, _meta}, specs) do
+  defp map_docs({{:function, name, arity}, _anno, [signature], _doc, meta}, specs) do
     signature =
       signature
       |> String.replace(~r{^.+?\(|\)$}, "")
@@ -77,11 +81,21 @@ defmodule Mix.Tasks.Bangify do
             ""
         end
 
+      since =
+        case meta do
+          %{since: since} ->
+            ~s{Version.since("#{since}")}
+
+          _ ->
+            ""
+        end
+
       @function_template
       |> String.replace("__maybe_spec__", maybe_spec)
       |> String.replace("__name__", name |> to_string())
       |> String.replace("__arity__", arity |> to_string())
       |> String.replace("__arguments_with_defaults__", signature)
+      |> String.replace("__maybe_version__", since)
       |> String.replace(
         "__arguments__",
         signature |> String.replace(~r{ \\\\ .*?(?=,|$)}, "")

@@ -3,7 +3,22 @@ defmodule Crux.Rest.Util do
     Collection of util functions.
   """
 
-  alias Crux.Structs.{Channel, Emoji, Guild, Member, Message, Overwrite, Reaction, Role, User}
+  alias Crux.Structs.{
+    Channel,
+    Emoji,
+    Guild,
+    Member,
+    Message,
+    Overwrite,
+    Reaction,
+    Role,
+    User
+  }
+
+  alias Crux.Rest.Version
+  require Version
+
+  Version.since("0.1.0")
 
   @doc """
     Resolves a string or a binary to a `t:binary/0`.
@@ -12,6 +27,7 @@ defmodule Crux.Rest.Util do
     * a binary itself
   """
   @spec resolve_file(file :: String.t() | binary()) :: {:ok, binary()} | {:error, term()}
+  Version.since("0.1.0")
   def resolve_file(nil), do: nil
 
   def resolve_file(file) do
@@ -37,6 +53,8 @@ defmodule Crux.Rest.Util do
     If the key is not in the map nothing is done.
   """
   @spec encode_map_key(map(), atom()) :: map()
+  Version.since("0.1.7")
+
   def encode_map_key(%{} = map, key) when is_atom(key) do
     case map do
       %{^key => file} when not is_nil(file) ->
@@ -58,6 +76,8 @@ defmodule Crux.Rest.Util do
     3. Disposition (for form-data)
     4. Headers (content-type)
   """
+  Version.typesince("0.1.0")
+
   @type resolved_file ::
           {
             String.t() | :file,
@@ -78,6 +98,7 @@ defmodule Crux.Rest.Util do
             Crux.Rest.file_list_entry()
             | {String.t() | :file, String.t() | binary(), String.t()}
         ) :: resolved_file() | {:error, term()}
+  Version.since("0.1.0")
   # path
   def map_file(path) when is_binary(path) do
     map_file({Path.basename(path), path, Path.basename(path)})
@@ -126,6 +147,7 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a role id.
   """
+  Version.typesince("0.1.1")
   @type role_id_resolvable :: Role.t() | Crux.Rest.snowflake()
 
   @doc ~S"""
@@ -146,17 +168,20 @@ defmodule Crux.Rest.Util do
 
   """
   @spec resolve_role_id(role :: role_id_resolvable()) :: integer()
+  Version.since("0.1.0")
   def resolve_role_id(%Role{id: role_id}), do: role_id
   def resolve_role_id(role_id) when is_number(role_id), do: role_id
 
   @typedoc """
     All available types that can be resolved into an emoji identifier.
   """
+  Version.typesince("0.1.1")
   @type emoji_identifier_resolvable :: Reaction.t() | Emoji.t() | String.t()
 
   @typedoc """
     All available types that can be resolved into an emoji id.
   """
+  Version.typesince("0.1.1")
   @type emoji_id_resolvable :: Reaction.t() | Emoji.t() | String.t()
 
   @doc ~S"""
@@ -180,6 +205,7 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_emoji_id(emoji :: emoji_id_resolvable()) :: String.t()
+  Version.since("0.1.1")
   def resolve_emoji_id(%Emoji{id: id}) when not is_nil(id), do: id
   def resolve_emoji_id(%Reaction{emoji: emoji}), do: resolve_emoji_id(emoji)
   def resolve_emoji_id(emoji) when is_integer(emoji), do: emoji
@@ -187,6 +213,7 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a user id.
   """
+  Version.typesince("0.1.1")
   @type user_id_resolvable :: Member.t() | User.t() | integer()
 
   @doc ~S"""
@@ -210,6 +237,7 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_user_id(user :: user_id_resolvable()) :: Crux.Rest.snowflake()
+  Version.since("0.1.0")
   def resolve_user_id(%User{id: id}), do: id
   def resolve_user_id(%Member{user: id}), do: id
   def resolve_user_id(id) when is_number(id), do: id
@@ -217,6 +245,7 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a guild id.
   """
+  Version.typesince("0.1.1")
   @type guild_id_resolvable :: Guild.t() | Channel.t() | Message.t() | Crux.Rest.snowflake()
 
   @doc ~S"""
@@ -244,6 +273,7 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_guild_id(guild :: guild_id_resolvable()) :: Crux.Rest.snowflake()
+  Version.since("0.1.1")
   def resolve_guild_id(%Guild{id: id}), do: id
   def resolve_guild_id(%Channel{guild_id: id}) when not is_nil(id), do: id
   def resolve_guild_id(%Message{guild_id: id}) when not is_nil(id), do: id
@@ -252,6 +282,7 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a channel id.
   """
+  Version.typesince("0.1.1")
   @type channel_id_resolvable :: Message.t() | Channel.t() | Crux.Rest.snowflake()
 
   @doc ~S"""
@@ -275,6 +306,7 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_channel_id(channel :: channel_id_resolvable()) :: Crux.Rest.snowflake()
+  Version.since("0.1.1")
   def resolve_channel_id(%Channel{id: id}), do: id
   def resolve_channel_id(%Message{channel_id: channel_id}), do: channel_id
   def resolve_channel_id(id) when is_number(id), do: id
@@ -282,6 +314,8 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a target for a permission overwrite.
   """
+  Version.typesince("0.1.1")
+
   @type overwrite_target_resolvable ::
           Overwrite.t() | Role.t() | User.t() | Member.t() | Crux.Rest.snowflake()
 
@@ -315,6 +349,7 @@ defmodule Crux.Rest.Util do
   """
   @spec resolve_overwrite_target(overwrite :: overwrite_target_resolvable()) ::
           {String.t() | :unknown, Crux.Rest.snowflake()}
+  Version.since("0.1.1")
   def resolve_overwrite_target(%Overwrite{id: id, type: type}), do: {type, id}
   def resolve_overwrite_target(%Role{id: id}), do: {"role", id}
   def resolve_overwrite_target(%User{id: id}), do: {"member", id}
@@ -324,6 +359,7 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types that can be resolved into a message id.
   """
+  Version.typesince("0.1.1")
   @type message_id_resolvable :: Message.t() | Crux.Rest.snowflake()
 
   @doc ~S"""
@@ -343,12 +379,15 @@ defmodule Crux.Rest.Util do
     ```
   """
   @spec resolve_message_id(message :: message_id_resolvable()) :: Crux.Rest.snowflake()
+  Version.since("0.1.0")
   def resolve_message_id(%Message{id: id}), do: id
   def resolve_message_id(id) when is_number(id), do: id
 
   @typedoc """
     All available types that can be resolved into a channel position.
   """
+  Version.typesince("0.1.1")
+
   @type channel_position_resolvable ::
           Channel.t()
           | %{channel: Channel.t(), position: integer()}
@@ -382,10 +421,13 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  Version.typesince("0.1.1")
+
   @spec resolve_channel_position(channel :: channel_position_resolvable()) :: %{
           id: Crux.Rest.snowflake(),
           position: integer()
         }
+  Version.since("0.1.0")
   def resolve_channel_position({%Channel{id: id}, position}), do: %{id: id, position: position}
 
   def resolve_channel_position(%{channel: %Channel{id: id}, position: position}),
@@ -397,6 +439,8 @@ defmodule Crux.Rest.Util do
   @typedoc """
     All available types which can be resolved into a role position.
   """
+  Version.typesince("0.1.2")
+
   @type guild_role_position_resolvable ::
           {Role.t(), integer()}
           | %{id: Crux.Rest.snowflake(), position: integer()}
@@ -430,6 +474,7 @@ defmodule Crux.Rest.Util do
           id: Crux.Rest.snowflake(),
           position: integer()
         }
+  Version.typesince("0.1.2")
   def resolve_guild_role_position({%Role{id: id}, position}), do: %{id: id, position: position}
 
   def resolve_guild_role_position(%{id: id, position: position}),
