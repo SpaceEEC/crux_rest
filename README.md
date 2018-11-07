@@ -4,9 +4,9 @@ Package providing rest functions and rate limiting for the [Discord API](https:/
 
 ## Useful links
 
- - [Documentation](https://hexdocs.pm/crux_rest/0.1.5/)
+ - [Documentation](https://hexdocs.pm/crux_rest/0.1.7/)
  - [Github](https://github.com/SpaceEEC/crux_rest/)
- - [Changelog](https://github.com/SpaceEEC/crux_rest/releases/tag/0.1.5/)
+ - [Changelog](https://github.com/SpaceEEC/crux_rest/releases/tag/0.1.7/)
  - [Umbrella Development Documentation](https://crux.randomly.space/)
 
 ## Installation
@@ -16,7 +16,7 @@ The package can be installed by adding `crux_rest` to your list of dependencies 
 ```elixir
 def deps do
   [
-    {:crux_rest, "~> 0.1.6"}
+    {:crux_rest, "~> 0.1.7"}
   ]
 end
 ```
@@ -28,7 +28,7 @@ After providing a token to use via either your [config.exs](/config/config.exs),
 For example:
 
 ```elixir
-  iex> Crux.Rest.create_message(445290716198076427, content: "Hello there!")
+  iex> Crux.Rest.create_message!(445290716198076427, content: "Hello there!")
   %Crux.Structs.Message{
     content: "Hello there!",
     author: %Crux.Structs.User{...},
