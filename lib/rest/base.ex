@@ -8,9 +8,11 @@ defmodule Crux.Rest.Base do
 
   # Compile time constant so we can use it in guards
   @api_base Endpoints.base_url()
+
   # See: https://discordapp.com/developers/docs/reference#user-agent
-  @user_agent "DiscordBot (#{MixProject.project()[:source_url]}, " <>
-                "v#{MixProject.project()[:version]}"
+  url = MixProject.project()[:source_url]
+  version = MixProject.project()[:version]
+  @user_agent "DiscordBot (#{url}, v#{version})"
 
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
