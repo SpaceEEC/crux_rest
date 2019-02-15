@@ -12,26 +12,6 @@ defmodule Crux.Rest.Endpoints do
 
   @doc """
     Base API address.
-
-    Deprecated, use `base_url/0` instead.
-  """
-  @deprecated "Use Crux.Structs.Endpoints.base_url/0 instead"
-  @spec api() :: String.t()
-  Version.since("0.1.0")
-  def api, do: base_url()
-
-  @doc """
-    Base CDN address.
-
-    Deprecated, use `Crux.Rest.CDN.cdn/0` instead.
-  """
-  @deprecated "Use Crux.Structs.CDN.base_url/0 instead"
-  @spec cdn() :: String.t()
-  Version.since("0.1.0")
-  def cdn, do: Crux.Rest.CDN.base_url()
-
-  @doc """
-    Base API address.
   """
   @spec base_url() :: String.t()
   Version.since("0.1.5")
@@ -80,6 +60,30 @@ defmodule Crux.Rest.Endpoints do
   def channel_messages(channel_id, suffix \\ nil)
   def channel_messages(channel_id, nil), do: channel(channel_id, "messages")
   def channel_messages(channel_id, suffix), do: "#{channel_messages(channel_id)}/#{suffix}"
+
+  @doc """
+    Used for message deletion functions.
+  """
+  @spec channel_messages_bulk_delete(channel_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+
+  def channel_messages_bulk_delete(channel_id) do
+    channel_messages(channel_id, "bulk-delete")
+  end
+
+  @doc """
+    Used for channel typing.
+  """
+  @spec channel_typing(channel_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def channel_typing(channel_id), do: channel_messages(channel_id, "typing")
+
+  @doc """
+    Used for channel invites.
+  """
+  @spec channel_invites(channel_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def channel_invites(channel_id), do: channel(channel_id, "invites")
 
   @doc """
     Used for reactions related functions.
@@ -139,6 +143,41 @@ defmodule Crux.Rest.Endpoints do
   @spec guild_audit_logs(guild_id :: Crux.Rest.snowflake()) :: String.t()
   Version.since("0.1.7")
   def guild_audit_logs(guild_id), do: guild(guild_id, "audit-logs")
+
+  @doc """
+    Used for guild channel functions.
+  """
+  @spec guild_channels(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def guild_channels(guild_id), do: guild(guild_id, "channels")
+
+  @doc """
+    Used for guild prune functions
+  """
+  @spec guild_prune(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def guild_prune(guild_id), do: guild(guild_id, "prune")
+
+  @doc """
+    Used for guild region functions.
+  """
+  @spec guild_regions(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def guild_regions(guild_id), do: guild(guild_id, "regions")
+
+  @doc """
+    Used for guild invites functions.
+  """
+  @spec guild_invites(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def guild_invites(guild_id), do: guild(guild_id, "invites")
+
+  @doc """
+    Used for guild embed functions.
+  """
+  @spec guild_embed(guild_id :: Crux.Rest.snowflake()) :: String.t()
+  Version.since("0.2.0")
+  def guild_embed(guild_id), do: guild(guild_id, "embed")
 
   @doc """
     Used for guild emoji related functions.
@@ -277,4 +316,11 @@ defmodule Crux.Rest.Endpoints do
   def me_guilds(suffix \\ nil)
   def me_guilds(nil), do: "#{me()}/guilds"
   def me_guilds(suffix), do: "#{me_guilds()}/#{suffix}"
+
+  @doc """
+    Used for dm channel functions.
+  """
+  @spec me_channels() :: String.t()
+  Version.since("0.2.0")
+  def me_channels(), do: "#{me()}/channels"
 end

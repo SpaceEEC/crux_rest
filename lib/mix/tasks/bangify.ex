@@ -4,14 +4,22 @@ defmodule Mix.Tasks.Bangify do
   alias Code.Typespec
 
   @module_template """
-  defmodule Crux.Rest.Bang do
+  defmodule Crux.Rest.Gen.Bang do
     @moduledoc false
     # Generated __generated__
 
     alias Crux.Rest.Version
     require Version
 
-    defmacro __using__(_) do
+    defmacro __using__(:callbacks) do
+      quote location: :keep do
+        __callbacks__
+
+        __optional_callbacks__
+      end
+    end
+
+    defmacro __using__(:functions) do
       quote location: :keep do
         __functions__
       end
@@ -19,48 +27,110 @@ defmodule Mix.Tasks.Bangify do
   end
   """
 
+  @callback_template """
+    @doc "The same as \`c:__name__/__arity__\`, but raises an exception if it fails."
+    __version__
+    __callback__
+  """
+
+  @optional_callback_template """
+  # Required for `Crux.Rest.Functions`
+  @optional_callbacks __optionals__
+  """
+
   @function_template """
-    @doc "The same as \`__name__/__arity__\`, but raises an exception if it fails."
-    __maybe_spec__
+    __maybe_version__
+    def __name__(__arguments_with_defaults__) do
+      request = Crux.Rest.Functions.__name__(__arguments__)
+      Crux.Rest.request(@name, request)
+    end
+
     __maybe_version__
     def __name__!(__arguments_with_defaults__) do
-      case Crux.Rest.__name__(__arguments__) do
-        :ok ->
-          :ok
-
-        {:ok, res} ->
-          res
-
-        {:error, error} ->
-          raise error
-      end
+      request = Crux.Rest.Functions.__name__(__arguments__)
+      Crux.Rest.request!(@name, request)
     end
   """
 
   def run(_) do
-    {:ok, specs} = Typespec.fetch_specs(Crux.Rest)
-    specs = Map.new(specs)
-
-    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, functions} =
-      Code.fetch_docs(Crux.Rest)
+    {callbacks, optional_callbacks} = callbacks()
 
     functions =
-      functions
-      |> Enum.map_join("\n", &map_docs(&1, specs))
-      |> String.slice(0..-2)
+      functions()
 
     content =
       @module_template
       |> String.replace("__generated__", DateTime.utc_now() |> DateTime.to_iso8601())
+      |> String.replace("__callbacks__", callbacks)
+      |> String.replace("__optional_callbacks__", optional_callbacks)
       |> String.replace("__functions__", functions)
       |> Code.format_string!(file: "bang.ex", line: 0)
       |> :erlang.iolist_to_binary()
       |> Kernel.<>("\n")
 
-    ["lib", "rest", "bang.ex"]
+    ["lib", "rest", "gen", "bang.ex"]
     |> Path.join()
     |> File.write!(content)
   end
+
+  def callbacks() do
+    {:ok, callbacks} = Typespec.fetch_callbacks(Crux.Rest)
+    callbacks = Map.new(callbacks)
+
+    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, docs} = Code.fetch_docs(Crux.Rest)
+
+    {callbacks, optional_callbacks} =
+      docs
+      |> Enum.map(&map_callback(&1, callbacks))
+      |> Enum.unzip()
+
+    callbacks = callbacks |> Enum.join("\n") |> String.slice(0..-2)
+
+    optional_callbacks = optional_callbacks |> Enum.filter(&(&1 != "")) |> Enum.join(",\n ")
+
+    optional_callbacks =
+      @optional_callback_template
+      |> String.replace("__optionals__", optional_callbacks)
+
+    {callbacks, optional_callbacks}
+  end
+
+  def functions() do
+    {:ok, specs} = Typespec.fetch_specs(Crux.Rest.Functions)
+    specs = Map.new(specs)
+
+    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, functions} =
+      Code.fetch_docs(Crux.Rest.Functions)
+
+    functions
+    |> Enum.map_join("\n", &map_docs(&1, specs))
+  end
+
+  @spec map_callback(term(), term()) :: {String.t(), String.t()}
+  defp map_callback({{:callback, name, arity}, _line, [], _doc, meta}, callbacks) do
+    if String.ends_with?(name |> to_string(), "!") do
+      {"", ""}
+    else
+      [callback] = Map.fetch!(callbacks, {name, arity})
+      callback = "@callback #{name}!#{format_type(callback)}"
+
+      version = Map.get(meta, :since) || raise "Missing since for #{name}/#{arity}"
+      version = ~s{Version.since("#{version}")}
+
+      callback =
+        @callback_template
+        |> String.replace("__name__", name |> to_string())
+        |> String.replace("__arity__", arity |> to_string())
+        |> String.replace("__version__", version)
+        |> String.replace("__callback__", callback)
+
+      optional = "#{Atom.to_string(name)}!: #{arity}"
+
+      {callback, optional}
+    end
+  end
+
+  defp map_callback(_, _), do: {"", ""}
 
   defp map_docs({{:function, name, arity}, _anno, [signature], _doc, meta}, specs) do
     signature =
@@ -102,8 +172,6 @@ defmodule Mix.Tasks.Bangify do
       )
     end
   end
-
-  defp map_docs(_, _), do: ""
 
   defp format_type({:type, _, :fun, [params, {:type, _, :union, types}]}) do
     return =

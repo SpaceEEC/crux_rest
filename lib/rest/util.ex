@@ -18,49 +18,41 @@ defmodule Crux.Rest.Util do
   alias Crux.Rest.Version
   require Version
 
-  Version.since("0.1.0")
+  Version.modulesince("0.1.0")
+
+  ### Attachment / Image
+
+  @typedoc """
+    Used for functions setting an icon / image / etc.
+    Can be either a `binary()` of an image or a data url.
+  """
+  Version.typesince("0.2.0")
+  @type image :: binary() | String.t() | nil
 
   @doc """
-    Resolves a string or a binary to a `t:binary/0`.
-    * http / https url
-    * local file path
-    * a binary itself
+    Used for functions resolving a `t:image/0` into base64 image data urls.
   """
-  @spec resolve_file(file :: String.t() | binary()) :: {:ok, binary()} | {:error, term()}
-  Version.since("0.1.0")
-  def resolve_file(nil), do: nil
+  @spec resolve_image(image(), extension :: String.t()) :: String.t() | nil
+  Version.since("0.2.0")
+  def resolve_image(data, extension \\ "jpg")
 
-  def resolve_file(file) do
-    cond do
-      Regex.match?(~r{^https?://}, file) ->
-        with {:ok, response} <- HTTPoison.get(file) do
-          {:ok, response.body}
-        end
+  def resolve_image(nil, _), do: nil
+  def resolve_image("data:" <> data, _), do: data
 
-      File.exists?(file) && File.stat!(file).type == :regular ->
-        File.read(file)
-
-      is_binary(file) ->
-        {:ok, file}
-
-      true ->
-        {:error, :no_binary}
-    end
+  def resolve_image(data, extension) do
+    "data:image/#{extension};base64,#{Base.encode64(data)}"
   end
 
   @doc """
-    Resolves and encodes a file resolvable under a key in a map.
-    If the key is not in the map nothing is done.
+    Internally used to transform a `t:image/0` within a map to a base64 image data urls.
   """
-  @spec encode_map_key(map(), atom()) :: map()
-  Version.since("0.1.7")
-
-  def encode_map_key(%{} = map, key) when is_atom(key) do
+  Version.since("0.2.0")
+  @spec resolve_image_in_map(map(), atom()) :: map()
+  def resolve_image_in_map(map, key) do
     case map do
-      %{^key => file} when not is_nil(file) ->
-        with {:ok, binary} <- resolve_file(file) do
-          Map.put(map, key, "data:image/jpg;base64,#{Base.encode64(binary)}")
-        end
+      %{^key => value} ->
+        image = resolve_image(value)
+        Map.replace!(map, key, image)
 
       _ ->
         map
@@ -68,81 +60,64 @@ defmodule Crux.Rest.Util do
   end
 
   @typedoc """
-    Used when sending files via `Rest.create_message/2`.
+    Used to attach files via `c:Crux.Rest.create_message/2` or `c:Crux.Rest.execute_webhook/3`.
 
-    The elements are:
-    1. Name of the file or :file for a local file
-    2. Binary of the file or the file path
-    3. Disposition (for form-data)
-    4. Headers (content-type)
+    This can be one of:
+
+    |                  | Example                                      |
+    | ---------------- | -------------------------------------------- |
+    | `binary`         | `<<0, 0, 0, 0>>` (will be named "file.jpg")  |
+    | `{binary, name}` | `{<<104, 101, 108, 108, 111>>, "hello.txt"}` |
   """
-  Version.typesince("0.1.0")
+  Version.typesince("0.2.0")
+  @type attachment :: binary() | {binary(), String.t()}
 
-  @type resolved_file ::
-          {
-            String.t() | :file,
-            binary() | String.t(),
-            {String.t(), [{String.t(), binary()}]},
-            [{String.t(), String.t()}]
-          }
-          | {:error, term()}
+  # "Internally used to transform an `t:attachment/0` to a `:hackney_multipart` compatible part."
+  Version.since("0.2.0")
 
-  @doc """
-    Resolves a:
-    * path to a file
-    * tuple of path to a file or binary of one, and a file name
-    to a `t:resolved_file/0` automatically used by `Rest.create_message/2`
-  """
-  @spec map_file(
-          path ::
-            Crux.Rest.file_list_entry()
-            | {String.t() | :file, String.t() | binary(), String.t()}
-        ) :: resolved_file() | {:error, term()}
-  Version.since("0.1.0")
-  # path
-  def map_file(path) when is_binary(path) do
-    map_file({Path.basename(path), path, Path.basename(path)})
+  @spec transform_attachment(attachment()) ::
+          {String.t(), binary(), disposition :: term(), headers :: list()}
+
+  defp transform_attachment(attachment) when is_binary(attachment) do
+    transform_attachment({attachment, "file.jpg"})
   end
 
-  # {binary | path, name}
-  def map_file({bin_or_path, name})
-      when is_bitstring(bin_or_path) and is_binary(name) do
-    cond do
-      Regex.match?(~r{^https?://}, bin_or_path) ->
-        with {:ok, %{body: file}} <- HTTPoison.get(bin_or_path) do
-          map_file({Path.basename(name), file, Path.basename(name)})
-        else
-          {:error, _error} = error ->
-            error
-
-          other ->
-            {:error, other}
-        end
-
-      File.exists?(bin_or_path) ->
-        with {:ok, %{type: :regular}} <- File.stat(bin_or_path) do
-          map_file({:file, bin_or_path, Path.basename(name)})
-        else
-          {:error, _error} = error ->
-            error
-
-          other ->
-            {:error, other}
-        end
-
-      true ->
-        map_file({Path.basename(name), bin_or_path, Path.basename(name)})
-    end
-  end
-
-  def map_file({name_or_atom, bin_or_path, name})
-      when (is_binary(name_or_atom) or name_or_atom == :file) and is_bitstring(bin_or_path) and
-             is_binary(name) do
-    disposition = {"form-data", [{"filename", "\"#{name}\""}, {"name", "\"#{name}\""}]}
+  defp transform_attachment({attachment, name}) do
+    disposition = {"form-data", [{"filename", "\"#{name}\""}]}
     headers = [{"content-type", :mimerl.filename(name)}]
 
-    {name_or_atom, bin_or_path, disposition, headers}
+    {name, attachment, disposition, headers}
   end
+
+  @doc """
+    Internally used to transform `t:Crux.Rest.execute_webhook_options/0` and  `t:Crux.Rest.create_message_data/0` to a tuple of `{body, extra_headers}`
+  """
+  Version.since("0.2.0")
+
+  @spec resolve_multipart(map()) :: {{:multipart, list()} | map(), list()}
+  def resolve_multipart(%{files: [_ | _] = files} = data) do
+    form_data = Enum.map(files, &transform_attachment/1)
+
+    form_data =
+      if map_size(data) > 1 do
+        payload_json =
+          data
+          |> Map.delete(:files)
+          |> Poison.encode!()
+
+        [{"payload_json", payload_json}]
+      else
+        form_data
+      end
+
+    {{:multipart, form_data}, [{"content-type", "multipart/form-data"}]}
+  end
+
+  def resolve_multipart(data), do: {data, []}
+
+  ### End Attachment / Image
+
+  ### Resolvables
 
   @typedoc """
     All available types that can be resolved into a role id.
@@ -487,4 +462,6 @@ defmodule Crux.Rest.Util do
     }
 
   def resolve_guild_role_position({id, position}), do: %{id: id, position: position}
+
+  ### End Resolvables
 end
