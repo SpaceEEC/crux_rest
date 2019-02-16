@@ -3,6 +3,8 @@ defmodule Mix.Tasks.Bangify do
 
   alias Code.Typespec
 
+  @path ["lib", "rest", "gen", "bang.ex"] |> Path.join()
+
   @module_template """
   defmodule Crux.Rest.Gen.Bang do
     @moduledoc false
@@ -14,8 +16,6 @@ defmodule Mix.Tasks.Bangify do
     defmacro __using__(:callbacks) do
       quote location: :keep do
         __callbacks__
-
-        __optional_callbacks__
       end
     end
 
@@ -33,19 +33,18 @@ defmodule Mix.Tasks.Bangify do
     __callback__
   """
 
-  @optional_callback_template """
-  # Required for `Crux.Rest.Functions`
-  @optional_callbacks __optionals__
-  """
-
   @function_template """
+  @doc "See \`c:Crux.Rest.__name__/__arity__\`"
     __maybe_version__
+    __maybe_spec__
     def __name__(__arguments_with_defaults__) do
       request = Crux.Rest.Functions.__name__(__arguments__)
       Crux.Rest.request(@name, request)
     end
 
+    @doc "The same as \`c:Crux.Rest.__name__/__arity__\`, but raises an exception if it fails."
     __maybe_version__
+    __maybe_spec!__
     def __name__!(__arguments_with_defaults__) do
       request = Crux.Rest.Functions.__name__(__arguments__)
       Crux.Rest.request!(@name, request)
@@ -53,23 +52,19 @@ defmodule Mix.Tasks.Bangify do
   """
 
   def run(_) do
-    {callbacks, optional_callbacks} = callbacks()
-
-    functions =
-      functions()
+    callbacks = callbacks()
+    functions = functions()
 
     content =
       @module_template
       |> String.replace("__generated__", DateTime.utc_now() |> DateTime.to_iso8601())
       |> String.replace("__callbacks__", callbacks)
-      |> String.replace("__optional_callbacks__", optional_callbacks)
       |> String.replace("__functions__", functions)
-      |> Code.format_string!(file: "bang.ex", line: 0)
+      |> Code.format_string!(file: @path, line: 0)
       |> :erlang.iolist_to_binary()
       |> Kernel.<>("\n")
 
-    ["lib", "rest", "gen", "bang.ex"]
-    |> Path.join()
+    @path
     |> File.write!(content)
   end
 
@@ -89,21 +84,20 @@ defmodule Mix.Tasks.Bangify do
     optional_callbacks = optional_callbacks |> Enum.filter(&(&1 != "")) |> Enum.join(",\n ")
 
     optional_callbacks =
-      @optional_callback_template
-      |> String.replace("__optionals__", optional_callbacks)
+      "\n#Required for `Crux.Rest.Functions`\n    @optional_callbacks #{optional_callbacks}"
 
-    {callbacks, optional_callbacks}
+    callbacks <> optional_callbacks
   end
 
   def functions() do
-    {:ok, specs} = Typespec.fetch_specs(Crux.Rest.Functions)
-    specs = Map.new(specs)
+    {:ok, callbacks} = Typespec.fetch_callbacks(Crux.Rest)
+    callbacks = Map.new(callbacks)
 
-    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, functions} =
+    {:docs_v1, _anno, :elixir, _format, _module_doc, _meta, docs} =
       Code.fetch_docs(Crux.Rest.Functions)
 
-    functions
-    |> Enum.map_join("\n", &map_docs(&1, specs))
+    docs
+    |> Enum.map_join("\n", &map_docs(&1, callbacks))
   end
 
   @spec map_callback(term(), term()) :: {String.t(), String.t()}
@@ -112,7 +106,7 @@ defmodule Mix.Tasks.Bangify do
       {"", ""}
     else
       [callback] = Map.fetch!(callbacks, {name, arity})
-      callback = "@callback #{name}!#{format_type(callback)}"
+      callback = "@callback #{name}!#{format_type_bang(callback)}"
 
       version = Map.get(meta, :since) || raise "Missing since for #{name}/#{arity}"
       version = ~s{Version.since("#{version}")}
@@ -132,23 +126,19 @@ defmodule Mix.Tasks.Bangify do
 
   defp map_callback(_, _), do: {"", ""}
 
-  defp map_docs({{:function, name, arity}, _anno, [signature], _doc, meta}, specs) do
-    signature =
-      signature
-      |> String.replace(~r{^.+?\(|\)$}, "")
-
+  defp map_docs({{:function, name, arity}, _anno, [signature], _doc, meta}, callbacks) do
     if String.ends_with?(name |> to_string(), "!") do
       ""
     else
-      maybe_spec =
-        specs
+      {maybe_spec!, maybe_spec} =
+        callbacks
         |> Map.get({name, arity})
         |> case do
           [spec] ->
-            "@spec #{name}!#{format_type(spec)}"
+            {"@spec #{name}!#{format_type_bang(spec)}", "@spec #{name}#{format_type(spec)}"}
 
           nil ->
-            ""
+            {"", ""}
         end
 
       since =
@@ -160,20 +150,24 @@ defmodule Mix.Tasks.Bangify do
             ""
         end
 
+      signature =
+        signature
+        |> String.replace(~r{^.+?\(|\)$}, "")
+
+      arguments = signature |> String.replace(~r{ \\\\ .*?(?=,|$)}, "")
+
       @function_template
       |> String.replace("__maybe_spec__", maybe_spec)
+      |> String.replace("__maybe_spec!__", maybe_spec!)
       |> String.replace("__name__", name |> to_string())
       |> String.replace("__arity__", arity |> to_string())
       |> String.replace("__arguments_with_defaults__", signature)
       |> String.replace("__maybe_version__", since)
-      |> String.replace(
-        "__arguments__",
-        signature |> String.replace(~r{ \\\\ .*?(?=,|$)}, "")
-      )
+      |> String.replace("__arguments__", arguments)
     end
   end
 
-  defp format_type({:type, _, :fun, [params, {:type, _, :union, types}]}) do
+  defp format_type_bang({:type, _, :fun, [params, {:type, _, :union, types}]}) do
     return =
       types
       |> case do
@@ -187,6 +181,10 @@ defmodule Mix.Tasks.Bangify do
       end
 
     "(#{format_type(params)}) :: #{return} | no_return()"
+  end
+
+  defp format_type({:type, _, :fun, [params, return]}) do
+    "(#{format_type(params)}) :: #{format_type(return)}"
   end
 
   defp format_type({:type, _, :product, types}) do
