@@ -221,7 +221,7 @@ defmodule Crux.Rest do
   @callback get_messages(
               channel :: Util.channel_id_resolvable(),
               args :: Crux.Rest.get_messages_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake) => Message.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Crux.Rest.snowflake()) => Message.t()}} | {:error, term()}
 
   ### End Message
 
@@ -287,7 +287,7 @@ defmodule Crux.Rest do
               message :: Util.message_id_resolvable(),
               emoji :: Util.emoji_identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake) => User.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Crux.Rest.snowflake()) => User.t()}} | {:error, term()}
 
   Version.since("0.2.0")
 
@@ -295,7 +295,7 @@ defmodule Crux.Rest do
               message :: Message.t(),
               emoji :: Util.emoji_identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake) => User.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Crux.Rest.snowflake()) => User.t()}} | {:error, term()}
 
   @doc """
     Deletes a user from a reaction.
@@ -1589,7 +1589,9 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user-dms).
   """
   Version.since("0.2.0")
-  @callback get_user_dms() :: {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
+
+  @callback get_user_dms() ::
+              {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
 
   @doc """
     Creates a new dm channel with a user.
