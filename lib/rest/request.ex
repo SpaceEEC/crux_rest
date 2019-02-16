@@ -128,7 +128,7 @@ defmodule Crux.Rest.Request do
   def get_route(path) do
     route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d{16,19}', path, "/:id")
     # https://github.com/discordapp/discord-api-docs/issues/182
-    Regex.replace(~r'/reactions/.+?(/|$)', route, "/:reaction\\1")
+    Regex.replace(~r'/reactions/[^/]+', route, "/reactions/:reaction")
   end
 
   ### End Helper
