@@ -3,7 +3,7 @@ defmodule Crux.Rest.Handler do
 
   defstruct [:name, :retries, :route, :remaining, :reset, :timer]
 
-  alias Crux.Rest.{Handler, Request}
+  alias Crux.Rest.{Handler, Request, HTTP}
   alias Crux.Rest.Handler.{Global, State}
 
   require Logger
@@ -47,7 +47,7 @@ defmodule Crux.Rest.Handler do
       pid
     else
       _ ->
-        Crux.Rest.Handler.Supervisor.start_child(name, route)
+        Handler.Supervisor.start_child(name, route)
         ensure_started(name, route)
     end
   end
@@ -112,26 +112,29 @@ defmodule Crux.Rest.Handler do
   end
 
   # Queue request, actually execute
-  def handle_call({:queue, request} = message, from, %Handler{name: name, route: route} = state) do
+  def handle_call(
+        {:queue, request} = message,
+        from,
+        %Handler{name: name, route: route} = state
+      ) do
     wait(Global.fetch_global_wait(name), "global - " <> route)
 
     res =
       request
       |> Request.set_token(State.token!(name))
-      |> Crux.Rest.HTTP.request()
+      |> HTTP.request()
 
     {state, wait} =
       state
       |> handle_headers(res)
       |> handle_response(res)
 
-    res =
-      res
-      |> IO.inspect()
-      |> case do
-        {:ok, %{status_code: 204}} -> :ok
-        {:ok, %{body: body}} -> {:ok, body}
-        _ -> res
+    # https://github.com/discordapp/discord-api-docs/issues/182
+    state =
+      if request.rate_limit_reset do
+        %{state | reset: request.rate_limit_reset + :os.system_time(:milli_seconds)}
+      else
+        state
       end
 
     if is_number(wait) do
@@ -142,10 +145,6 @@ defmodule Crux.Rest.Handler do
     else
       reset_time =
         cond do
-          # https://github.com/discordapp/discord-api-docs/issues/182
-          request.rate_limit_reset ->
-            request.rate_limit_reset
-
           is_integer(state.reset) ->
             max(state.reset - :os.system_time(:milli_seconds), 0)
 
@@ -193,9 +192,10 @@ defmodule Crux.Rest.Handler do
   end
 
   # Rate limited, figure out for how long and if globally
+  @spec handle_response(term(), term()) :: {Handler, non_neg_integer() | nil}
   defp handle_response(
          %Handler{name: name, route: route, reset: reset} = state,
-         {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: %{} = body}}
+         {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}}
        ) do
     Logger.warn("[Crux][Rest][Handler][#{route}] Received a 429")
 
@@ -218,25 +218,26 @@ defmodule Crux.Rest.Handler do
   # Internal server error occured, retry if still within limit
   defp handle_response(
          %Handler{name: name, route: route, retries: retries} = state,
-         {:ok, %HTTPoison.Response{status_code: code}} = tuple
+         {:ok, %HTTPoison.Response{status_code: code}}
        )
        when code in 500..599 do
     retry_limit = State.retry_limit!(name)
 
     if retry_limit != :infinity and retry_limit > retries do
-      Logger.warn(
-        "[Crux][Rest][Handler][#{route}] Received a #{code}" <> " [#{retries}/#{retry_limit}]"
-      )
-
       state = %{state | retries: retries + 1}
 
-      {1500, state}
+      Logger.warn(
+        "[Crux][Rest][Handler][#{route}] Received a #{code}" <>
+          " [#{state.retries}/#{retry_limit}]"
+      )
+
+      {state, 1500}
     else
-      {tuple, state}
+      {state, nil}
     end
   end
 
-  # All OK, do nothing
+  # All OK or retry limit reached, do nothing
   defp handle_response(state, res), do: {state, res}
 
   ### Helpers

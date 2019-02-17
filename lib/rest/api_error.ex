@@ -5,7 +5,7 @@ defmodule Crux.Rest.ApiError do
     Raised or returned whenever the api responded with a non `2xx` status code
   """
 
-  alias Crux.Rest.Version
+  alias Crux.Rest.{Request, Version}
   require Version
 
   Version.modulesince("0.1.0")
@@ -22,9 +22,10 @@ defmodule Crux.Rest.ApiError do
   | Property      | Description                                                                                                                    | Example(s)          |
   | ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
   | `status_code` | HTTP status code                                                                                                               | `400`, `404`, `403` |
-  |  `code`       | See Discord's [JSON Error Codes](https://discordapp.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes) | `10006`, `90001`    |
+  | `code`        | See Discord's [JSON Error Codes](https://discordapp.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes) | `10006`, `90001`    |
   | `message`     | Message describing the error                                                                                                   | `Unknown Invite`    |
   | `path`        | Path of the request                                                                                                            | `/invites/broken`   |
+  | `method`      | HTTP verb                                                                                                                      | :get, :post, :patch |
   """
   Version.typesince("0.1.0")
 
@@ -32,7 +33,7 @@ defmodule Crux.Rest.ApiError do
           status_code: integer(),
           code: integer() | nil,
           message: String.t(),
-          path: String.t(),
+          path: atom(),
           method: String.t()
         }
 
@@ -51,16 +52,17 @@ defmodule Crux.Rest.ApiError do
   Version.since("0.1.0")
 
   @spec exception(
-          error :: map(),
-          status_code :: pos_integer(),
-          path :: String.t(),
-          method :: String.t()
+          Request.t(),
+          HTTPoison.Response.t()
         ) :: __MODULE__.t()
-  def exception(%{"message" => message} = error, status_code, path, method) do
-    code = Map.get(error, "code")
+  def exception(%{method: method, path: path}, %{
+        status_code: status_code,
+        body: %{"message" => message} = body
+      }) do
+    code = Map.get(body, "code")
 
     inner =
-      error
+      body
       |> Map.get("errors")
       |> map_inner()
 

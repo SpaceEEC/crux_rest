@@ -1,5 +1,6 @@
 defmodule Crux.Rest.Handler.State do
   @moduledoc false
+
   use GenServer
 
   alias Crux.Rest.Version

@@ -1,14 +1,11 @@
 defmodule Crux.Rest do
   @moduledoc """
+    Main entry point for `Crux.Rest`.
 
+    This module fits under a supervision tree, see `start_link/1`'s' arguments for configuration.
   """
-  #
-  # Options
-  #  - token
-  #  - retry limit
-  #
 
-  alias Crux.Rest.{Request, Util, Version}
+  alias Crux.Rest.{ApiError, Handler, Request, Util, Version}
 
   require Version
 
@@ -1617,38 +1614,29 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
   @callback gateway_bot() :: {:ok, term()} | {:error, term()}
 
-  @typedoc """
-    Options used to start `Crux.Rest`.
-  """
-  Version.typesince("0.2.0")
-
-  @type options ::
-          %{
-            required(:token) => String.t(),
-            optional(:retry_limit) => non_neg_integer() | :infinity
-          }
-          | [{:token, String.t()} | {:retry_limit, non_neg_integer() | :infinity}]
-
-  @doc """
-  """
-  Version.since("0.2.0")
-  @spec child_spec({name :: atom(), args :: options()}) :: Supervisor.child_spec()
-  def child_spec({name, _args} = arg) when is_atom(name) do
-    %{
-      id: __MODULE__,
-      start: {Crux.Rest.Handler.Supervisor, :start_link, [arg]},
-      type: :supervisor
-    }
-  end
-
   @doc """
     Executes a request.
   """
   Version.since("0.2.0")
   @spec request(name :: atom(), request :: Request.t()) :: {:ok, term()} | {:error, term()}
   def request(name, request) do
-    with {:ok, data} <- Crux.Rest.Handler.queue(name, request) do
-      {:ok, Request.transform(request, data)}
+    case Crux.Rest.Handler.queue(name, request) do
+      # Empty resonse
+      {:ok, %{status_code: 204}} ->
+        :ok
+
+      # A HTTP error occured
+      {:ok, %HTTPoison.Response{status_code: code} = response}
+      when code in 400..599 ->
+        {:error, ApiError.exception(request, response)}
+
+      # Everything ok
+      {:ok, %{body: data}} ->
+        {:ok, Request.transform(request, data)}
+
+      # Some other error occured
+      {:error, _other} = error ->
+        error
     end
   end
 
@@ -1664,6 +1652,26 @@ defmodule Crux.Rest do
       {:error, error} -> raise error
     end
   end
+
+  @typedoc """
+    Options used to start `Crux.Rest`.
+  """
+  Version.typesince("0.2.0")
+
+  @type options ::
+          %{
+            required(:token) => String.t(),
+            optional(:retry_limit) => non_neg_integer() | :infinity
+          }
+          | [{:token, String.t()} | {:retry_limit, non_neg_integer() | :infinity}]
+
+  @doc """
+    Starts a `Crux.Rest` process linked to the current process.
+
+    Options are a tuple of a name atom and `t:options/0`.
+  """
+  @spec start_link({name :: atom(), options()}) :: Supervisor.on_start()
+  defdelegate start_link(args), to: Handler.Supervisor
 
   defmacro __using__(_ \\ []) do
     quote location: :keep do
