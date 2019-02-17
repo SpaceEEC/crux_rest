@@ -1673,6 +1673,17 @@ defmodule Crux.Rest do
   @spec start_link({name :: atom(), options()}) :: Supervisor.on_start()
   defdelegate start_link(args), to: Handler.Supervisor
 
+  @doc false
+  Version.since("0.2.0")
+  @spec child_spec({name :: atom(), args :: options()}) :: Supervisor.child_spec()
+  def child_spec({name, _args} = arg) when is_atom(name) do
+    %{
+      id: __MODULE__,
+      start: {Crux.Rest.Handler.Supervisor, :start_link, [arg]},
+      type: :supervisor
+    }
+  end
+
   defmacro __using__(_ \\ []) do
     quote location: :keep do
       @behaviour Crux.Rest
