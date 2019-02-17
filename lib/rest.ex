@@ -1695,6 +1695,10 @@ defmodule Crux.Rest do
       def child_spec(arg) do
         unquote(__MODULE__).child_spec({__MODULE__, arg})
       end
+
+      defdelegate request(name, request), to: Crux.Rest
+      defdelegate request!(name, request), to: Crux.Rest
+      defoverridable request: 2, request!: 2
     end
   end
 end

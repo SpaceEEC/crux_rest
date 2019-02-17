@@ -39,7 +39,7 @@ defmodule Mix.Tasks.Bangify do
     __maybe_spec__
     def __name__(__arguments_with_defaults__) do
       request = Crux.Rest.Functions.__name__(__arguments__)
-      Crux.Rest.request(@name, request)
+      request(@name, request)
     end
 
     @doc "The same as \`c:Crux.Rest.__name__/__arity__\`, but raises an exception if it fails."
@@ -47,7 +47,7 @@ defmodule Mix.Tasks.Bangify do
     __maybe_spec!__
     def __name__!(__arguments_with_defaults__) do
       request = Crux.Rest.Functions.__name__(__arguments__)
-      Crux.Rest.request!(@name, request)
+      request!(@name, request)
     end
   """
 

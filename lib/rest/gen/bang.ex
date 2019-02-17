@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-02-16T09:22:15.274000Z
+  # Generated 2019-02-17T20:41:13.879000Z
 
   alias Crux.Rest.Version
   require Version
@@ -819,7 +819,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Member.t()} | {:error, term()}
       def add_guild_member(guild, user, data) do
         request = Crux.Rest.Functions.add_guild_member(guild, user, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.add_guild_member/3`, but raises an exception if it fails."
@@ -831,7 +831,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Member.t() | no_return()
       def add_guild_member!(guild, user, data) do
         request = Crux.Rest.Functions.add_guild_member(guild, user, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.add_guild_member_role/4`"
@@ -844,7 +844,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def add_guild_member_role(guild, member, role, reason) do
         request = Crux.Rest.Functions.add_guild_member_role(guild, member, role, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.add_guild_member_role/4`, but raises an exception if it fails."
@@ -857,7 +857,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def add_guild_member_role!(guild, member, role, reason) do
         request = Crux.Rest.Functions.add_guild_member_role(guild, member, role, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.add_pinned_message/1`"
@@ -865,7 +865,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec add_pinned_message(message :: Message.t()) :: :ok | {:error, term()}
       def add_pinned_message(map) do
         request = Crux.Rest.Functions.add_pinned_message(map)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.add_pinned_message/1`, but raises an exception if it fails."
@@ -873,7 +873,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec add_pinned_message!(message :: Message.t()) :: :ok | no_return()
       def add_pinned_message!(map) do
         request = Crux.Rest.Functions.add_pinned_message(map)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.add_pinned_message/2`"
@@ -884,7 +884,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def add_pinned_message(channel, message) do
         request = Crux.Rest.Functions.add_pinned_message(channel, message)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.add_pinned_message/2`, but raises an exception if it fails."
@@ -895,7 +895,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def add_pinned_message!(channel, message) do
         request = Crux.Rest.Functions.add_pinned_message(channel, message)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.begin_guild_prune/2`"
@@ -906,7 +906,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, non_neg_integer()} | {:error, term()}
       def begin_guild_prune(guild, data) do
         request = Crux.Rest.Functions.begin_guild_prune(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.begin_guild_prune/2`, but raises an exception if it fails."
@@ -917,7 +917,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: non_neg_integer() | no_return()
       def begin_guild_prune!(guild, data) do
         request = Crux.Rest.Functions.begin_guild_prune(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_channel_invite/2`"
@@ -928,7 +928,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Invite.t()} | {:error, term()}
       def create_channel_invite(channel, data) do
         request = Crux.Rest.Functions.create_channel_invite(channel, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_channel_invite/2`, but raises an exception if it fails."
@@ -939,7 +939,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Invite.t() | no_return()
       def create_channel_invite!(channel, data) do
         request = Crux.Rest.Functions.create_channel_invite(channel, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_dm/1`"
@@ -948,7 +948,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Channel.t()} | {:error, term()}
       def create_dm(user) do
         request = Crux.Rest.Functions.create_dm(user)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_dm/1`, but raises an exception if it fails."
@@ -956,7 +956,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_dm!(user :: Crux.Rest.Util.user_id_resolvable()) :: Channel.t() | no_return()
       def create_dm!(user) do
         request = Crux.Rest.Functions.create_dm(user)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild/1`"
@@ -964,7 +964,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_guild(term()) :: {:ok, Guild.t()} | {:error, term()}
       def create_guild(data) do
         request = Crux.Rest.Functions.create_guild(data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild/1`, but raises an exception if it fails."
@@ -972,7 +972,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_guild!(term()) :: Guild.t() | no_return()
       def create_guild!(data) do
         request = Crux.Rest.Functions.create_guild(data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild_ban/3`"
@@ -984,7 +984,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def create_guild_ban(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.create_guild_ban(guild, user, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild_ban/3`, but raises an exception if it fails."
@@ -996,7 +996,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def create_guild_ban!(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.create_guild_ban(guild, user, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild_channel/2`"
@@ -1007,7 +1007,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Channel.t()} | {:error, term()}
       def create_guild_channel(guild, data) do
         request = Crux.Rest.Functions.create_guild_channel(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild_channel/2`, but raises an exception if it fails."
@@ -1018,7 +1018,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Channel.t() | no_return()
       def create_guild_channel!(guild, data) do
         request = Crux.Rest.Functions.create_guild_channel(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild_emoji/2`"
@@ -1029,7 +1029,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Emoji} | {:error, term()}
       def create_guild_emoji(guild, data) do
         request = Crux.Rest.Functions.create_guild_emoji(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild_emoji/2`, but raises an exception if it fails."
@@ -1040,7 +1040,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Emoji | no_return()
       def create_guild_emoji!(guild, data) do
         request = Crux.Rest.Functions.create_guild_emoji(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild_integration/2`"
@@ -1053,7 +1053,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def create_guild_integration(guild, data) do
         request = Crux.Rest.Functions.create_guild_integration(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild_integration/2`, but raises an exception if it fails."
@@ -1066,7 +1066,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def create_guild_integration!(guild, data) do
         request = Crux.Rest.Functions.create_guild_integration(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_guild_role/2`"
@@ -1077,7 +1077,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Role.t()} | {:error, term()}
       def create_guild_role(guild, data) do
         request = Crux.Rest.Functions.create_guild_role(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_guild_role/2`, but raises an exception if it fails."
@@ -1088,7 +1088,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Role.t() | no_return()
       def create_guild_role!(guild, data) do
         request = Crux.Rest.Functions.create_guild_role(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_message/2`"
@@ -1099,7 +1099,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Message.t()} | {:error, term()}
       def create_message(channel_or_message, data) do
         request = Crux.Rest.Functions.create_message(channel_or_message, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_message/2`, but raises an exception if it fails."
@@ -1110,7 +1110,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Message.t() | no_return()
       def create_message!(channel_or_message, data) do
         request = Crux.Rest.Functions.create_message(channel_or_message, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_reaction/2`"
@@ -1121,7 +1121,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def create_reaction(map, emoji) do
         request = Crux.Rest.Functions.create_reaction(map, emoji)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_reaction/2`, but raises an exception if it fails."
@@ -1132,7 +1132,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def create_reaction!(map, emoji) do
         request = Crux.Rest.Functions.create_reaction(map, emoji)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.create_reaction/3`"
@@ -1144,7 +1144,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def create_reaction(channel, message, emoji) do
         request = Crux.Rest.Functions.create_reaction(channel, message, emoji)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.create_reaction/3`, but raises an exception if it fails."
@@ -1156,7 +1156,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def create_reaction!(channel, message, emoji) do
         request = Crux.Rest.Functions.create_reaction(channel, message, emoji)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_all_reactions/2`"
@@ -1167,7 +1167,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_all_reactions(map, emoji) do
         request = Crux.Rest.Functions.delete_all_reactions(map, emoji)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_all_reactions/2`, but raises an exception if it fails."
@@ -1178,7 +1178,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_all_reactions!(map, emoji) do
         request = Crux.Rest.Functions.delete_all_reactions(map, emoji)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_all_reactions/3`"
@@ -1190,7 +1190,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_all_reactions(channel, message, emoji) do
         request = Crux.Rest.Functions.delete_all_reactions(channel, message, emoji)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_all_reactions/3`, but raises an exception if it fails."
@@ -1202,7 +1202,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_all_reactions!(channel, message, emoji) do
         request = Crux.Rest.Functions.delete_all_reactions(channel, message, emoji)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_channel/2`"
@@ -1213,7 +1213,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Channel.t()} | {:error, term()}
       def delete_channel(channel, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel(channel, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_channel/2`, but raises an exception if it fails."
@@ -1224,7 +1224,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Channel.t() | no_return()
       def delete_channel!(channel, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel(channel, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_channel_permissions/3`"
@@ -1236,7 +1236,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_channel_permissions(channel, target, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel_permissions(channel, target, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_channel_permissions/3`, but raises an exception if it fails."
@@ -1248,7 +1248,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_channel_permissions!(channel, target, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel_permissions(channel, target, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_guild/1`"
@@ -1256,7 +1256,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | {:error, term()}
       def delete_guild(guild) do
         request = Crux.Rest.Functions.delete_guild(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_guild/1`, but raises an exception if it fails."
@@ -1264,7 +1264,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
       def delete_guild!(guild) do
         request = Crux.Rest.Functions.delete_guild(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_guild_emoji/3`"
@@ -1276,7 +1276,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_guild_emoji(guild, emoji, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_emoji(guild, emoji, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_guild_emoji/3`, but raises an exception if it fails."
@@ -1288,7 +1288,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_guild_emoji!(guild, emoji, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_emoji(guild, emoji, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_guild_integration/2`"
@@ -1299,7 +1299,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_guild_integration(guild, integration) do
         request = Crux.Rest.Functions.delete_guild_integration(guild, integration)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_guild_integration/2`, but raises an exception if it fails."
@@ -1310,7 +1310,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_guild_integration!(guild, integration) do
         request = Crux.Rest.Functions.delete_guild_integration(guild, integration)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_guild_role/3`"
@@ -1322,7 +1322,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_guild_role(guild, role, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_role(guild, role, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_guild_role/3`, but raises an exception if it fails."
@@ -1334,7 +1334,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_guild_role!(guild, role, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_role(guild, role, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_invite/1`"
@@ -1343,7 +1343,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Invite.t()} | {:error, term()}
       def delete_invite(code) do
         request = Crux.Rest.Functions.delete_invite(code)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_invite/1`, but raises an exception if it fails."
@@ -1351,7 +1351,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_invite!(invite_or_code :: String.t() | Invite.t()) :: Invite.t() | no_return()
       def delete_invite!(code) do
         request = Crux.Rest.Functions.delete_invite(code)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_message/1`"
@@ -1359,7 +1359,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_message(message :: Message.t()) :: :ok | {:error, term()}
       def delete_message(map) do
         request = Crux.Rest.Functions.delete_message(map)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_message/1`, but raises an exception if it fails."
@@ -1367,7 +1367,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_message!(message :: Message.t()) :: :ok | no_return()
       def delete_message!(map) do
         request = Crux.Rest.Functions.delete_message(map)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_message/2`"
@@ -1378,7 +1378,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_message(channel, message) do
         request = Crux.Rest.Functions.delete_message(channel, message)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_message/2`, but raises an exception if it fails."
@@ -1389,7 +1389,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_message!(channel, message) do
         request = Crux.Rest.Functions.delete_message(channel, message)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_messages/2`"
@@ -1400,7 +1400,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_messages(channel, messages) do
         request = Crux.Rest.Functions.delete_messages(channel, messages)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_messages/2`, but raises an exception if it fails."
@@ -1411,7 +1411,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_messages!(channel, messages) do
         request = Crux.Rest.Functions.delete_messages(channel, messages)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_pinned_message/1`"
@@ -1419,7 +1419,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_pinned_message(message :: Message.t()) :: :ok | {:error, term()}
       def delete_pinned_message(map) do
         request = Crux.Rest.Functions.delete_pinned_message(map)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_pinned_message/1`, but raises an exception if it fails."
@@ -1427,7 +1427,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_pinned_message!(message :: Message.t()) :: :ok | no_return()
       def delete_pinned_message!(map) do
         request = Crux.Rest.Functions.delete_pinned_message(map)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_pinned_message/2`"
@@ -1438,7 +1438,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def delete_pinned_message(channel, message) do
         request = Crux.Rest.Functions.delete_pinned_message(channel, message)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_pinned_message/2`, but raises an exception if it fails."
@@ -1449,7 +1449,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_pinned_message!(channel, message) do
         request = Crux.Rest.Functions.delete_pinned_message(channel, message)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_reaction/4`"
@@ -1474,7 +1474,7 @@ defmodule Crux.Rest.Gen.Bang do
             mayber_user
           )
 
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_reaction/4`, but raises an exception if it fails."
@@ -1499,7 +1499,7 @@ defmodule Crux.Rest.Gen.Bang do
             mayber_user
           )
 
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.delete_webhook/2`"
@@ -1508,7 +1508,7 @@ defmodule Crux.Rest.Gen.Bang do
               :ok | {:error, term()}
       def delete_webhook(user, token \\ nil) do
         request = Crux.Rest.Functions.delete_webhook(user, token)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.delete_webhook/2`, but raises an exception if it fails."
@@ -1519,7 +1519,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def delete_webhook!(user, token \\ nil) do
         request = Crux.Rest.Functions.delete_webhook(user, token)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.edit_channel_permissions/3`"
@@ -1531,7 +1531,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, :missing_target} | {:error, term()}
       def edit_channel_permissions(channel, target, data) do
         request = Crux.Rest.Functions.edit_channel_permissions(channel, target, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.edit_channel_permissions/3`, but raises an exception if it fails."
@@ -1543,7 +1543,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def edit_channel_permissions!(channel, target, data) do
         request = Crux.Rest.Functions.edit_channel_permissions(channel, target, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.edit_message/2`"
@@ -1552,7 +1552,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Message.t()} | {:error, term()}
       def edit_message(map, data) do
         request = Crux.Rest.Functions.edit_message(map, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.edit_message/2`, but raises an exception if it fails."
@@ -1561,7 +1561,7 @@ defmodule Crux.Rest.Gen.Bang do
               Message.t() | no_return()
       def edit_message!(map, data) do
         request = Crux.Rest.Functions.edit_message(map, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.edit_message/3`"
@@ -1573,7 +1573,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Message.t()} | {:error, term()}
       def edit_message(channel, message, data) do
         request = Crux.Rest.Functions.edit_message(channel, message, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.edit_message/3`, but raises an exception if it fails."
@@ -1585,21 +1585,21 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Message.t() | no_return()
       def edit_message!(channel, message, data) do
         request = Crux.Rest.Functions.edit_message(channel, message, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_github_webhook/3`"
 
       def execute_github_webhook(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_github_webhook/3`, but raises an exception if it fails."
 
       def execute_github_webhook!(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_github_webhook/5`"
@@ -1613,7 +1613,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def execute_github_webhook(user, token, event, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_github_webhook(user, token, event, wait, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_github_webhook/5`, but raises an exception if it fails."
@@ -1627,21 +1627,21 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def execute_github_webhook!(user, token, event, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_github_webhook(user, token, event, wait, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_slack_webhook/2`"
 
       def execute_slack_webhook(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_slack_webhook/2`, but raises an exception if it fails."
 
       def execute_slack_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_slack_webhook/4`"
@@ -1654,7 +1654,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def execute_slack_webhook(user, token, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(user, token, wait, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_slack_webhook/4`, but raises an exception if it fails."
@@ -1667,21 +1667,21 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def execute_slack_webhook!(user, token, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(user, token, wait, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_webhook/2`"
 
       def execute_webhook(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_webhook/2`, but raises an exception if it fails."
 
       def execute_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.execute_webhook/4`"
@@ -1694,7 +1694,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:ok, Message.t()} | {:error, term()}
       def execute_webhook(user, token, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_webhook(user, token, wait, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.execute_webhook/4`, but raises an exception if it fails."
@@ -1707,7 +1707,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def execute_webhook!(user, token, wait \\ false, data) do
         request = Crux.Rest.Functions.execute_webhook(user, token, wait, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.gateway/0`"
@@ -1715,7 +1715,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec gateway() :: {:ok, term()} | {:error, term()}
       def gateway() do
         request = Crux.Rest.Functions.gateway()
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.gateway/0`, but raises an exception if it fails."
@@ -1723,7 +1723,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec gateway!() :: term() | no_return()
       def gateway!() do
         request = Crux.Rest.Functions.gateway()
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.gateway_bot/0`"
@@ -1731,7 +1731,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec gateway_bot() :: {:ok, term()} | {:error, term()}
       def gateway_bot() do
         request = Crux.Rest.Functions.gateway_bot()
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.gateway_bot/0`, but raises an exception if it fails."
@@ -1739,7 +1739,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec gateway_bot!() :: term() | no_return()
       def gateway_bot!() do
         request = Crux.Rest.Functions.gateway_bot()
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_audit_logs/2`"
@@ -1750,7 +1750,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, AuditLog.t()} | {:error, term()}
       def get_audit_logs(guild, data \\ []) do
         request = Crux.Rest.Functions.get_audit_logs(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_audit_logs/2`, but raises an exception if it fails."
@@ -1761,7 +1761,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: AuditLog.t() | no_return()
       def get_audit_logs!(guild, data \\ []) do
         request = Crux.Rest.Functions.get_audit_logs(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_channel/1`"
@@ -1770,7 +1770,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Channel.t()} | {:error, term()}
       def get_channel(channel) do
         request = Crux.Rest.Functions.get_channel(channel)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_channel/1`, but raises an exception if it fails."
@@ -1779,7 +1779,7 @@ defmodule Crux.Rest.Gen.Bang do
               Channel.t() | no_return()
       def get_channel!(channel) do
         request = Crux.Rest.Functions.get_channel(channel)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_channel_invites/1`"
@@ -1788,7 +1788,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(String.t()) => Invite.t()}} | {:error, term()}
       def get_channel_invites(channel) do
         request = Crux.Rest.Functions.get_channel_invites(channel)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_channel_invites/1`, but raises an exception if it fails."
@@ -1797,7 +1797,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(String.t()) => Invite.t()} | no_return()
       def get_channel_invites!(channel) do
         request = Crux.Rest.Functions.get_channel_invites(channel)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_current_user_guilds/1`"
@@ -1806,7 +1806,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Guild.t()}} | {:error, term()}
       def get_current_user_guilds(data) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_current_user_guilds/1`, but raises an exception if it fails."
@@ -1815,7 +1815,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Guild.t()} | no_return()
       def get_current_user_guilds!(data) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild/1`"
@@ -1824,7 +1824,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Guild.t()} | {:error, term()}
       def get_guild(guild) do
         request = Crux.Rest.Functions.get_guild(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild/1`, but raises an exception if it fails."
@@ -1832,7 +1832,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: Guild.t() | no_return()
       def get_guild!(guild) do
         request = Crux.Rest.Functions.get_guild(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_ban/2`"
@@ -1845,7 +1845,7 @@ defmodule Crux.Rest.Gen.Bang do
               | {:error, term()}
       def get_guild_ban(guild, user) do
         request = Crux.Rest.Functions.get_guild_ban(guild, user)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_ban/2`, but raises an exception if it fails."
@@ -1857,7 +1857,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(:user) => User.t(), required(:reason) => String.t() | nil} | no_return()
       def get_guild_ban!(guild, user) do
         request = Crux.Rest.Functions.get_guild_ban(guild, user)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_bans/1`"
@@ -1873,7 +1873,7 @@ defmodule Crux.Rest.Gen.Bang do
               | {:error, term()}
       def get_guild_bans(guild) do
         request = Crux.Rest.Functions.get_guild_bans(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_bans/1`, but raises an exception if it fails."
@@ -1888,7 +1888,7 @@ defmodule Crux.Rest.Gen.Bang do
               | no_return()
       def get_guild_bans!(guild) do
         request = Crux.Rest.Functions.get_guild_bans(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_channels/1`"
@@ -1897,7 +1897,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
       def get_guild_channels(guild) do
         request = Crux.Rest.Functions.get_guild_channels(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_channels/1`, but raises an exception if it fails."
@@ -1906,7 +1906,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
       def get_guild_channels!(guild) do
         request = Crux.Rest.Functions.get_guild_channels(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_embed/1`"
@@ -1915,7 +1915,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, term()} | {:error, term()}
       def get_guild_embed(guild) do
         request = Crux.Rest.Functions.get_guild_embed(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_embed/1`, but raises an exception if it fails."
@@ -1924,7 +1924,7 @@ defmodule Crux.Rest.Gen.Bang do
               term() | no_return()
       def get_guild_embed!(guild) do
         request = Crux.Rest.Functions.get_guild_embed(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_emoji/2`"
@@ -1935,7 +1935,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Emoji} | {:error, term()}
       def get_guild_emoji(guild, emoji) do
         request = Crux.Rest.Functions.get_guild_emoji(guild, emoji)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_emoji/2`, but raises an exception if it fails."
@@ -1946,7 +1946,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Emoji | no_return()
       def get_guild_emoji!(guild, emoji) do
         request = Crux.Rest.Functions.get_guild_emoji(guild, emoji)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_integrations/1`"
@@ -1955,7 +1955,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, list()} | {:error, term()}
       def get_guild_integrations(guild) do
         request = Crux.Rest.Functions.get_guild_integrations(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_integrations/1`, but raises an exception if it fails."
@@ -1964,7 +1964,7 @@ defmodule Crux.Rest.Gen.Bang do
               list() | no_return()
       def get_guild_integrations!(guild) do
         request = Crux.Rest.Functions.get_guild_integrations(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_invites/1`"
@@ -1973,7 +1973,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{optional(String.t()) => Invite.t()}} | {:error, term()}
       def get_guild_invites(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_invites/1`, but raises an exception if it fails."
@@ -1982,7 +1982,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{optional(String.t()) => Invite.t()} | no_return()
       def get_guild_invites!(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_member/2`"
@@ -1993,7 +1993,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Member.t()} | {:error, term()}
       def get_guild_member(guild, user) do
         request = Crux.Rest.Functions.get_guild_member(guild, user)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_member/2`, but raises an exception if it fails."
@@ -2004,7 +2004,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Member.t() | no_return()
       def get_guild_member!(guild, user) do
         request = Crux.Rest.Functions.get_guild_member(guild, user)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_prune_count/2`"
@@ -2015,7 +2015,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, non_neg_integer()} | {:error, term()}
       def get_guild_prune_count(guild, days) do
         request = Crux.Rest.Functions.get_guild_prune_count(guild, days)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_prune_count/2`, but raises an exception if it fails."
@@ -2026,7 +2026,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: non_neg_integer() | no_return()
       def get_guild_prune_count!(guild, days) do
         request = Crux.Rest.Functions.get_guild_prune_count(guild, days)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_roles/1`"
@@ -2035,7 +2035,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{optional(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
       def get_guild_roles(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_roles/1`, but raises an exception if it fails."
@@ -2044,7 +2044,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
       def get_guild_roles!(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_vanity_url/1`"
@@ -2053,7 +2053,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, String.t()} | {:error, term()}
       def get_guild_vanity_url(guild) do
         request = Crux.Rest.Functions.get_guild_vanity_url(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_vanity_url/1`, but raises an exception if it fails."
@@ -2062,7 +2062,7 @@ defmodule Crux.Rest.Gen.Bang do
               String.t() | no_return()
       def get_guild_vanity_url!(guild) do
         request = Crux.Rest.Functions.get_guild_vanity_url(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_guild_voice_regions/1`"
@@ -2071,7 +2071,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, term()} | {:error, term()}
       def get_guild_voice_regions(guild) do
         request = Crux.Rest.Functions.get_guild_voice_regions(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_guild_voice_regions/1`, but raises an exception if it fails."
@@ -2080,7 +2080,7 @@ defmodule Crux.Rest.Gen.Bang do
               term() | no_return()
       def get_guild_voice_regions!(guild) do
         request = Crux.Rest.Functions.get_guild_voice_regions(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_invite/1`"
@@ -2088,7 +2088,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_invite(code :: String.t()) :: {:ok, Invite.t()} | {:error, term()}
       def get_invite(code) do
         request = Crux.Rest.Functions.get_invite(code)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_invite/1`, but raises an exception if it fails."
@@ -2096,21 +2096,21 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_invite!(code :: String.t()) :: Invite.t() | no_return()
       def get_invite!(code) do
         request = Crux.Rest.Functions.get_invite(code)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_message/3`"
 
       def get_message(message_or_channel, data_or_channel \\ [], data \\ []) do
         request = Crux.Rest.Functions.get_message(message_or_channel, data_or_channel, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_message/3`, but raises an exception if it fails."
 
       def get_message!(message_or_channel, data_or_channel \\ [], data \\ []) do
         request = Crux.Rest.Functions.get_message(message_or_channel, data_or_channel, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_messages/2`"
@@ -2121,7 +2121,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, %{required(Crux.Rest.snowflake()) => Message.t()}} | {:error, term()}
       def get_messages(channel, data) do
         request = Crux.Rest.Functions.get_messages(channel, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_messages/2`, but raises an exception if it fails."
@@ -2132,7 +2132,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
       def get_messages!(channel, data) do
         request = Crux.Rest.Functions.get_messages(channel, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_pinned_messages/1`"
@@ -2141,7 +2141,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Message.t()}} | {:error, term()}
       def get_pinned_messages(channel) do
         request = Crux.Rest.Functions.get_pinned_messages(channel)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_pinned_messages/1`, but raises an exception if it fails."
@@ -2150,7 +2150,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
       def get_pinned_messages!(channel) do
         request = Crux.Rest.Functions.get_pinned_messages(channel)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_reactions/4`"
@@ -2175,7 +2175,7 @@ defmodule Crux.Rest.Gen.Bang do
             maybe_data
           )
 
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_reactions/4`, but raises an exception if it fails."
@@ -2200,7 +2200,7 @@ defmodule Crux.Rest.Gen.Bang do
             maybe_data
           )
 
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_user/1`"
@@ -2209,7 +2209,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, User.t()} | {:error, term()}
       def get_user(user) do
         request = Crux.Rest.Functions.get_user(user)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_user/1`, but raises an exception if it fails."
@@ -2218,7 +2218,7 @@ defmodule Crux.Rest.Gen.Bang do
               User.t() | no_return()
       def get_user!(user) do
         request = Crux.Rest.Functions.get_user(user)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_user_dms/0`"
@@ -2227,7 +2227,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
       def get_user_dms() do
         request = Crux.Rest.Functions.get_user_dms()
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_user_dms/0`, but raises an exception if it fails."
@@ -2235,7 +2235,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_user_dms!() :: %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
       def get_user_dms!() do
         request = Crux.Rest.Functions.get_user_dms()
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.get_webhook/2`"
@@ -2244,7 +2244,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, Webhook.t()} | {:error, term()}
       def get_webhook(user, token \\ nil) do
         request = Crux.Rest.Functions.get_webhook(user, token)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.get_webhook/2`, but raises an exception if it fails."
@@ -2253,7 +2253,7 @@ defmodule Crux.Rest.Gen.Bang do
               Webhook.t() | no_return()
       def get_webhook!(user, token \\ nil) do
         request = Crux.Rest.Functions.get_webhook(user, token)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.leave_guild/1`"
@@ -2261,7 +2261,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec leave_guild(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | {:error, term()}
       def leave_guild(guild) do
         request = Crux.Rest.Functions.leave_guild(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.leave_guild/1`, but raises an exception if it fails."
@@ -2269,7 +2269,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec leave_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
       def leave_guild!(guild) do
         request = Crux.Rest.Functions.leave_guild(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.list_channel_webhooks/1`"
@@ -2278,7 +2278,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Webhook.t()}} | {:error, term()}
       def list_channel_webhooks(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.list_channel_webhooks/1`, but raises an exception if it fails."
@@ -2287,7 +2287,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
       def list_channel_webhooks!(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.list_guild_emojis/1`"
@@ -2296,7 +2296,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Emoji.t()}} | {:error, term()}
       def list_guild_emojis(guild) do
         request = Crux.Rest.Functions.list_guild_emojis(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.list_guild_emojis/1`, but raises an exception if it fails."
@@ -2305,7 +2305,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Emoji.t()} | no_return()
       def list_guild_emojis!(guild) do
         request = Crux.Rest.Functions.list_guild_emojis(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.list_guild_members/2`"
@@ -2316,7 +2316,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, %{required(Crux.Rest.snowflake()) => Member.t()}} | {:error, term()}
       def list_guild_members(guild, options) do
         request = Crux.Rest.Functions.list_guild_members(guild, options)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.list_guild_members/2`, but raises an exception if it fails."
@@ -2327,7 +2327,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: %{required(Crux.Rest.snowflake()) => Member.t()} | no_return()
       def list_guild_members!(guild, options) do
         request = Crux.Rest.Functions.list_guild_members(guild, options)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.list_guild_webhooks/1`"
@@ -2336,7 +2336,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, %{required(Crux.Rest.snowflake()) => Webhook.t()}} | {:error, term()}
       def list_guild_webhooks(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.list_guild_webhooks/1`, but raises an exception if it fails."
@@ -2345,7 +2345,7 @@ defmodule Crux.Rest.Gen.Bang do
               %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
       def list_guild_webhooks!(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_channel/2`"
@@ -2356,7 +2356,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Channel.t()} | {:error, term()}
       def modify_channel(channel, data) do
         request = Crux.Rest.Functions.modify_channel(channel, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_channel/2`, but raises an exception if it fails."
@@ -2367,7 +2367,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Channel.t() | no_return()
       def modify_channel!(channel, data) do
         request = Crux.Rest.Functions.modify_channel(channel, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_current_user/1`"
@@ -2376,7 +2376,7 @@ defmodule Crux.Rest.Gen.Bang do
               {:ok, User.t()} | {:error, term()}
       def modify_current_user(data) do
         request = Crux.Rest.Functions.modify_current_user(data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_current_user/1`, but raises an exception if it fails."
@@ -2385,7 +2385,7 @@ defmodule Crux.Rest.Gen.Bang do
               User.t() | no_return()
       def modify_current_user!(data) do
         request = Crux.Rest.Functions.modify_current_user(data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_current_users_nick/3`"
@@ -2397,7 +2397,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def modify_current_users_nick(guild, nick, reason) do
         request = Crux.Rest.Functions.modify_current_users_nick(guild, nick, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_current_users_nick/3`, but raises an exception if it fails."
@@ -2409,7 +2409,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def modify_current_users_nick!(guild, nick, reason) do
         request = Crux.Rest.Functions.modify_current_users_nick(guild, nick, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild/2`"
@@ -2420,7 +2420,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Guild.t()} | {:error, term()}
       def modify_guild(guild, data) do
         request = Crux.Rest.Functions.modify_guild(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild/2`, but raises an exception if it fails."
@@ -2431,7 +2431,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Guild.t() | no_return()
       def modify_guild!(guild, data) do
         request = Crux.Rest.Functions.modify_guild(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_channel_positions/2`"
@@ -2442,7 +2442,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def modify_guild_channel_positions(guild, channels) do
         request = Crux.Rest.Functions.modify_guild_channel_positions(guild, channels)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_channel_positions/2`, but raises an exception if it fails."
@@ -2453,7 +2453,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def modify_guild_channel_positions!(guild, channels) do
         request = Crux.Rest.Functions.modify_guild_channel_positions(guild, channels)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_embed/2`"
@@ -2466,7 +2466,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, term()} | {:error, term()}
       def modify_guild_embed(guild, data) do
         request = Crux.Rest.Functions.modify_guild_embed(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_embed/2`, but raises an exception if it fails."
@@ -2479,7 +2479,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: term() | no_return()
       def modify_guild_embed!(guild, data) do
         request = Crux.Rest.Functions.modify_guild_embed(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_emoji/3`"
@@ -2491,7 +2491,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Emoji} | {:error, term()}
       def modify_guild_emoji(guild, emoji, data) do
         request = Crux.Rest.Functions.modify_guild_emoji(guild, emoji, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_emoji/3`, but raises an exception if it fails."
@@ -2503,7 +2503,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Emoji | no_return()
       def modify_guild_emoji!(guild, emoji, data) do
         request = Crux.Rest.Functions.modify_guild_emoji(guild, emoji, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_integration/3`"
@@ -2525,7 +2525,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def modify_guild_integration(guild, integration, data) do
         request = Crux.Rest.Functions.modify_guild_integration(guild, integration, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_integration/3`, but raises an exception if it fails."
@@ -2547,7 +2547,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def modify_guild_integration!(guild, integration, data) do
         request = Crux.Rest.Functions.modify_guild_integration(guild, integration, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_member/3`"
@@ -2559,7 +2559,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def modify_guild_member(guild, member, data) do
         request = Crux.Rest.Functions.modify_guild_member(guild, member, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_member/3`, but raises an exception if it fails."
@@ -2571,7 +2571,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def modify_guild_member!(guild, member, data) do
         request = Crux.Rest.Functions.modify_guild_member(guild, member, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_role/3`"
@@ -2583,7 +2583,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Role.t()} | {:error, term()}
       def modify_guild_role(guild, role, data) do
         request = Crux.Rest.Functions.modify_guild_role(guild, role, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_role/3`, but raises an exception if it fails."
@@ -2595,7 +2595,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Role.t() | no_return()
       def modify_guild_role!(guild, role, data) do
         request = Crux.Rest.Functions.modify_guild_role(guild, role, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.modify_guild_role_positions/2`"
@@ -2606,7 +2606,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, %{optional(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
       def modify_guild_role_positions(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.modify_guild_role_positions/2`, but raises an exception if it fails."
@@ -2617,7 +2617,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
       def modify_guild_role_positions!(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.remove_guild_ban/3`"
@@ -2629,7 +2629,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def remove_guild_ban(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_ban(guild, user, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.remove_guild_ban/3`, but raises an exception if it fails."
@@ -2641,7 +2641,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def remove_guild_ban!(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_ban(guild, user, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.remove_guild_member_role/4`"
@@ -2654,7 +2654,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def remove_guild_member_role(guild, member, role, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_member_role(guild, member, role, reason)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.remove_guild_member_role/4`, but raises an exception if it fails."
@@ -2667,7 +2667,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def remove_guild_member_role!(guild, member, role, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_member_role(guild, member, role, reason)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.sync_guild_integration/2`"
@@ -2678,7 +2678,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | {:error, term()}
       def sync_guild_integration(guild, integration) do
         request = Crux.Rest.Functions.sync_guild_integration(guild, integration)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.sync_guild_integration/2`, but raises an exception if it fails."
@@ -2689,7 +2689,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: :ok | no_return()
       def sync_guild_integration!(guild, integration) do
         request = Crux.Rest.Functions.sync_guild_integration(guild, integration)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.trigger_typing/1`"
@@ -2698,7 +2698,7 @@ defmodule Crux.Rest.Gen.Bang do
               :ok | {:error, term()}
       def trigger_typing(channel) do
         request = Crux.Rest.Functions.trigger_typing(channel)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.trigger_typing/1`, but raises an exception if it fails."
@@ -2707,7 +2707,7 @@ defmodule Crux.Rest.Gen.Bang do
               :ok | no_return()
       def trigger_typing!(channel) do
         request = Crux.Rest.Functions.trigger_typing(channel)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
 
       @doc "See `c:Crux.Rest.update_webhook/3`"
@@ -2729,7 +2729,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: {:ok, Webhook.t()} | {:error, term()}
       def update_webhook(user, token \\ nil, data) do
         request = Crux.Rest.Functions.update_webhook(user, token, data)
-        Crux.Rest.request(@name, request)
+        request(@name, request)
       end
 
       @doc "The same as `c:Crux.Rest.update_webhook/3`, but raises an exception if it fails."
@@ -2751,7 +2751,7 @@ defmodule Crux.Rest.Gen.Bang do
             ) :: Webhook.t() | no_return()
       def update_webhook!(user, token \\ nil, data) do
         request = Crux.Rest.Functions.update_webhook(user, token, data)
-        Crux.Rest.request!(@name, request)
+        request!(@name, request)
       end
     end
   end
