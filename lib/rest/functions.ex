@@ -994,13 +994,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:delete, path)
   end
 
-  def get_user_dms() do
-    path = Endpoints.me_channels()
-
-    Request.new(:get, path)
-    |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Channel))
-  end
-
   def create_dm(user) do
     user_id = Util.resolve_user_id(user)
 

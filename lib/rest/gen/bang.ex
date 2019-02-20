@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-02-17T20:41:13.879000Z
+  # Generated 2019-02-20T09:50:23.761000Z
 
   alias Crux.Rest.Version
   require Version
@@ -696,10 +696,6 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
       @callback leave_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
 
-      @doc "The same as `c:get_user_dms/0`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback get_user_dms!() :: %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
-
       @doc "The same as `c:create_dm/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
@@ -801,7 +797,6 @@ defmodule Crux.Rest.Gen.Bang do
                           modify_current_user!: 1,
                           get_current_user_guilds!: 1,
                           leave_guild!: 1,
-                          get_user_dms!: 0,
                           create_dm!: 1,
                           gateway!: 0,
                           gateway_bot!: 0
@@ -2218,23 +2213,6 @@ defmodule Crux.Rest.Gen.Bang do
               User.t() | no_return()
       def get_user!(user) do
         request = Crux.Rest.Functions.get_user(user)
-        request!(@name, request)
-      end
-
-      @doc "See `c:Crux.Rest.get_user_dms/0`"
-
-      @spec get_user_dms() ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
-      def get_user_dms() do
-        request = Crux.Rest.Functions.get_user_dms()
-        request(@name, request)
-      end
-
-      @doc "The same as `c:Crux.Rest.get_user_dms/0`, but raises an exception if it fails."
-
-      @spec get_user_dms!() :: %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
-      def get_user_dms!() do
-        request = Crux.Rest.Functions.get_user_dms()
         request!(@name, request)
       end
 

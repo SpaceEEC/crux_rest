@@ -1579,17 +1579,6 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
   @callback leave_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
 
-  # TODO: Does this work for bots?
-  @doc """
-    Gets a list of `Crux.Structs.Channel`. (DMChannels in this case)
-
-    For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-user-dms).
-  """
-  Version.since("0.2.0")
-
-  @callback get_user_dms() ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
-
   @doc """
     Creates a new dm channel with a user.
 
