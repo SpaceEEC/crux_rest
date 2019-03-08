@@ -1,7 +1,7 @@
 defmodule Crux.Rest.MixProject do
   use Mix.Project
 
-  @vsn "0.1.7"
+  @vsn "0.2.0-dev"
   @name :crux_rest
 
   def project do
@@ -33,10 +33,7 @@ defmodule Crux.Rest.MixProject do
   end
 
   def application do
-    [
-      extra_applications: [:logger],
-      mod: {Crux.Rest.Application, []}
-    ]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
@@ -45,7 +42,11 @@ defmodule Crux.Rest.MixProject do
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
-      {:ex_doc, git: "https://github.com/spaceeec/ex_doc", only: :dev, runtime: false}
+      {:ex_doc,
+       git: "https://github.com/spaceeec/ex_doc",
+       branch: "feat/umbrella",
+       only: :dev,
+       runtime: false}
     ]
   end
 end

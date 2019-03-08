@@ -1,24 +1,24 @@
 defmodule Crux.Rest.Handler do
   @moduledoc false
 
-  use GenServer
+  defstruct [:name, :retries, :route, :remaining, :reset, :timer]
+
+  alias Crux.Rest.{Handler, Request, HTTP}
+  alias Crux.Rest.Handler.{Global, State}
 
   require Logger
 
-  import Crux.Rest.Handler.Global,
-    only: [fetch_offset: 0, add_offset: 1, fetch_global_wait: 0, set_global_wait: 1]
-
-  @max_retries_on_5xx 5
-
-  @registry Crux.Rest.Handler.Registry
+  use GenServer
 
   @doc """
     Starts a rate limit handler for the provided route.
   """
-  @spec start_link(route :: String.t()) :: GenServer.on_start()
-  def start_link(route) do
-    name = {:via, Registry, {@registry, route}}
-    GenServer.start_link(__MODULE__, route, name: name)
+  @spec start_link({name :: atom(), route :: String.t()}) :: GenServer.on_start()
+  def start_link({name, route} = args) do
+    registry = Module.concat(name, Registry)
+
+    name = {:via, Registry, {registry, route}}
+    GenServer.start_link(__MODULE__, args, name: name)
   end
 
   @doc """
@@ -32,210 +32,215 @@ defmodule Crux.Rest.Handler do
 
   For the non API errors see `HTTPoison.Base.request/5` and `Poison.decode/2`.
   """
-  @spec queue({
-          route :: String.t(),
-          request_data :: list()
-        }) ::
-          term()
-          | {:error, HTTPoison.Error.t()}
-          | {:error, {:decoding, :invalid | {:invalid, String.t()}}}
-  def queue(request)
-
-  def queue({route, request_data}) do
-    route
-    |> format_route()
-    |> ensure_started()
-    |> GenServer.call({:queue, request_data}, :infinity)
+  @spec queue(name :: atom(), request :: Request.t()) :: term()
+  def queue(name, %Request{route: route} = request) do
+    name
+    |> ensure_started(route)
+    |> GenServer.call({:queue, request}, :infinity)
   end
 
-  defp ensure_started(route) do
-    with [{pid, _other}] <- Registry.lookup(@registry, route),
+  defp ensure_started(name, route) do
+    registry = Module.concat(name, Registry)
+
+    with [{pid, _other}] <- Registry.lookup(registry, route),
          true <- Process.alive?(pid) do
       pid
     else
       _ ->
-        Crux.Rest.Handler.Supervisor.start_child(route)
-        ensure_started(route)
+        Handler.Supervisor.start_child(name, route)
+        ensure_started(name, route)
     end
   end
 
-  ## Server
+  ### Server
 
   @doc false
-  def init(route) do
-    Logger.debug("[Crux][Rest][Handler][#{route}]: Starting")
+  def init({name, route}) do
+    Logger.debug(fn -> "[Crux][Rest][Handler][#{route}]: Starting" end)
 
-    state = %{
+    state = %__MODULE__{
+      name: name,
       route: route,
       remaining: 1,
-      reset: nil
-      # timer: nil
+      retries: 0,
+      reset: 0,
+      timer: nil
     }
 
     {:ok, state}
   end
 
   @doc false
-  def handle_info(:shutdown, %{route: route} = state) do
-    Logger.debug("[Crux][Rest][Handler][#{route}]: Stopping idle handler")
+  # Handler is idle, shutdown
+  def handle_info(:shutdown, %Handler{route: route} = state) do
+    Logger.debug(fn -> "[Crux][Rest][Handler][#{route}]: Stopping idle handler" end)
 
     {:stop, :normal, state}
   end
 
-  @doc false
-  def handle_info(other, %{route: route} = state) do
-    Logger.warn("[Crux][Rest][Handler][#{route}]: Received unexpected message: #{inspect(other)}")
+  # Unexpected message
+  def handle_info(other, %Handler{route: route} = state) do
+    Logger.warn(fn ->
+      "[Crux][Rest][Handler][#{route}]: Received unexpected message: #{inspect(other)}"
+    end)
 
     {:noreply, state}
   end
 
-  @doc false
-  def handle_call(
-        {:queue, request_data} = message,
-        from,
-        %{
-          route: route,
-          remaining: remaining,
-          reset: reset
-        } = state
-      ) do
-    state =
-      case Map.pop(state, :timer) do
-        {nil, state} ->
-          state
+  # Queue request, clear timer
+  def handle_call({:queue, _request} = message, from, %Handler{timer: timer} = state)
+      when not is_nil(timer) do
+    :timer.cancel(timer)
 
-        {timer, state} ->
-          :timer.cancel(timer)
+    state = %{state | timer: nil}
 
-          state
-      end
-
-    # We reached the limit, wait
-    if remaining <= 0, do: wait(reset + fetch_offset() - :os.system_time(:milli_seconds), route)
-
-    # Wait if globally rate limited
-    wait(fetch_global_wait(), "global - " <> route)
-
-    {res, state} =
-      apply(Crux.Rest.Base, :request, request_data)
-      |> handle_headers(state)
-
-    cond do
-      is_number(res) ->
-        Logger.debug("[Crux][Rest][Handler][#{route}]: Waiting #{res}ms")
-        :timer.sleep(res)
-
-        handle_call(message, from, state)
-
-      true ->
-        reset_time =
-          case state do
-            %{reset: reset} when is_integer(reset) ->
-              reset - :os.system_time(:milli_seconds)
-
-            _ ->
-              # 500 for sanity and in the case further messages are queued up
-              500
-          end
-
-        {:ok, ref} = :timer.send_after(reset_time, :shutdown)
-
-        {:reply, res, Map.put(state, :timer, ref)}
-    end
+    handle_call(message, from, state)
   end
 
-  defp handle_headers({:ok, %HTTPoison.Response{headers: headers}} = tuple, state) do
-    List.keyfind(headers, "Date", 0)
-    |> parse_header
-    |> add_offset
+  # Queue request, but we have to wait
+  def handle_call(
+        {:queue, _request} = message,
+        from,
+        %Handler{route: route, reset: reset, remaining: remaining} = state
+      )
+      when remaining <= 0 do
+    wait(reset - :os.system_time(:milli_seconds), route)
 
-    remaining =
-      List.keyfind(headers, "X-RateLimit-Remaining", 0)
-      |> parse_header
+    state = %{state | remaining: 1}
 
-    reset =
-      List.keyfind(headers, "X-RateLimit-Reset", 0)
-      |> parse_header
+    handle_call(message, from, state)
+  end
 
+  # Queue request, actually execute
+  def handle_call(
+        {:queue, request} = message,
+        from,
+        %Handler{name: name, route: route} = state
+      ) do
+    wait(Global.fetch_global_wait(name), "global - " <> route)
+
+    res =
+      request
+      |> Request.set_token(State.token!(name))
+      |> HTTP.request()
+
+    {state, wait} =
+      state
+      |> handle_headers(res)
+      |> handle_response(res)
+
+    # https://github.com/discordapp/discord-api-docs/issues/182
     state =
-      if remaining && reset do
-        reset_milli_seconds = reset * 1000 + fetch_offset()
-        Map.merge(state, %{remaining: remaining, reset: reset_milli_seconds})
+      if request.rate_limit_reset do
+        %{state | reset: request.rate_limit_reset + :os.system_time(:milli_seconds)}
       else
         state
       end
 
-    handle_response(tuple, state, reset)
+    if is_number(wait) do
+      Logger.debug("[Crux][Rest][Handler][#{route}]: Waiting #{wait}ms")
+      :timer.sleep(wait)
+
+      handle_call(message, from, state)
+    else
+      reset_time =
+        cond do
+          is_integer(state.reset) ->
+            max(state.reset - :os.system_time(:milli_seconds), 0)
+
+          true ->
+            0
+        end
+
+      {:ok, ref} = :timer.send_after(reset_time, :shutdown)
+
+      state = %{state | timer: ref}
+
+      {:reply, res, state}
+    end
   end
 
-  defp handle_headers({:error, _} = tuple, state), do: handle_response(tuple, state, nil)
+  # An error occured while executing the http request
+  defp handle_headers(state, {:error, _}), do: state
 
-  # Rate limited
+  # Apply rate limit and date header
+  defp handle_headers(
+         %Handler{name: name} = state,
+         {:ok, %HTTPoison.Response{headers: headers}}
+       ) do
+    date =
+      List.keyfind(headers, "Date", 0)
+      |> parse_header()
+
+    Global.add_offset(name, date)
+
+    remaining =
+      List.keyfind(headers, "X-RateLimit-Remaining", 0)
+      |> parse_header()
+
+    reset =
+      List.keyfind(headers, "X-RateLimit-Reset", 0)
+      |> parse_header()
+
+    if remaining && reset do
+      reset = reset * 1000 - Global.fetch_offset(name)
+
+      %{state | remaining: remaining, reset: reset}
+    else
+      state
+    end
+  end
+
+  # Rate limited, figure out for how long and if globally
+  @spec handle_response(term(), term()) :: {Handler, non_neg_integer() | nil}
   defp handle_response(
-         {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}},
-         %{route: route} = state,
-         reset
+         %Handler{name: name, route: route, reset: reset} = state,
+         {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}}
        ) do
     Logger.warn("[Crux][Rest][Handler][#{route}] Received a 429")
 
-    time =
-      with {:ok, body} <- Poison.decode(body),
-           # Incredible hacky
-           {true, _} <- {
-             List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header,
-             body
-           },
-           {:ok, retry_after} <- Map.fetch(body, "retry_after") do
-        set_global_wait(retry_after)
-        retry_after
-      else
-        # Payload is not valid json, fallback to reset
-        {:error, _} ->
-          reset + fetch_offset() - :os.system_time(:milli_seconds)
-
-        # Not Global
-        {nil, %{"retry_after" => retry_after}} ->
+    retry_after =
+      case body do
+        %{"retry_after" => retry_after} ->
           retry_after
 
-        # Payload does not contain a retry_after, fallback to reset
         _ ->
-          reset + fetch_offset() - :os.system_time(:milli_seconds)
+          reset - :os.system_time(:milli_seconds)
       end
 
-    {time, state}
+    if List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header() == true do
+      Global.set_global_wait(name, retry_after)
+    end
+
+    {state, retry_after}
   end
 
-  # Retried too often, aborthing this
-  defp handle_response(tuple, %{retries: retries} = state, _)
-       when retries > @max_retries_on_5xx do
-    {tuple, state}
-  end
-
-  # Retry on 5xx
+  # Internal server error occured, retry if still within limit
   defp handle_response(
-         {:ok, %HTTPoison.Response{status_code: code}},
-         %{route: route} = state,
-         _
+         %Handler{name: name, route: route, retries: retries} = state,
+         {:ok, %HTTPoison.Response{status_code: code}}
        )
        when code in 500..599 do
-    Logger.warn(
-      "[Crux][Rest][Handler][#{route}] Received a #{code}" <>
-        " [#{Map.get(state, :retries, 0)}/#{@max_retries_on_5xx}]"
-    )
+    retry_limit = State.retry_limit!(name)
 
-    {1500, Map.update(state, :retries, 1, &(&1 + 1))}
+    if retry_limit != :infinity and retry_limit > retries do
+      state = %{state | retries: retries + 1}
+
+      Logger.warn(
+        "[Crux][Rest][Handler][#{route}] Received a #{code}" <>
+          " [#{state.retries}/#{retry_limit}]"
+      )
+
+      {state, 1500}
+    else
+      {state, nil}
+    end
   end
 
-  # Success
-  defp handle_response(tuple, state, _), do: {tuple, state}
+  # All OK or retry limit reached, do nothing
+  defp handle_response(state, res), do: {state, res}
 
-  defp wait(timeout, route) when timeout > 0 do
-    Logger.debug("[Crux][Rest][Handler][#{route}]: Rate limited, waiting #{timeout}ms")
-
-    :timer.sleep(timeout)
-  end
-
-  defp wait(_, _), do: :ok
+  ### Helpers
 
   defp parse_header(nil), do: nil
   defp parse_header({"X-RateLimit-Global", _value}), do: true
@@ -243,7 +248,7 @@ defmodule Crux.Rest.Handler do
   defp parse_header({"Date", value}) do
     case Timex.parse(value, "{WDshort}, {D} {Mshort} {YYYY} {h24}:{m}:{s} {Zabbr}") do
       {:ok, date_time} ->
-        :os.system_time(:milli_seconds) - DateTime.to_unix(date_time, :milli_seconds)
+        DateTime.to_unix(date_time, :milli_seconds) - :os.system_time(:milli_seconds)
 
       {:error, _} ->
         nil
@@ -252,6 +257,11 @@ defmodule Crux.Rest.Handler do
 
   defp parse_header({_name, value}), do: value |> String.to_integer()
 
-  defp format_route(route),
-    do: Regex.replace(~r'(?<!channels|guilds|webhooks)/\d{16,19}', route, "/:id")
+  defp wait(timeout, route) when timeout > 0 do
+    Logger.debug("[Crux][Rest][Handler][#{route}]: Rate limited, waiting #{timeout}ms")
+
+    :timer.sleep(timeout)
+  end
+
+  defp wait(_, _), do: :ok
 end

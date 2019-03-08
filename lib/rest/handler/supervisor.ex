@@ -1,29 +1,37 @@
 defmodule Crux.Rest.Handler.Supervisor do
   @moduledoc false
 
+  alias Crux.Rest.Handler
+  alias Crux.Rest.Handler.State
+
   use Supervisor
 
-  def start_link(args \\ []) do
-    Supervisor.start_link(__MODULE__, args, name: __MODULE__)
+  def start_link({name, _state} = args) do
+    Supervisor.start_link(__MODULE__, args, name: name)
   end
 
-  def init(_args) do
+  def init({name, state}) do
+    registry = Module.concat(name, Registry)
+
+    state =
+      state
+      |> Map.new()
+      |> Map.put_new(:retry_limit, 5)
+
     children = [
-      {Registry, keys: :unique, name: Crux.Rest.Handler.Registry},
-      Supervisor.child_spec(
-        Crux.Rest.Handler.Global,
-        id: "global"
-      )
+      {State, {name, state}},
+      {Registry, keys: :unique, name: registry},
+      {Handler.Global, name}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def start_child(route) do
+  def start_child(name, route) do
     Supervisor.start_child(
-      __MODULE__,
+      name,
       Supervisor.child_spec(
-        {Crux.Rest.Handler, route},
+        {Handler, {name, route}},
         id: route,
         restart: :temporary
       )
