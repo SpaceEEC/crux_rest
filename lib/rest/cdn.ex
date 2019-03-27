@@ -147,7 +147,7 @@ defmodule Crux.Rest.CDN do
   @doc """
     Generates a url to a guild splash.
 
-    The extension "gif" is valid here.
+    The extension "gif" is not valid here.
 
     ```elixir
   # A struct
@@ -184,6 +184,49 @@ defmodule Crux.Rest.CDN do
     extension = options[:extension] || "webp"
     qs = if options[:size], do: "?size=#{options[:size]}", else: ""
     "#{@base_url}/splashes/#{id}/#{splash}.#{extension}#{qs}"
+  end
+
+  @doc """
+    Generates a url to a guild banner.
+
+    The extension "gif" is not valid here.
+
+    ```elixir
+  # A struct
+  iex> %Crux.Structs.Guild{id: 269508806759809042, banner: "29c1980a3471cb2d5c1208c5196278fb"}
+  ...> |> Crux.Rest.CDN.guild_banner()
+  "#{@base_url}/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.webp"
+
+    # A plain map
+  iex> %{id: 269508806759809042, banner: "29c1980a3471cb2d5c1208c5196278fb"}
+  ...> |> Crux.Rest.CDN.guild_banner()
+  "#{@base_url}/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.webp"
+
+  # With format_options
+  iex> %Crux.Structs.Guild{id: 269508806759809042, banner: "29c1980a3471cb2d5c1208c5196278fb"}
+  ...> |> Crux.Rest.CDN.guild_banner(size: 16, extension: "png")
+  "#{@base_url}/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.png?size=16"
+
+  # Without banner
+  iex> %Crux.Structs.Guild{id: 269508806759809042, banner: nil}
+  ...> |> Crux.Rest.CDN.guild_banner()
+  nil
+
+    ```
+  """
+  @spec guild_banner(
+          Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), banner: String.t() | nil},
+          format_options()
+        ) :: String.t() | nil
+  Version.since("0.2.0")
+  def guild_banner(guild, options \\ [])
+  def guild_banner(%{banner: nil}, _options), do: nil
+
+  def guild_banner(%{id: id, banner: banner}, options) do
+    extension = options[:extension] || "webp"
+    qs = if options[:size], do: "?size=#{options[:size]}", else: ""
+
+    "#{@base_url}/banners/#{id}/#{banner}.#{extension}#{qs}"
   end
 
   @doc """

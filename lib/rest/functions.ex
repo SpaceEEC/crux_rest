@@ -446,6 +446,7 @@ defmodule Crux.Rest.Functions do
       |> Map.new()
       |> Util.resolve_image_in_map(:icon)
       |> Util.resolve_image_in_map(:splash)
+      |> Util.resolve_image_in_map(:banner)
 
     Request.new(:patch, path, data)
     |> Request.set_transform(Guild)

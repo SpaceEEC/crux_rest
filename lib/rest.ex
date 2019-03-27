@@ -721,6 +721,7 @@ defmodule Crux.Rest do
             optional(:afk_timeout) => non_neg_integer(),
             optional(:icon) => Util.image(),
             optional(:splash) => Util.image(),
+            optional(:banner) => Util.image(),
             optional(:owner_id) => Crux.Rest.snowflake(),
             optional(:system_channel_id) => Crux.Rest.snowflake() | nil,
             optional(:reason) => String.t()
@@ -735,6 +736,7 @@ defmodule Crux.Rest do
               | {:afk_timeout, non_neg_integer()}
               | {:icon, Util.image()}
               | {:splash, Util.image()}
+              | {:banner, Util.image()}
               | {:owner_id, Crux.Rest.snowflake()}
               | {:system_channel_id, Crux.Rest.snowflake() | nil}
               | {:reason, String.t()}
