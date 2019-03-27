@@ -38,7 +38,8 @@ defmodule Crux.Rest.MixProject do
 
   defp deps do
     [
-      {:crux_structs, "~> 0.1.6"},
+      # TODO: Depend on v2 as soon as released
+      {:crux_structs, git: "https://github.com/spaceeec/crux_structs.git"},
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
