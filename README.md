@@ -28,7 +28,15 @@ After providing a token to use via either your [config.exs](/config/config.exs),
 For example:
 
 ```elixir
-  iex> Crux.Rest.create_message!(445290716198076427, content: "Hello there!")
+  iex> defmodule MyBot.Rest do
+  ...>   use Crux.Rest
+  ...> end
+  {:module, MyBot.Rest, <<...>>, :ok}
+
+  iex> {:ok, pid} = MyBot.Rest.start_link(token: "token", retry_limit: 3)
+  {:ok, #PID<0.100.0>}
+
+  iex> MyBot.Rest.create_message!(445290716198076427, content: "Hello there!")
   %Crux.Structs.Message{
     content: "Hello there!",
     author: %Crux.Structs.User{...},
