@@ -1683,6 +1683,10 @@ defmodule Crux.Rest do
 
       use Crux.Rest.Gen.Bang, :functions
 
+      def start_link(arg) do
+        unquote(__MODULE__).start_link({__MODULE__, arg})
+      end
+
       def child_spec(arg) do
         unquote(__MODULE__).child_spec({__MODULE__, arg})
       end
