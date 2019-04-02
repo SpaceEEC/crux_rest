@@ -3,8 +3,8 @@ defmodule Crux.Rest.Handler do
 
   defstruct [:name, :retries, :route, :remaining, :reset, :timer]
 
-  alias Crux.Rest.{Handler, Request, HTTP}
   alias Crux.Rest.Handler.{Global, State}
+  alias Crux.Rest.{Handler, HTTP, Request}
 
   require Logger
 
@@ -55,6 +55,7 @@ defmodule Crux.Rest.Handler do
   ### Server
 
   @doc false
+  @impl true
   def init({name, route}) do
     Logger.debug(fn -> "[Crux][Rest][Handler][#{route}]: Starting" end)
 
@@ -72,6 +73,7 @@ defmodule Crux.Rest.Handler do
 
   @doc false
   # Handler is idle, shutdown
+  @impl true
   def handle_info(:shutdown, %Handler{route: route} = state) do
     Logger.debug(fn -> "[Crux][Rest][Handler][#{route}]: Stopping idle handler" end)
 
@@ -88,6 +90,7 @@ defmodule Crux.Rest.Handler do
   end
 
   # Queue request, clear timer
+  @impl true
   def handle_call({:queue, _request} = message, from, %Handler{timer: timer} = state)
       when not is_nil(timer) do
     :timer.cancel(timer)
@@ -144,12 +147,10 @@ defmodule Crux.Rest.Handler do
       handle_call(message, from, state)
     else
       reset_time =
-        cond do
-          is_integer(state.reset) ->
-            max(state.reset - :os.system_time(:milli_seconds), 0)
-
-          true ->
-            0
+        if is_integer(state.reset) do
+          max(state.reset - :os.system_time(:milli_seconds), 0)
+        else
+          0
         end
 
       {:ok, ref} = :timer.send_after(reset_time, :shutdown)
@@ -169,17 +170,20 @@ defmodule Crux.Rest.Handler do
          {:ok, %HTTPoison.Response{headers: headers}}
        ) do
     date =
-      List.keyfind(headers, "Date", 0)
+      headers
+      |> List.keyfind("Date", 0)
       |> parse_header()
 
     Global.add_offset(name, date)
 
     remaining =
-      List.keyfind(headers, "X-RateLimit-Remaining", 0)
+      headers
+      |> List.keyfind("X-RateLimit-Remaining", 0)
       |> parse_header()
 
     reset =
-      List.keyfind(headers, "X-RateLimit-Reset", 0)
+      headers
+      |> List.keyfind("X-RateLimit-Reset", 0)
       |> parse_header()
 
     if remaining && reset do
@@ -208,7 +212,7 @@ defmodule Crux.Rest.Handler do
           reset - :os.system_time(:milli_seconds)
       end
 
-    if List.keyfind(headers, "X-RateLimit-Global", 0) |> parse_header() == true do
+    if headers |> List.keyfind("X-RateLimit-Global", 0) |> parse_header() == true do
       Global.set_global_wait(name, retry_after)
     end
 
@@ -255,7 +259,7 @@ defmodule Crux.Rest.Handler do
     end
   end
 
-  defp parse_header({_name, value}), do: value |> String.to_integer()
+  defp parse_header({_name, value}), do: String.to_integer(value)
 
   defp wait(timeout, route) when timeout > 0 do
     Logger.debug("[Crux][Rest][Handler][#{route}]: Rate limited, waiting #{timeout}ms")

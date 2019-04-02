@@ -6,10 +6,12 @@ defmodule Crux.Rest.Handler.Supervisor do
 
   use Supervisor
 
+  @spec start_link(term()) :: Supervisor.on_start()
   def start_link({name, _state} = args) do
     Supervisor.start_link(__MODULE__, args, name: name)
   end
 
+  @spec init(term()) :: {:ok, tuple()}
   def init({name, state}) do
     registry = Module.concat(name, Registry)
 
@@ -27,6 +29,7 @@ defmodule Crux.Rest.Handler.Supervisor do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
+  @spec start_child(Supervisor.supervisor(), String.t()) :: Supervisor.on_start_child()
   def start_child(name, route) do
     Supervisor.start_child(
       name,

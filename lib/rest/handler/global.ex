@@ -57,6 +57,7 @@ defmodule Crux.Rest.Handler.Global do
   end
 
   @doc false
+  @impl true
   def init(_) do
     offsets = []
     reset = 0
@@ -64,6 +65,7 @@ defmodule Crux.Rest.Handler.Global do
   end
 
   @doc false
+  @impl true
   def handle_call(:offset, _from, {offsets, _reset} = state) when length(offsets) <= 0 do
     {:reply, 0, state}
   end

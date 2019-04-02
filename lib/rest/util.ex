@@ -96,7 +96,7 @@ defmodule Crux.Rest.Util do
 
   @spec resolve_multipart(map()) :: {{:multipart, list()} | map(), list()}
   def resolve_multipart(%{files: [_ | _] = files} = data) do
-    form_data = Enum.map(files, &transform_attachment/1)
+    multipart_files = Enum.map(files, &transform_attachment/1)
 
     form_data =
       if map_size(data) > 1 do
@@ -105,9 +105,9 @@ defmodule Crux.Rest.Util do
           |> Map.delete(:files)
           |> Poison.encode!()
 
-        [{"payload_json", payload_json}]
+        [{"payload_json", payload_json} | multipart_files]
       else
-        form_data
+        multipart_files
       end
 
     {{:multipart, form_data}, [{"content-type", "multipart/form-data"}]}

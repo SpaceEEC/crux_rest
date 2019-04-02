@@ -4,6 +4,7 @@ defmodule Crux.Rest.Request do
   """
 
   alias Crux.Rest.Version
+  alias Crux.Structs
   require Version
 
   Version.modulesince("0.2.0")
@@ -109,7 +110,7 @@ defmodule Crux.Rest.Request do
 
   def transform(%__MODULE__{transform: struct}, data)
       when is_atom(struct) do
-    Crux.Structs.create(data, struct)
+    Structs.create(data, struct)
   end
 
   def transform(%__MODULE__{transform: fun}, data)

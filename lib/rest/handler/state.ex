@@ -9,10 +9,9 @@ defmodule Crux.Rest.Handler.State do
   Version.modulesince("0.2.0")
 
   @doc false
+  @spec start_link(term()) :: GenServer.on_start()
   def start_link({name, _state} = args) do
-    name =
-      name
-      |> Module.concat(State)
+    name = Module.concat(name, State)
 
     GenServer.start_link(__MODULE__, args, name: name)
   end
@@ -20,6 +19,7 @@ defmodule Crux.Rest.Handler.State do
   @doc false
   Version.since("0.2.0")
 
+  @spec init(term()) :: {:ok, term()}
   def init({name, state}) do
     name =
       name

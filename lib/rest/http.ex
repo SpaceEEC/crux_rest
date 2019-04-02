@@ -4,17 +4,21 @@ defmodule Crux.Rest.HTTP do
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
 
-  alias Crux.Rest.{Endpoints}
+  alias Mix.Project
+
+  alias Crux.Rest.Endpoints
 
   # See: https://discordapp.com/developers/docs/reference#user-agent
-  url = Mix.Project.config()[:source_url]
-  version = Mix.Project.config()[:version]
+  url = Project.config()[:source_url]
+  version = Project.config()[:version]
   @user_agent "DiscordBot (#{url}, v#{version})"
 
+  @spec process_request_body(term()) :: term()
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
   def process_request_body(body), do: Poison.encode!(body)
 
+  @spec process_request_headers(Keyword.t()) :: Keyword.t()
   def process_request_headers(headers) do
     headers
     |> Keyword.put_new(:"content-type", "application/json")
@@ -36,6 +40,7 @@ defmodule Crux.Rest.HTTP do
     )
   end
 
+  @spec request(Crux.Rest.Request.t()) :: :ok | {:ok, term()} | {:error, term()}
   def request(%Crux.Rest.Request{
         method: method,
         path: path,
@@ -60,7 +65,8 @@ defmodule Crux.Rest.HTTP do
           options :: Keyword.t()
         ) :: :ok | {:ok, term()} | {:error, term()}
   def request(method, route, body, headers, options) do
-    super(method, Endpoints.base_url() <> route, body, headers, options)
+    method
+    |> super(Endpoints.base_url() <> route, body, headers, options)
     |> handle_response()
   end
 

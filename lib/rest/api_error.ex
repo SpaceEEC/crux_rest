@@ -82,12 +82,14 @@ defmodule Crux.Rest.ApiError do
 
   defp map_inner(error, key) when is_map(error) do
     Enum.map_join(error, "\n", fn {k, v} ->
-      cond do
-        key && Regex.match?(~r/\d+/, k) -> "#{key}[#{k}]"
-        key -> "#{key}.#{k}"
-        true -> k
-      end
-      |> transform_value(v)
+      new_k =
+        cond do
+          key && Regex.match?(~r/\d+/, k) -> "#{key}[#{k}]"
+          key -> "#{key}.#{k}"
+          true -> k
+        end
+
+      transform_value(new_k, v)
     end)
   end
 

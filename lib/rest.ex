@@ -1437,9 +1437,15 @@ defmodule Crux.Rest do
 
   @callback execute_webhook(
               webhook :: Webhook.t(),
+              data :: Crux.Rest.execute_webhook_options()
+            ) :: :ok
+  Version.since("0.2.0")
+
+  @callback execute_webhook(
+              webhook :: Webhook.t(),
               wait :: boolean() | nil,
               data :: Crux.Rest.execute_webhook_options()
-            ) :: :ok | {:ok, Message.t()} | {:error, term}
+            ) :: :ok | {:ok, Message.t()} | {:error, term()}
   Version.since("0.2.0")
 
   @callback execute_webhook(
@@ -1456,6 +1462,9 @@ defmodule Crux.Rest do
 
     For more information see [Slack Docs](https://api.slack.com/custom-integrations/outgoing-webhooks)
   """
+  Version.since("0.2.0")
+
+  @callback execute_slack_webhook(webhook :: Webhook.t(), data :: term()) :: :ok
   Version.since("0.2.0")
 
   @callback execute_slack_webhook(
@@ -1481,6 +1490,11 @@ defmodule Crux.Rest do
 
     For more information see [Github Docs](https://developer.github.com/webhooks/)
   """
+  Version.since("0.2.0")
+
+  @callback execute_github_webhook(webhook :: Webhook.t(), event :: String.t(), data :: term()) ::
+              :ok
+
   Version.since("0.2.0")
 
   @callback execute_github_webhook(

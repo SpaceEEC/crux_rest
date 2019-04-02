@@ -250,7 +250,7 @@ defmodule Crux.Rest.CDN do
   def default_user_avatar(user)
 
   def default_user_avatar(%{discriminator: discrim}) do
-    user_discriminator = String.to_integer(discrim) |> rem(5)
+    user_discriminator = discrim |> String.to_integer() |> rem(5)
     "#{@base_url}/embed/avatars/#{user_discriminator}.png"
   end
 
