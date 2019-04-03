@@ -33,8 +33,8 @@ defmodule Crux.Rest.ApiError do
           status_code: integer(),
           code: integer() | nil,
           message: String.t(),
-          path: atom(),
-          method: String.t()
+          path: String.t(),
+          method: atom()
         }
 
   @doc """
