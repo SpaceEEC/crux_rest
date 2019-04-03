@@ -1,7 +1,7 @@
 defmodule Crux.Rest.MixProject do
   use Mix.Project
 
-  @vsn "0.2.0-dev"
+  @vsn "0.2.0"
   @name :crux_rest
 
   def project do
@@ -38,8 +38,7 @@ defmodule Crux.Rest.MixProject do
 
   defp deps do
     [
-      # TODO: Depend on v2 as soon as released
-      {:crux_structs, git: "https://github.com/spaceeec/crux_structs.git"},
+      {:crux_structs, "~> 0.2.0"},
       {:httpoison, "~> 1.1.1"},
       {:timex, "~> 3.2.2"},
       {:poison, "~> 3.1.0"},
