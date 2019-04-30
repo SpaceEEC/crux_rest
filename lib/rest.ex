@@ -963,7 +963,8 @@ defmodule Crux.Rest do
     Used to modify a member with `c:modify_guild_member/3`.
 
     Notes:
-    - `:mute`, `:deaf`, and `:channel_id` will silently be discarded by discord if the member is not connected to a voice channel.
+    - `:mute`, `:deaf`, and `:channel_id` will silently be discarded by Discord if the member is not connected to a voice channel.
+    - A `nil` `:channel_id` will kick the member from the voice channel.
   """
   Version.typesince("0.1.0")
 
@@ -973,7 +974,7 @@ defmodule Crux.Rest do
             optional(:roles) => [Crux.Rest.snowflake()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
-            optional(:channel_id) => Crux.Rest.snowflake(),
+            optional(:channel_id) => Crux.Rest.snowflake() | nil,
             optional(:reason) => String.t()
           }
           | [
@@ -981,7 +982,7 @@ defmodule Crux.Rest do
               | {:roles, [Crux.Rest.snowflake()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
-              | {:channel_id, Crux.Rest.snowflake()}
+              | {:channel_id, Crux.Rest.snowflake() | nil}
               | {:reason, String.t()}
             ]
 
