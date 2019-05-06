@@ -963,7 +963,6 @@ defmodule Crux.Rest do
     Used to modify a member with `c:modify_guild_member/3`.
 
     Notes:
-    - `:mute`, `:deaf`, and `:channel_id` will silently be discarded by Discord if the member is not connected to a voice channel.
     - A `nil` `:channel_id` will kick the member from the voice channel.
   """
   Version.typesince("0.1.0")
