@@ -86,11 +86,11 @@ defmodule Crux.Rest.Handler.Global do
   end
 
   def handle_call(:retry, _from, {_offsets, reset} = state) do
-    {:reply, reset - :os.system_time(:milli_seconds), state}
+    {:reply, reset - :os.system_time(:millisecond), state}
   end
 
   def handle_call({:retry, retry_after}, _from, {offsets, reset}) do
-    reset = Enum.max(retry_after + :os.system_time(:milli_seconds), reset)
+    reset = Enum.max(retry_after + :os.system_time(:millisecond), reset)
 
     {:reply, :ok, {offsets, reset}}
   end

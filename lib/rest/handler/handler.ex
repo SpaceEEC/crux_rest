@@ -107,7 +107,7 @@ defmodule Crux.Rest.Handler do
         %Handler{route: route, reset: reset, remaining: remaining} = state
       )
       when remaining <= 0 do
-    wait(reset - :os.system_time(:milli_seconds), route)
+    wait(reset - :os.system_time(:millisecond), route)
 
     state = %{state | remaining: 1}
 
@@ -135,7 +135,7 @@ defmodule Crux.Rest.Handler do
     # https://github.com/discordapp/discord-api-docs/issues/182
     state =
       if request.rate_limit_reset do
-        %{state | reset: request.rate_limit_reset + :os.system_time(:milli_seconds)}
+        %{state | reset: request.rate_limit_reset + :os.system_time(:millisecond)}
       else
         state
       end
@@ -148,7 +148,7 @@ defmodule Crux.Rest.Handler do
     else
       reset_time =
         if is_integer(state.reset) do
-          max(state.reset - :os.system_time(:milli_seconds), 0)
+          max(state.reset - :os.system_time(:millisecond), 0)
         else
           0
         end
@@ -209,7 +209,7 @@ defmodule Crux.Rest.Handler do
           retry_after
 
         _ ->
-          reset - :os.system_time(:milli_seconds)
+          reset - :os.system_time(:millisecond)
       end
 
     if headers |> List.keyfind("X-RateLimit-Global", 0) |> parse_header() == true do
@@ -252,7 +252,7 @@ defmodule Crux.Rest.Handler do
   defp parse_header({"Date", value}) do
     case Timex.parse(value, "{WDshort}, {D} {Mshort} {YYYY} {h24}:{m}:{s} {Zabbr}") do
       {:ok, date_time} ->
-        DateTime.to_unix(date_time, :milli_seconds) - :os.system_time(:milli_seconds)
+        DateTime.to_unix(date_time, :millisecond) - :os.system_time(:millisecond)
 
       {:error, _} ->
         nil
