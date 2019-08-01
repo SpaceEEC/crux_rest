@@ -87,6 +87,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def edit_message(channel, message, data) do
+    data = Map.new(data)
+
     :patch
     |> common_message(
       channel,
