@@ -24,3 +24,5 @@ crux_rest-*.tar
 
 .elixir_ls
 _lib/
+
+lib/rest/test.ex
