@@ -30,7 +30,7 @@ defmodule Crux.Rest.Handler do
   First element of the tuple is the route of the request.
   The second element is list of parameters passed via `:erlang.apply/3` to `HTTPoison.Base.request/5`.
 
-  For the non API errors see `HTTPoison.Base.request/5` and `Poison.decode/2`.
+  For the non API errors see `HTTPoison.Base.request/5` and `Jason.decode/2`.
   """
   @spec queue(name :: atom(), request :: Request.t()) :: term()
   def queue(name, %Request{route: route} = request) do

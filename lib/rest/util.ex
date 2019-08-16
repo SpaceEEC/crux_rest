@@ -103,7 +103,7 @@ defmodule Crux.Rest.Util do
         payload_json =
           data
           |> Map.delete(:files)
-          |> Poison.encode!()
+          |> Jason.encode!()
 
         [{"payload_json", payload_json} | multipart_files]
       else

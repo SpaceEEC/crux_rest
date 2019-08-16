@@ -40,15 +40,14 @@ defmodule Crux.Rest.MixProject do
   defp deps do
     [
       {:crux_structs, "~> 0.2.0"},
-      {:httpoison, "~> 1.1.1"},
-      {:timex, "~> 3.2.2"},
-      {:poison, "~> 3.1.0"},
+      {:httpoison, "~> 1.5.1"},
+      {:jason, "~> 1.1.2"},
       {:ex_doc,
        git: "https://github.com/spaceeec/ex_doc",
        branch: "feat/umbrella",
        only: :dev,
        runtime: false},
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.1.2", only: [:dev, :test], runtime: false}
     ]
   end
 

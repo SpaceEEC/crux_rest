@@ -16,7 +16,7 @@ defmodule Crux.Rest.HTTP do
   @spec process_request_body(term()) :: term()
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
-  def process_request_body(body), do: Poison.encode!(body)
+  def process_request_body(body), do: Jason.encode!(body)
 
   @spec process_request_headers(Keyword.t()) :: Keyword.t()
   def process_request_headers(headers) do
@@ -77,7 +77,7 @@ defmodule Crux.Rest.HTTP do
 
   defp handle_response({:ok, %HTTPoison.Response{body: body} = res}) do
     body
-    |> Poison.decode()
+    |> Jason.decode()
     |> case do
       {:ok, body} ->
         {:ok, %{res | body: body}}
