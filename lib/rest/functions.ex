@@ -183,8 +183,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_reaction(channel, message, emoji) do
-    :put
-    |> common_message(
+    common_message(
+      :put,
       channel,
       message,
       &Endpoints.message_reactions(&1, &2, emoji, "@me")

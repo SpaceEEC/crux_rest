@@ -235,7 +235,6 @@ defmodule Crux.Rest.Handler do
   defp parse_header({"X-RateLimit-Remaining", value}), do: String.to_integer(value)
 
   defp parse_header({"X-RateLimit-Reset-After", value}) do
-
     {value, ""} = Float.parse(value)
     trunc(value * 1000) + :os.system_time(:millisecond)
   end
