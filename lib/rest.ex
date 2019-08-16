@@ -656,11 +656,12 @@ defmodule Crux.Rest do
             optional(:name) => String.t(),
             optional(:roles) => [Role.t() | Crux.Rest.snowflake()],
             optional(:reason) => String.t()
-          } :: [
-            {:name, String.t()}
-            | {:roles, [Role.t() | Crux.Rest.snowflake()]}
-            | {:reason, String.t()}
-          ]
+          }
+          | [
+              {:name, String.t()}
+              | {:roles, [Role.t() | Crux.Rest.snowflake()]}
+              | {:reason, String.t()}
+            ]
 
   @doc """
     Modifies a guild emoji.
