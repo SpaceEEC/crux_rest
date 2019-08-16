@@ -22,6 +22,7 @@ defmodule Crux.Rest.HTTP do
   def process_request_headers(headers) do
     headers
     |> Keyword.put_new(:"content-type", "application/json")
+    |> Keyword.put_new(:"X-RateLimit-Precision", "millisecond")
     |> Keyword.put_new(:"user-agent", @user_agent)
   end
 

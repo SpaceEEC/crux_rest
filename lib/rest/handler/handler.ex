@@ -132,14 +132,6 @@ defmodule Crux.Rest.Handler do
       |> handle_headers(res)
       |> handle_response(res)
 
-    # https://github.com/discordapp/discord-api-docs/issues/182
-    state =
-      if request.rate_limit_reset do
-        %{state | reset: request.rate_limit_reset + :os.system_time(:millisecond)}
-      else
-        state
-      end
-
     if is_number(wait) do
       Logger.debug("[Crux][Rest][Handler][#{route}]: Waiting #{wait}ms")
       :timer.sleep(wait)
@@ -166,16 +158,9 @@ defmodule Crux.Rest.Handler do
 
   # Apply rate limit and date header
   defp handle_headers(
-         %Handler{name: name} = state,
+         %Handler{} = state,
          {:ok, %HTTPoison.Response{headers: headers}}
        ) do
-    date =
-      headers
-      |> List.keyfind("Date", 0)
-      |> parse_header()
-
-    Global.add_offset(name, date)
-
     remaining =
       headers
       |> List.keyfind("X-RateLimit-Remaining", 0)
@@ -183,12 +168,10 @@ defmodule Crux.Rest.Handler do
 
     reset =
       headers
-      |> List.keyfind("X-RateLimit-Reset", 0)
+      |> List.keyfind("X-RateLimit-Reset-After", 0)
       |> parse_header()
 
     if remaining && reset do
-      reset = reset * 1000 - Global.fetch_offset(name)
-
       %{state | remaining: remaining, reset: reset}
     else
       state
@@ -249,17 +232,13 @@ defmodule Crux.Rest.Handler do
   defp parse_header(nil), do: nil
   defp parse_header({"X-RateLimit-Global", _value}), do: true
 
-  defp parse_header({"Date", value}) do
-    case Timex.parse(value, "{WDshort}, {D} {Mshort} {YYYY} {h24}:{m}:{s} {Zabbr}") do
-      {:ok, date_time} ->
-        DateTime.to_unix(date_time, :millisecond) - :os.system_time(:millisecond)
+  defp parse_header({"X-RateLimit-Remaining", value}), do: String.to_integer(value)
 
-      {:error, _} ->
-        nil
-    end
+  defp parse_header({"X-RateLimit-Reset-After", value}) do
+
+    {value, ""} = Float.parse(value)
+    trunc(value * 1000) + :os.system_time(:millisecond)
   end
-
-  defp parse_header({_name, value}), do: String.to_integer(value)
 
   defp wait(timeout, route) when timeout > 0 do
     Logger.debug("[Crux][Rest][Handler][#{route}]: Rate limited, waiting #{timeout}ms")

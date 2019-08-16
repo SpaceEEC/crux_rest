@@ -15,7 +15,6 @@ defmodule Crux.Rest.Request do
     :route,
     :path,
     :transform,
-    :rate_limit_reset,
     :params,
     data: "",
     headers: []
@@ -89,14 +88,6 @@ defmodule Crux.Rest.Request do
   @spec set_token(t(), token :: String.t() | nil) :: t()
   def set_token(%__MODULE__{headers: headers} = t, token) do
     %{t | headers: [{"authorization", "Bot " <> token} | headers]}
-  end
-
-  @doc false
-  # https://github.com/discordapp/discord-api-docs/issues/182
-  Version.since("0.2.0")
-  @spec set_rate_limit_reset(t(), reset :: non_neg_integer() | nil) :: t()
-  def set_rate_limit_reset(%__MODULE__{} = t, reset) do
-    %{t | rate_limit_reset: reset}
   end
 
   ### End Create / Set

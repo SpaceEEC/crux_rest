@@ -189,8 +189,6 @@ defmodule Crux.Rest.Functions do
       message,
       &Endpoints.message_reactions(&1, &2, emoji, "@me")
     )
-    # https://github.com/discordapp/discord-api-docs/issues/182
-    |> Request.set_rate_limit_reset(250)
   end
 
   @impl true
