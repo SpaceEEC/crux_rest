@@ -1091,6 +1091,15 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
+  def get_current_user() do
+    path = Endpoints.me()
+
+    :get
+    |> Request.new(path)
+    |> Request.set_transform(User)
+  end
+
+  @impl true
   def modify_current_user(data) do
     path = Endpoints.me()
 

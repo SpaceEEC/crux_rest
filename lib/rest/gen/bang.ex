@@ -1,12 +1,112 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-02-20T09:50:23.761000Z
+  # Generated 2019-08-17T13:26:07.788000Z
 
   alias Crux.Rest.Version
   require Version
 
   defmacro __using__(:callbacks) do
     quote location: :keep do
+      @doc "The same as `c:add_guild_member/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback add_guild_member!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  data :: Crux.Rest.add_guild_member_data()
+                ) :: Member.t() | no_return()
+
+      @doc "The same as `c:add_guild_member_role/4`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback add_guild_member_role!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  member :: Crux.Rest.Util.user_id_resolvable(),
+                  role :: Crux.Rest.Util.role_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:add_pinned_message/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback add_pinned_message!(message :: Message.t()) :: :ok | no_return()
+
+      @doc "The same as `c:add_pinned_message/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback add_pinned_message!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  message :: Crux.Rest.Util.message_id_resolvable()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:begin_guild_prune/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback begin_guild_prune!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  opts :: Crux.Rest.begin_guild_prune_opts()
+                ) :: non_neg_integer() | no_return()
+
+      @doc "The same as `c:create_channel_invite/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_channel_invite!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  args :: Crux.Rest.create_channel_invite_data()
+                ) :: Invite.t() | no_return()
+
+      @doc "The same as `c:create_dm/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_dm!(user :: Crux.Rest.Util.user_id_resolvable()) ::
+                  Channel.t() | no_return()
+
+      @doc "The same as `c:create_guild/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback create_guild!(term()) :: Guild.t() | no_return()
+
+      @doc "The same as `c:create_guild_ban/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_guild_ban!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:create_guild_channel/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_guild_channel!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data :: Crux.Rest.create_guild_channel_data()
+                ) :: Channel.t() | no_return()
+
+      @doc "The same as `c:create_guild_emoji/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_guild_emoji!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data :: Crux.Rest.create_guild_emoji_data()
+                ) :: Emoji | no_return()
+
+      @doc "The same as `c:create_guild_integration/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_guild_integration!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data ::
+                    %{required(:type) => String.t(), required(:id) => Crux.Rest.snowflake()}
+                    | [{:type, String.t()} | {:id, Crux.Rest.snowflake()}]
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:create_guild_role/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback create_guild_role!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data :: Crux.Rest.guild_role_data()
+                ) :: Role.t() | no_return()
+
       @doc "The same as `c:create_message/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
@@ -15,20 +115,92 @@ defmodule Crux.Rest.Gen.Bang do
                   args :: Crux.Rest.create_message_data()
                 ) :: Message.t() | no_return()
 
-      @doc "The same as `c:edit_message/2`, but raises an exception if it fails."
+      @doc "The same as `c:create_reaction/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback edit_message!(target :: Message.t(), args :: Crux.Rest.message_edit_data()) ::
-                  Message.t() | no_return()
+      @callback create_reaction!(
+                  message :: Crux.Rest.Util.message_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
+                ) :: :ok | no_return()
 
-      @doc "The same as `c:edit_message/3`, but raises an exception if it fails."
+      @doc "The same as `c:create_reaction/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback edit_message!(
-                  channel_id :: Crux.Rest.Util.channel_id_resolvable(),
-                  message_id :: Crux.Rest.Util.message_id_resolvable(),
-                  args :: Crux.Rest.message_edit_data()
-                ) :: Message.t() | no_return()
+      @callback create_reaction!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  message :: Crux.Rest.Util.message_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_id_resolvable()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_all_reactions/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_all_reactions!(
+                  message :: Message.t(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_all_reactions/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_all_reactions!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  message :: Crux.Rest.Util.message_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_channel/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_channel!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  reason :: String.t()
+                ) :: Channel.t() | no_return()
+
+      @doc "The same as `c:delete_channel_permissions/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_channel_permissions!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  target :: Crux.Rest.Util.overwrite_target_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_guild/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback delete_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
+
+      @doc "The same as `c:delete_guild_emoji/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_guild_emoji!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_guild_integration/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_guild_integration!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  integration_id :: Crux.Rest.snowflake()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_guild_role/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_guild_role!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  role :: Crux.Rest.Util.role_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:delete_invite/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback delete_invite!(invite_or_code :: String.t() | Invite.t()) ::
+                  Invite.t() | no_return()
 
       @doc "The same as `c:delete_message/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -50,103 +222,6 @@ defmodule Crux.Rest.Gen.Bang do
                   messages :: [Crux.Rest.Util.message_id_resolvable()]
                 ) :: :ok | no_return()
 
-      @doc "The same as `c:get_message/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_message!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message_id :: Crux.Rest.Util.message_id_resolvable()
-                ) :: Message | no_return()
-
-      @doc "The same as `c:get_messages/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_messages!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  args :: Crux.Rest.get_messages_data()
-                ) :: %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
-
-      @doc "The same as `c:create_reaction/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_reaction!(
-                  message :: Crux.Rest.Util.message_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:create_reaction/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_reaction!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message :: Crux.Rest.Util.message_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_id_resolvable()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_reactions/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_reactions!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message :: Crux.Rest.Util.message_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
-                  args :: Crux.Rest.get_reactions_data()
-                ) :: %{required(Crux.Rest.snowflake()) => User.t()} | no_return()
-
-      @doc "The same as `c:get_reactions/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_reactions!(
-                  message :: Message.t(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
-                  args :: Crux.Rest.get_reactions_data()
-                ) :: %{required(Crux.Rest.snowflake()) => User.t()} | no_return()
-
-      @doc "The same as `c:delete_reaction/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_reaction!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message :: Crux.Rest.Util.message_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:delete_all_reactions/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_all_reactions!(
-                  message :: Message.t(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:delete_all_reactions/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_all_reactions!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message :: Crux.Rest.Util.message_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:trigger_typing/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback trigger_typing!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
-                  :ok | no_return()
-
-      @doc "The same as `c:add_pinned_message/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback add_pinned_message!(message :: Message.t()) :: :ok | no_return()
-
-      @doc "The same as `c:add_pinned_message/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback add_pinned_message!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  message :: Crux.Rest.Util.message_id_resolvable()
-                ) :: :ok | no_return()
-
       @doc "The same as `c:delete_pinned_message/1`, but raises an exception if it fails."
       Version.since("0.2.0")
       @callback delete_pinned_message!(message :: Message.t()) :: :ok | no_return()
@@ -159,27 +234,23 @@ defmodule Crux.Rest.Gen.Bang do
                   message :: Crux.Rest.Util.message_id_resolvable()
                 ) :: :ok | no_return()
 
-      @doc "The same as `c:get_channel/1`, but raises an exception if it fails."
+      @doc "The same as `c:delete_reaction/4`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback get_channel!(channel :: Crux.Rest.Util.resolve_channel_id()) ::
-                  Channel.t() | no_return()
-
-      @doc "The same as `c:modify_channel/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_channel!(
+      @callback delete_reaction!(
                   channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  data :: Crux.Rest.modify_channel_data()
-                ) :: Channel.t() | no_return()
+                  message :: Crux.Rest.Util.message_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable()
+                ) :: :ok | no_return()
 
-      @doc "The same as `c:delete_channel/2`, but raises an exception if it fails."
+      @doc "The same as `c:delete_webhook/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback delete_channel!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  reason :: String.t()
-                ) :: Channel.t() | no_return()
+      @callback delete_webhook!(
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  token :: String.t() | nil
+                ) :: :ok | no_return()
 
       @doc "The same as `c:edit_channel_permissions/3`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -190,456 +261,27 @@ defmodule Crux.Rest.Gen.Bang do
                   data :: Crux.Rest.edit_channel_permissions_data()
                 ) :: :ok | no_return()
 
-      @doc "The same as `c:get_channel_invites/1`, but raises an exception if it fails."
+      @doc "The same as `c:edit_message/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback get_channel_invites!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
-                  %{required(String.t()) => Invite.t()} | no_return()
+      @callback edit_message!(target :: Message.t(), args :: Crux.Rest.message_edit_data()) ::
+                  Message.t() | no_return()
 
-      @doc "The same as `c:create_channel_invite/2`, but raises an exception if it fails."
+      @doc "The same as `c:edit_message/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback create_channel_invite!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  args :: Crux.Rest.create_channel_invite_data()
-                ) :: Invite.t() | no_return()
+      @callback edit_message!(
+                  channel_id :: Crux.Rest.Util.channel_id_resolvable(),
+                  message_id :: Crux.Rest.Util.message_id_resolvable(),
+                  args :: Crux.Rest.message_edit_data()
+                ) :: Message.t() | no_return()
 
-      @doc "The same as `c:delete_channel_permissions/3`, but raises an exception if it fails."
+      @doc "The same as `c:execute_github_webhook/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback delete_channel_permissions!(
-                  channel :: Crux.Rest.Util.channel_id_resolvable(),
-                  target :: Crux.Rest.Util.overwrite_target_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_pinned_messages/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_pinned_messages!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
-                  %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
-
-      @doc "The same as `c:list_guild_emojis/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback list_guild_emojis!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{required(Crux.Rest.snowflake()) => Emoji.t()} | no_return()
-
-      @doc "The same as `c:get_guild_emoji/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_emoji!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_id_resolvable()
-                ) :: Emoji | no_return()
-
-      @doc "The same as `c:create_guild_emoji/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_guild_emoji!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data :: Crux.Rest.create_guild_emoji_data()
-                ) :: Emoji | no_return()
-
-      @doc "The same as `c:modify_guild_emoji/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_emoji!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_id_resolvable(),
-                  data :: Crux.Rest.modify_guild_emoji_data()
-                ) :: Emoji | no_return()
-
-      @doc "The same as `c:delete_guild_emoji/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_guild_emoji!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  emoji :: Crux.Rest.Util.emoji_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:create_guild/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback create_guild!(term()) :: Guild.t() | no_return()
-
-      @doc "The same as `c:get_guild/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  Guild.t() | no_return()
-
-      @doc "The same as `c:modify_guild/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data :: Crux.Rest.modify_guild_data()
-                ) :: Guild.t() | no_return()
-
-      @doc "The same as `c:delete_guild/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback delete_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
-
-      @doc "The same as `c:get_audit_logs/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_audit_logs!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  options :: Crux.Rest.audit_log_options() | nil
-                ) :: AuditLog.t() | no_return()
-
-      @doc "The same as `c:get_guild_channels/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_channels!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
-
-      @doc "The same as `c:create_guild_channel/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_guild_channel!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data :: Crux.Rest.create_guild_channel_data()
-                ) :: Channel.t() | no_return()
-
-      @doc "The same as `c:modify_guild_channel_positions/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_channel_positions!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_guild_member/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_member!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable()
-                ) :: Member.t() | no_return()
-
-      @doc "The same as `c:list_guild_members/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback list_guild_members!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  options :: Crux.Rest.list_guild_members_options()
-                ) :: %{required(Crux.Rest.snowflake()) => Member.t()} | no_return()
-
-      @doc "The same as `c:add_guild_member/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback add_guild_member!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  data :: Crux.Rest.add_guild_member_data()
-                ) :: Member.t() | no_return()
-
-      @doc "The same as `c:modify_guild_member/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_member!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  member :: Crux.Rest.Util.user_id_resolvable(),
-                  data :: Crux.Rest.modify_guild_member_data()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:modify_current_users_nick/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_current_users_nick!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  nick :: String.t(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:add_guild_member_role/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback add_guild_member_role!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  member :: Crux.Rest.Util.user_id_resolvable(),
-                  role :: Crux.Rest.Util.role_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:remove_guild_member_role/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback remove_guild_member_role!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  member :: Crux.Rest.Util.user_id_resolvable(),
-                  role :: Crux.Rest.Util.role_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_guild_bans/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_bans!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{
-                    optional(Crux.Rest.snowflake()) => %{
-                      required(:user) => User.t(),
-                      required(:reason) => String.t() | nil
-                    }
-                  }
-                  | no_return()
-
-      @doc "The same as `c:get_guild_ban/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_ban!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable()
-                ) ::
-                  %{required(:user) => User.t(), required(:reason) => String.t() | nil}
-                  | no_return()
-
-      @doc "The same as `c:create_guild_ban/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_guild_ban!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:remove_guild_ban/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback remove_guild_ban!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_guild_roles/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_roles!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
-
-      @doc "The same as `c:create_guild_role/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_guild_role!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data :: Crux.Rest.guild_role_data()
-                ) :: Role.t() | no_return()
-
-      @doc "The same as `c:modify_guild_role_positions/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_role_positions!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data :: Crux.Rest.Util.modify_guild_role_positions_data()
-                ) :: %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
-
-      @doc "The same as `c:modify_guild_role/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_role!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  role :: Crux.Rest.Util.role_id_resolvable(),
-                  data :: Crux.Rest.guild_role_data()
-                ) :: Role.t() | no_return()
-
-      @doc "The same as `c:delete_guild_role/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_guild_role!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  role :: Crux.Rest.Util.role_id_resolvable(),
-                  reason :: String.t()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_guild_prune_count/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_prune_count!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  days :: pos_integer()
-                ) :: non_neg_integer() | no_return()
-
-      @doc "The same as `c:begin_guild_prune/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback begin_guild_prune!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  opts :: Crux.Rest.begin_guild_prune_opts()
-                ) :: non_neg_integer() | no_return()
-
-      @doc "The same as `c:get_guild_voice_regions/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_voice_regions!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  term() | no_return()
-
-      @doc "The same as `c:get_guild_invites/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_invites!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{optional(String.t()) => Invite.t()} | no_return()
-
-      @doc "The same as `c:get_guild_integrations/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_integrations!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  list() | no_return()
-
-      @doc "The same as `c:create_guild_integration/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback create_guild_integration!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data ::
-                    %{required(:type) => String.t(), required(:id) => Crux.Rest.snowflake()}
-                    | [{:type, String.t()} | {:id, Crux.Rest.snowflake()}]
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:modify_guild_integration/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_integration!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  integration_id :: Crux.Rest.snowflake(),
-                  data ::
-                    %{
-                      optional(:expire_behavior) => integer(),
-                      optional(:expire_grace_period) => integer(),
-                      optional(:enable_emoticons) => boolean()
-                    }
-                    | [
-                        {:expire_behavior, integer()}
-                        | {:expire_grace_period, integer()}
-                        | {:enable_emoticons, boolean()}
-                      ]
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:delete_guild_integration/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_guild_integration!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  integration_id :: Crux.Rest.snowflake()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:sync_guild_integration/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback sync_guild_integration!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  integration_id :: Crux.Rest.snowflake()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:get_guild_embed/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_embed!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  term() | no_return()
-
-      @doc "The same as `c:modify_guild_embed/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback modify_guild_embed!(
-                  guild :: Crux.Rest.Util.guild_id_resolvable(),
-                  data ::
-                    %{
-                      optional(:enabled) => boolean(),
-                      optional(:channel_id) => Crux.Rest.snowflake()
-                    }
-                    | [{:enabled, boolean()} | {:channel_id, Crux.Rest.snowflake()}]
-                ) :: term() | no_return()
-
-      @doc "The same as `c:get_guild_vanity_url/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_guild_vanity_url!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  String.t() | no_return()
-
-      @doc "The same as `c:list_guild_webhooks/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback list_guild_webhooks!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-                  %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
-
-      @doc "The same as `c:list_channel_webhooks/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback list_channel_webhooks!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
-                  %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
-
-      @doc "The same as `c:get_webhook/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback get_webhook!(
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  token :: String.t() | nil
-                ) :: Webhook.t() | no_return()
-
-      @doc "The same as `c:update_webhook/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback update_webhook!(
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  token :: String.t() | nil,
-                  data ::
-                    %{
-                      optional(:name) => String.t(),
-                      optional(:avatar) => Crux.Rest.Util.image(),
-                      optional(:channel_id) => Crux.Rest.snowflake()
-                    }
-                    | [
-                        {:name, String.t()}
-                        | {:avatar, Crux.Rest.Util.image()}
-                        | {:channel_id, Crux.Rest.snowflake()}
-                      ]
-                ) :: Webhook.t() | no_return()
-
-      @doc "The same as `c:delete_webhook/2`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback delete_webhook!(
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  token :: String.t() | nil
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:execute_webhook/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback execute_webhook!(
+      @callback execute_github_webhook!(
                   webhook :: Webhook.t(),
-                  wait :: boolean() | nil,
-                  data :: Crux.Rest.execute_webhook_options()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:execute_webhook/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback execute_webhook!(
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  token :: String.t(),
-                  wait :: boolean() | nil,
-                  data :: Crux.Rest.execute_webhook_options()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:execute_slack_webhook/3`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback execute_slack_webhook!(
-                  webhook :: Webhook.t(),
-                  wait :: boolean() | nil,
-                  data :: term()
-                ) :: :ok | no_return()
-
-      @doc "The same as `c:execute_slack_webhook/4`, but raises an exception if it fails."
-      Version.since("0.2.0")
-
-      @callback execute_slack_webhook!(
-                  user :: Crux.Rest.Util.user_id_resolvable(),
-                  token :: String.t(),
-                  wait :: boolean() | nil,
+                  event :: String.t(),
                   data :: term()
                 ) :: :ok | no_return()
 
@@ -664,43 +306,57 @@ defmodule Crux.Rest.Gen.Bang do
                   data :: term()
                 ) :: :ok | no_return()
 
-      @doc "The same as `c:get_invite/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback get_invite!(code :: String.t()) :: Invite.t() | no_return()
-
-      @doc "The same as `c:delete_invite/1`, but raises an exception if it fails."
+      @doc "The same as `c:execute_slack_webhook/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback delete_invite!(invite_or_code :: String.t() | Invite.t()) ::
-                  Invite.t() | no_return()
+      @callback execute_slack_webhook!(webhook :: Webhook.t(), data :: term()) ::
+                  :ok | no_return()
 
-      @doc "The same as `c:get_user/1`, but raises an exception if it fails."
+      @doc "The same as `c:execute_slack_webhook/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback get_user!(user :: Crux.Rest.Util.user_id_resolvable() | String.t()) ::
-                  User.t() | no_return()
+      @callback execute_slack_webhook!(
+                  webhook :: Webhook.t(),
+                  wait :: boolean() | nil,
+                  data :: term()
+                ) :: :ok | no_return()
 
-      @doc "The same as `c:modify_current_user/1`, but raises an exception if it fails."
+      @doc "The same as `c:execute_slack_webhook/4`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback modify_current_user!(data :: Crux.Rest.modify_current_user_data()) ::
-                  User.t() | no_return()
+      @callback execute_slack_webhook!(
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  token :: String.t(),
+                  wait :: boolean() | nil,
+                  data :: term()
+                ) :: :ok | no_return()
 
-      @doc "The same as `c:get_current_user_guilds/1`, but raises an exception if it fails."
+      @doc "The same as `c:execute_webhook/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback get_current_user_guilds!(data :: Crux.Rest.get_current_user_guild_data()) ::
-                  %{required(Crux.Rest.snowflake()) => Guild.t()} | no_return()
+      @callback execute_webhook!(
+                  webhook :: Webhook.t(),
+                  data :: Crux.Rest.execute_webhook_options()
+                ) :: :ok | no_return()
 
-      @doc "The same as `c:leave_guild/1`, but raises an exception if it fails."
-      Version.since("0.2.0")
-      @callback leave_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
-
-      @doc "The same as `c:create_dm/1`, but raises an exception if it fails."
+      @doc "The same as `c:execute_webhook/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback create_dm!(user :: Crux.Rest.Util.user_id_resolvable()) ::
-                  Channel.t() | no_return()
+      @callback execute_webhook!(
+                  webhook :: Webhook.t(),
+                  wait :: boolean() | nil,
+                  data :: Crux.Rest.execute_webhook_options()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:execute_webhook/4`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback execute_webhook!(
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  token :: String.t(),
+                  wait :: boolean() | nil,
+                  data :: Crux.Rest.execute_webhook_options()
+                ) :: :ok | no_return()
 
       @doc "The same as `c:gateway/0`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -710,96 +366,469 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
       @callback gateway_bot!() :: term() | no_return()
 
+      @doc "The same as `c:get_audit_logs/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_audit_logs!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  options :: Crux.Rest.audit_log_options() | nil
+                ) :: AuditLog.t() | no_return()
+
+      @doc "The same as `c:get_channel/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_channel!(channel :: Crux.Rest.Util.resolve_channel_id()) ::
+                  Channel.t() | no_return()
+
+      @doc "The same as `c:get_channel_invites/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_channel_invites!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
+                  %{required(String.t()) => Invite.t()} | no_return()
+
+      @doc "The same as `c:get_current_user/0`, but raises an exception if it fails."
+      Version.since("0.2.1")
+      @callback get_current_user!() :: User.t() | no_return()
+
+      @doc "The same as `c:get_current_user_guilds/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_current_user_guilds!(data :: Crux.Rest.get_current_user_guild_data()) ::
+                  %{required(Crux.Rest.snowflake()) => Guild.t()} | no_return()
+
+      @doc "The same as `c:get_guild/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  Guild.t() | no_return()
+
+      @doc "The same as `c:get_guild_ban/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_ban!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable()
+                ) ::
+                  %{required(:user) => User.t(), required(:reason) => String.t() | nil}
+                  | no_return()
+
+      @doc "The same as `c:get_guild_bans/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_bans!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{
+                    required(Crux.Rest.snowflake()) => %{
+                      required(:user) => User.t(),
+                      required(:reason) => String.t() | nil
+                    }
+                  }
+                  | no_return()
+
+      @doc "The same as `c:get_guild_channels/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_channels!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Channel.t()} | no_return()
+
+      @doc "The same as `c:get_guild_embed/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_embed!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  term() | no_return()
+
+      @doc "The same as `c:get_guild_emoji/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_emoji!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_id_resolvable()
+                ) :: Emoji | no_return()
+
+      @doc "The same as `c:get_guild_integrations/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_integrations!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  list() | no_return()
+
+      @doc "The same as `c:get_guild_invites/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_invites!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{required(String.t()) => Invite.t()} | no_return()
+
+      @doc "The same as `c:get_guild_member/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_member!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable()
+                ) :: Member.t() | no_return()
+
+      @doc "The same as `c:get_guild_prune_count/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_prune_count!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  days :: pos_integer()
+                ) :: non_neg_integer() | no_return()
+
+      @doc "The same as `c:get_guild_roles/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_roles!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Role.t()} | no_return()
+
+      @doc "The same as `c:get_guild_vanity_url/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_vanity_url!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  String.t() | no_return()
+
+      @doc "The same as `c:get_guild_voice_regions/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_guild_voice_regions!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  term() | no_return()
+
+      @doc "The same as `c:get_invite/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback get_invite!(code :: String.t()) :: Invite.t() | no_return()
+
+      @doc "The same as `c:get_message/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_message!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  message_id :: Crux.Rest.Util.message_id_resolvable()
+                ) :: Message | no_return()
+
+      @doc "The same as `c:get_messages/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_messages!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  args :: Crux.Rest.get_messages_data()
+                ) :: %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
+
+      @doc "The same as `c:get_pinned_messages/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_pinned_messages!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Message.t()} | no_return()
+
+      @doc "The same as `c:get_reactions/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_reactions!(
+                  message :: Message.t(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
+                  args :: Crux.Rest.get_reactions_data()
+                ) :: %{required(Crux.Rest.snowflake()) => User.t()} | no_return()
+
+      @doc "The same as `c:get_reactions/4`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_reactions!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  message :: Crux.Rest.Util.message_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_identifier_resolvable(),
+                  args :: Crux.Rest.get_reactions_data()
+                ) :: %{required(Crux.Rest.snowflake()) => User.t()} | no_return()
+
+      @doc "The same as `c:get_user/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback get_user!(user :: Crux.Rest.Util.user_id_resolvable()) :: User.t() | no_return()
+
+      @doc "The same as `c:get_webhook/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback get_webhook!(
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  token :: String.t() | nil
+                ) :: Webhook.t() | no_return()
+
+      @doc "The same as `c:leave_guild/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+      @callback leave_guild!(guild :: Crux.Rest.Util.guild_id_resolvable()) :: :ok | no_return()
+
+      @doc "The same as `c:list_channel_webhooks/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback list_channel_webhooks!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
+
+      @doc "The same as `c:list_guild_emojis/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback list_guild_emojis!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Emoji.t()} | no_return()
+
+      @doc "The same as `c:list_guild_members/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback list_guild_members!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  options :: Crux.Rest.list_guild_members_options()
+                ) :: %{required(Crux.Rest.snowflake()) => Member.t()} | no_return()
+
+      @doc "The same as `c:list_guild_webhooks/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback list_guild_webhooks!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
+                  %{required(Crux.Rest.snowflake()) => Webhook.t()} | no_return()
+
+      @doc "The same as `c:modify_channel/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_channel!(
+                  channel :: Crux.Rest.Util.channel_id_resolvable(),
+                  data :: Crux.Rest.modify_channel_data()
+                ) :: Channel.t() | no_return()
+
+      @doc "The same as `c:modify_current_user/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_current_user!(data :: Crux.Rest.modify_current_user_data()) ::
+                  User.t() | no_return()
+
+      @doc "The same as `c:modify_current_users_nick/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_current_users_nick!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  nick :: String.t(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:modify_guild/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data :: Crux.Rest.modify_guild_data()
+                ) :: Guild.t() | no_return()
+
+      @doc "The same as `c:modify_guild_channel_positions/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_channel_positions!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:modify_guild_embed/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_embed!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data ::
+                    %{
+                      optional(:enabled) => boolean(),
+                      optional(:channel_id) => Crux.Rest.snowflake()
+                    }
+                    | [{:enabled, boolean()} | {:channel_id, Crux.Rest.snowflake()}]
+                ) :: term() | no_return()
+
+      @doc "The same as `c:modify_guild_emoji/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_emoji!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  emoji :: Crux.Rest.Util.emoji_id_resolvable(),
+                  data :: Crux.Rest.modify_guild_emoji_data()
+                ) :: Emoji | no_return()
+
+      @doc "The same as `c:modify_guild_integration/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_integration!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  integration_id :: Crux.Rest.snowflake(),
+                  data ::
+                    %{
+                      optional(:expire_behavior) => integer(),
+                      optional(:expire_grace_period) => integer(),
+                      optional(:enable_emoticons) => boolean()
+                    }
+                    | [
+                        {:expire_behavior, integer()}
+                        | {:expire_grace_period, integer()}
+                        | {:enable_emoticons, boolean()}
+                      ]
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:modify_guild_member/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_member!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  member :: Crux.Rest.Util.user_id_resolvable(),
+                  data :: Crux.Rest.modify_guild_member_data()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:modify_guild_role/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_role!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  role :: Crux.Rest.Util.role_id_resolvable(),
+                  data :: Crux.Rest.guild_role_data()
+                ) :: Role.t() | no_return()
+
+      @doc "The same as `c:modify_guild_role_positions/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback modify_guild_role_positions!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  data :: Crux.Rest.Util.modify_guild_role_positions_data()
+                ) :: %{required(Crux.Rest.snowflake()) => Role.t()} | no_return()
+
+      @doc "The same as `c:remove_guild_ban/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback remove_guild_ban!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:remove_guild_member_role/4`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback remove_guild_member_role!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  member :: Crux.Rest.Util.user_id_resolvable(),
+                  role :: Crux.Rest.Util.role_id_resolvable(),
+                  reason :: String.t()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:sync_guild_integration/2`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback sync_guild_integration!(
+                  guild :: Crux.Rest.Util.guild_id_resolvable(),
+                  integration_id :: Crux.Rest.snowflake()
+                ) :: :ok | no_return()
+
+      @doc "The same as `c:trigger_typing/1`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback trigger_typing!(channel :: Crux.Rest.Util.channel_id_resolvable()) ::
+                  :ok | no_return()
+
+      @doc "The same as `c:update_webhook/3`, but raises an exception if it fails."
+      Version.since("0.2.0")
+
+      @callback update_webhook!(
+                  user :: Crux.Rest.Util.user_id_resolvable(),
+                  token :: String.t() | nil,
+                  data ::
+                    %{
+                      optional(:name) => String.t(),
+                      optional(:avatar) => Crux.Rest.Util.image(),
+                      optional(:channel_id) => Crux.Rest.snowflake()
+                    }
+                    | [
+                        {:name, String.t()}
+                        | {:avatar, Crux.Rest.Util.image()}
+                        | {:channel_id, Crux.Rest.snowflake()}
+                      ]
+                ) :: Webhook.t() | no_return()
+
       # Required for `Crux.Rest.Functions`
-      @optional_callbacks create_message!: 2,
-                          edit_message!: 2,
-                          edit_message!: 3,
+      @optional_callbacks add_guild_member!: 3,
+                          add_guild_member_role!: 4,
+                          add_pinned_message!: 1,
+                          add_pinned_message!: 2,
+                          begin_guild_prune!: 2,
+                          create_channel_invite!: 2,
+                          create_dm!: 1,
+                          create_guild!: 1,
+                          create_guild_ban!: 3,
+                          create_guild_channel!: 2,
+                          create_guild_emoji!: 2,
+                          create_guild_integration!: 2,
+                          create_guild_role!: 2,
+                          create_message!: 2,
+                          create_reaction!: 2,
+                          create_reaction!: 3,
+                          delete_all_reactions!: 2,
+                          delete_all_reactions!: 3,
+                          delete_channel!: 2,
+                          delete_channel_permissions!: 3,
+                          delete_guild!: 1,
+                          delete_guild_emoji!: 3,
+                          delete_guild_integration!: 2,
+                          delete_guild_role!: 3,
+                          delete_invite!: 1,
                           delete_message!: 1,
                           delete_message!: 2,
                           delete_messages!: 2,
-                          get_message!: 2,
-                          get_messages!: 2,
-                          create_reaction!: 2,
-                          create_reaction!: 3,
-                          get_reactions!: 4,
-                          get_reactions!: 3,
-                          delete_reaction!: 4,
-                          delete_all_reactions!: 2,
-                          delete_all_reactions!: 3,
-                          trigger_typing!: 1,
-                          add_pinned_message!: 1,
-                          add_pinned_message!: 2,
                           delete_pinned_message!: 1,
                           delete_pinned_message!: 2,
-                          get_channel!: 1,
-                          modify_channel!: 2,
-                          delete_channel!: 2,
-                          edit_channel_permissions!: 3,
-                          get_channel_invites!: 1,
-                          create_channel_invite!: 2,
-                          delete_channel_permissions!: 3,
-                          get_pinned_messages!: 1,
-                          list_guild_emojis!: 1,
-                          get_guild_emoji!: 2,
-                          create_guild_emoji!: 2,
-                          modify_guild_emoji!: 3,
-                          delete_guild_emoji!: 3,
-                          create_guild!: 1,
-                          get_guild!: 1,
-                          modify_guild!: 2,
-                          delete_guild!: 1,
-                          get_audit_logs!: 2,
-                          get_guild_channels!: 1,
-                          create_guild_channel!: 2,
-                          modify_guild_channel_positions!: 2,
-                          get_guild_member!: 2,
-                          list_guild_members!: 2,
-                          add_guild_member!: 3,
-                          modify_guild_member!: 3,
-                          modify_current_users_nick!: 3,
-                          add_guild_member_role!: 4,
-                          remove_guild_member_role!: 4,
-                          get_guild_bans!: 1,
-                          get_guild_ban!: 2,
-                          create_guild_ban!: 3,
-                          remove_guild_ban!: 3,
-                          get_guild_roles!: 1,
-                          create_guild_role!: 2,
-                          modify_guild_role_positions!: 2,
-                          modify_guild_role!: 3,
-                          delete_guild_role!: 3,
-                          get_guild_prune_count!: 2,
-                          begin_guild_prune!: 2,
-                          get_guild_voice_regions!: 1,
-                          get_guild_invites!: 1,
-                          get_guild_integrations!: 1,
-                          create_guild_integration!: 2,
-                          modify_guild_integration!: 3,
-                          delete_guild_integration!: 2,
-                          sync_guild_integration!: 2,
-                          get_guild_embed!: 1,
-                          modify_guild_embed!: 2,
-                          get_guild_vanity_url!: 1,
-                          list_guild_webhooks!: 1,
-                          list_channel_webhooks!: 1,
-                          get_webhook!: 2,
-                          update_webhook!: 3,
+                          delete_reaction!: 4,
                           delete_webhook!: 2,
-                          execute_webhook!: 3,
-                          execute_webhook!: 4,
-                          execute_slack_webhook!: 3,
-                          execute_slack_webhook!: 4,
+                          edit_channel_permissions!: 3,
+                          edit_message!: 2,
+                          edit_message!: 3,
+                          execute_github_webhook!: 3,
                           execute_github_webhook!: 4,
                           execute_github_webhook!: 5,
-                          get_invite!: 1,
-                          delete_invite!: 1,
-                          get_user!: 1,
-                          modify_current_user!: 1,
-                          get_current_user_guilds!: 1,
-                          leave_guild!: 1,
-                          create_dm!: 1,
+                          execute_slack_webhook!: 2,
+                          execute_slack_webhook!: 3,
+                          execute_slack_webhook!: 4,
+                          execute_webhook!: 2,
+                          execute_webhook!: 3,
+                          execute_webhook!: 4,
                           gateway!: 0,
-                          gateway_bot!: 0
+                          gateway_bot!: 0,
+                          get_audit_logs!: 2,
+                          get_channel!: 1,
+                          get_channel_invites!: 1,
+                          get_current_user!: 0,
+                          get_current_user_guilds!: 1,
+                          get_guild!: 1,
+                          get_guild_ban!: 2,
+                          get_guild_bans!: 1,
+                          get_guild_channels!: 1,
+                          get_guild_embed!: 1,
+                          get_guild_emoji!: 2,
+                          get_guild_integrations!: 1,
+                          get_guild_invites!: 1,
+                          get_guild_member!: 2,
+                          get_guild_prune_count!: 2,
+                          get_guild_roles!: 1,
+                          get_guild_vanity_url!: 1,
+                          get_guild_voice_regions!: 1,
+                          get_invite!: 1,
+                          get_message!: 2,
+                          get_messages!: 2,
+                          get_pinned_messages!: 1,
+                          get_reactions!: 3,
+                          get_reactions!: 4,
+                          get_user!: 1,
+                          get_webhook!: 2,
+                          leave_guild!: 1,
+                          list_channel_webhooks!: 1,
+                          list_guild_emojis!: 1,
+                          list_guild_members!: 2,
+                          list_guild_webhooks!: 1,
+                          modify_channel!: 2,
+                          modify_current_user!: 1,
+                          modify_current_users_nick!: 3,
+                          modify_guild!: 2,
+                          modify_guild_channel_positions!: 2,
+                          modify_guild_embed!: 2,
+                          modify_guild_emoji!: 3,
+                          modify_guild_integration!: 3,
+                          modify_guild_member!: 3,
+                          modify_guild_role!: 3,
+                          modify_guild_role_positions!: 2,
+                          remove_guild_ban!: 3,
+                          remove_guild_member_role!: 4,
+                          sync_guild_integration!: 2,
+                          trigger_typing!: 1,
+                          update_webhook!: 3
     end
   end
 
@@ -1585,6 +1614,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_github_webhook/3`"
 
+      @spec execute_github_webhook(webhook :: Webhook.t(), event :: String.t(), data :: term()) ::
+              :ok
       def execute_github_webhook(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
         request(@name, request)
@@ -1592,6 +1623,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_github_webhook/3`, but raises an exception if it fails."
 
+      @spec execute_github_webhook!(webhook :: Webhook.t(), event :: String.t(), data :: term()) ::
+              :ok | no_return()
       def execute_github_webhook!(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
         request!(@name, request)
@@ -1627,6 +1660,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_slack_webhook/2`"
 
+      @spec execute_slack_webhook(webhook :: Webhook.t(), data :: term()) :: :ok
       def execute_slack_webhook(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
         request(@name, request)
@@ -1634,6 +1668,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_slack_webhook/2`, but raises an exception if it fails."
 
+      @spec execute_slack_webhook!(webhook :: Webhook.t(), data :: term()) :: :ok | no_return()
       def execute_slack_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
         request!(@name, request)
@@ -1667,6 +1702,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_webhook/2`"
 
+      @spec execute_webhook(webhook :: Webhook.t(), data :: Crux.Rest.execute_webhook_options()) ::
+              :ok
       def execute_webhook(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
         request(@name, request)
@@ -1674,6 +1711,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_webhook/2`, but raises an exception if it fails."
 
+      @spec execute_webhook!(webhook :: Webhook.t(), data :: Crux.Rest.execute_webhook_options()) ::
+              :ok | no_return()
       def execute_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
         request!(@name, request)
@@ -1795,6 +1834,22 @@ defmodule Crux.Rest.Gen.Bang do
         request!(@name, request)
       end
 
+      @doc "See `c:Crux.Rest.get_current_user/0`"
+
+      @spec get_current_user() :: {:ok, User.t()} | {:error, term()}
+      def get_current_user() do
+        request = Crux.Rest.Functions.get_current_user()
+        request(@name, request)
+      end
+
+      @doc "The same as `c:Crux.Rest.get_current_user/0`, but raises an exception if it fails."
+
+      @spec get_current_user!() :: User.t() | no_return()
+      def get_current_user!() do
+        request = Crux.Rest.Functions.get_current_user()
+        request!(@name, request)
+      end
+
       @doc "See `c:Crux.Rest.get_current_user_guilds/1`"
 
       @spec get_current_user_guilds(data :: Crux.Rest.get_current_user_guild_data()) ::
@@ -1860,7 +1915,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_guild_bans(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
               {:ok,
                %{
-                 optional(Crux.Rest.snowflake()) => %{
+                 required(Crux.Rest.snowflake()) => %{
                    required(:user) => User.t(),
                    required(:reason) => String.t() | nil
                  }
@@ -1875,7 +1930,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec get_guild_bans!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
               %{
-                optional(Crux.Rest.snowflake()) => %{
+                required(Crux.Rest.snowflake()) => %{
                   required(:user) => User.t(),
                   required(:reason) => String.t() | nil
                 }
@@ -1965,7 +2020,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_guild_invites/1`"
 
       @spec get_guild_invites(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-              {:ok, %{optional(String.t()) => Invite.t()}} | {:error, term()}
+              {:ok, %{required(String.t()) => Invite.t()}} | {:error, term()}
       def get_guild_invites(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
         request(@name, request)
@@ -1974,7 +2029,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_guild_invites/1`, but raises an exception if it fails."
 
       @spec get_guild_invites!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-              %{optional(String.t()) => Invite.t()} | no_return()
+              %{required(String.t()) => Invite.t()} | no_return()
       def get_guild_invites!(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
         request!(@name, request)
@@ -2027,7 +2082,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_guild_roles/1`"
 
       @spec get_guild_roles(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-              {:ok, %{optional(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
+              {:ok, %{required(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
       def get_guild_roles(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
         request(@name, request)
@@ -2036,7 +2091,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_guild_roles/1`, but raises an exception if it fails."
 
       @spec get_guild_roles!(guild :: Crux.Rest.Util.guild_id_resolvable()) ::
-              %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
+              %{required(Crux.Rest.snowflake()) => Role.t()} | no_return()
       def get_guild_roles!(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
         request!(@name, request)
@@ -2200,7 +2255,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.get_user/1`"
 
-      @spec get_user(user :: Crux.Rest.Util.user_id_resolvable() | String.t()) ::
+      @spec get_user(user :: Crux.Rest.Util.user_id_resolvable()) ::
               {:ok, User.t()} | {:error, term()}
       def get_user(user) do
         request = Crux.Rest.Functions.get_user(user)
@@ -2209,8 +2264,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.get_user/1`, but raises an exception if it fails."
 
-      @spec get_user!(user :: Crux.Rest.Util.user_id_resolvable() | String.t()) ::
-              User.t() | no_return()
+      @spec get_user!(user :: Crux.Rest.Util.user_id_resolvable()) :: User.t() | no_return()
       def get_user!(user) do
         request = Crux.Rest.Functions.get_user(user)
         request!(@name, request)
@@ -2581,7 +2635,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec modify_guild_role_positions(
               guild :: Crux.Rest.Util.guild_id_resolvable(),
               data :: Crux.Rest.Util.modify_guild_role_positions_data()
-            ) :: {:ok, %{optional(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Crux.Rest.snowflake()) => Role.t()}} | {:error, term()}
       def modify_guild_role_positions(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
         request(@name, request)
@@ -2592,7 +2646,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec modify_guild_role_positions!(
               guild :: Crux.Rest.Util.guild_id_resolvable(),
               data :: Crux.Rest.Util.modify_guild_role_positions_data()
-            ) :: %{optional(Crux.Rest.snowflake()) => Role.t()} | no_return()
+            ) :: %{required(Crux.Rest.snowflake()) => Role.t()} | no_return()
       def modify_guild_role_positions!(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
         request!(@name, request)

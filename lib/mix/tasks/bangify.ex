@@ -183,6 +183,10 @@ defmodule Mix.Tasks.Bangify do
     "(#{format_type(params)}) :: #{return} | no_return()"
   end
 
+  defp format_type_bang({:type, _, :fun, [params, {:atom, 0, :ok}]}) do
+    "(#{format_type(params)}) :: :ok | no_return()"
+  end
+
   defp format_type({:type, _, :fun, [params, return]}) do
     "(#{format_type(params)}) :: #{format_type(return)}"
   end

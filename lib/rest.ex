@@ -1541,8 +1541,15 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_user(user :: Util.user_id_resolvable() | String.t()) ::
-              {:ok, User.t()} | {:error, term()}
+  @callback get_user(user :: Util.user_id_resolvable()) :: {:ok, User.t()} | {:error, term()}
+
+  @doc """
+  Gets the current user from the api.
+
+  For more information see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-current-user).
+  """
+  Version.since("0.2.1")
+  @callback get_current_user() :: {:ok, User.t()} | {:error, term()}
 
   @typedoc """
     Used to modify the currently logged in `c:modify_current_user/1`.
