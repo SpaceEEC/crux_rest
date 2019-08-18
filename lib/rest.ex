@@ -1706,16 +1706,27 @@ defmodule Crux.Rest do
       use Crux.Rest.Gen.Bang, :functions
 
       def start_link(arg) do
-        unquote(__MODULE__).start_link({__MODULE__, arg})
+        Crux.Rest.start_link({@name, arg})
       end
 
       def child_spec(arg) do
-        unquote(__MODULE__).child_spec({__MODULE__, arg})
+        Crux.Rest.child_spec({@name, arg})
       end
 
+      def request(request) do
+        Crux.Rest.request(@name, request)
+      end
+
+      def request!(request) do
+        Crux.Rest.request!(@name, request)
+      end
+
+      @deprecated "Use request/1 instead"
       defdelegate request(name, request), to: Crux.Rest
+      @deprecated "Use request!/1 instead"
       defdelegate request!(name, request), to: Crux.Rest
-      defoverridable request: 2, request!: 2
+
+      defoverridable request: 1, request!: 1, request: 2, request!: 2
     end
   end
 end
