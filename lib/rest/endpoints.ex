@@ -54,7 +54,7 @@ defmodule Crux.Rest.Endpoints do
   """
   @spec channel_messages(
           channel_id :: Crux.Rest.snowflake(),
-          suffix :: String.t() | nil
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
         ) :: String.t()
   Version.since("0.1.0")
   def channel_messages(channel_id, suffix \\ nil)
@@ -92,16 +92,18 @@ defmodule Crux.Rest.Endpoints do
           channel_id :: Crux.Rest.snowflake(),
           message_id :: Crux.Rest.snowflake(),
           emoji :: String.t(),
-          suffix :: String.t() | nil
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
         ) :: String.t()
   Version.since("0.1.0")
   def message_reactions(channel_id, message_id, emoji, suffix \\ nil)
 
-  def message_reactions(channel_id, message_id, emoji, nil),
-    do: "#{channel_messages(channel_id, message_id)}/reactions/#{emoji}"
+  def message_reactions(channel_id, message_id, emoji, nil) do
+    "#{channel_messages(channel_id, message_id)}/reactions/#{emoji}"
+  end
 
-  def message_reactions(channel_id, message_id, emoji, suffix),
-    do: "#{message_reactions(channel_id, message_id, emoji)}/#{suffix}"
+  def message_reactions(channel_id, message_id, emoji, suffix) do
+    "#{message_reactions(channel_id, message_id, emoji)}/#{suffix}"
+  end
 
   @doc """
     Used for pin related functions.
@@ -124,13 +126,14 @@ defmodule Crux.Rest.Endpoints do
         ) :: String.t()
   Version.since("0.1.0")
 
-  def channel_permissions(channel_id, target_id),
-    do: "#{channel(channel_id, "permissions")}/#{target_id}"
+  def channel_permissions(channel_id, target_id) do
+    "#{channel(channel_id, "permissions")}/#{target_id}"
+  end
 
   @doc """
     Used for guild related functions.
   """
-  @spec guild(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec guild(guild_id :: Crux.Rest.snowflake() | nil, suffix :: String.t() | nil) :: String.t()
   Version.since("0.1.0")
   def guild(guild_id \\ nil, suffix \\ nil)
   def guild(nil, nil), do: "/guilds"
@@ -182,7 +185,10 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for guild emoji related functions.
   """
-  @spec guild_emojis(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec guild_emojis(
+          guild_id :: Crux.Rest.snowflake(),
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
+        ) :: String.t()
   Version.since("0.1.0")
   def guild_emojis(guild_id, suffix \\ nil)
   def guild_emojis(guild_id, nil), do: "#{guild(guild_id)}/emojis"
@@ -191,7 +197,10 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for guild members related functions.
   """
-  @spec guild_members(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec guild_members(
+          guild_id :: Crux.Rest.snowflake(),
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
+        ) :: String.t()
   Version.since("0.1.0")
   def guild_members(guild_id, suffix \\ nil)
   def guild_members(guild_id, nil), do: "#{guild(guild_id)}/members"
@@ -200,7 +209,10 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for ban related functions.
   """
-  @spec guild_bans(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec guild_bans(
+          guild_id :: Crux.Rest.snowflake(),
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
+        ) :: String.t()
   Version.since("0.1.2")
   def guild_bans(guild_id, suffix \\ nil)
   def guild_bans(guild_id, nil), do: "#{guild(guild_id)}/bans"
@@ -209,7 +221,10 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for role related functions.
   """
-  @spec guild_roles(guild_id :: Crux.Rest.snowflake(), suffix :: String.t() | nil) :: String.t()
+  @spec guild_roles(
+          guild_id :: Crux.Rest.snowflake(),
+          suffix :: Crux.Rest.snowflake() | String.t() | nil
+        ) :: String.t()
   Version.since("0.1.2")
   def guild_roles(guild_id, suffix \\ nil)
   def guild_roles(guild_id, nil), do: "#{guild(guild_id)}/roles"
@@ -233,17 +248,19 @@ defmodule Crux.Rest.Endpoints do
   @spec guild_member_roles(
           guild_id :: Crux.Rest.snowflake(),
           member_id :: Crux.Rest.snowflake(),
-          role_id :: Crux.Rest.snowflake()
+          role_id :: Crux.Rest.snowflake() | nil
         ) :: String.t()
 
   Version.since("0.1.1")
   def guild_member_roles(guild_id, member_id, role_id \\ nil)
 
-  def guild_member_roles(guild_id, member_id, nil),
-    do: "#{guild_members(guild_id, member_id)}/roles"
+  def guild_member_roles(guild_id, member_id, nil) do
+    "#{guild_members(guild_id, member_id)}/roles"
+  end
 
-  def guild_member_roles(guild_id, member_id, role_id),
-    do: "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
+  def guild_member_roles(guild_id, member_id, role_id) do
+    "#{guild_members(guild_id, member_id)}/roles/#{role_id}"
+  end
 
   @doc """
     Used to fetch channel webhooks.
@@ -293,7 +310,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for functions related to users.
   """
-  @spec users(suffix :: String.t()) :: String.t()
+  @spec users(suffix :: Crux.Rest.snowflake() | String.t() | nil) :: String.t()
   Version.since("0.1.4")
   def users(suffix \\ nil)
   def users(nil), do: "/users"
@@ -302,7 +319,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for functions related to the current user.
   """
-  @spec me(suffix :: String.t()) :: String.t()
+  @spec me(suffix :: String.t() | nil) :: String.t()
   Version.since("0.1.4")
   def me(suffix \\ nil)
   def me(nil), do: "/users/@me"
@@ -311,7 +328,7 @@ defmodule Crux.Rest.Endpoints do
   @doc """
     Used for functions related to the current user's guilds.
   """
-  @spec me_guilds(suffix :: String.t()) :: String.t()
+  @spec me_guilds(suffix :: Crux.Rest.snowflake() | String.t() | nil) :: String.t()
   Version.since("0.1.4")
   def me_guilds(suffix \\ nil)
   def me_guilds(nil), do: "#{me()}/guilds"

@@ -29,7 +29,9 @@ defmodule Crux.Rest.ApiError do
   """
   Version.typesince("0.1.0")
 
-  @type t :: %{
+  @type t :: %__MODULE__{
+          # The dialyzer insisted
+          __exception__: true,
           status_code: integer(),
           code: integer() | nil,
           message: String.t(),
@@ -41,8 +43,8 @@ defmodule Crux.Rest.ApiError do
     Default implementation only providing a `message` for `raise/2`
   """
   Version.since("0.1.0")
-  @spec exception(message :: String.t()) :: __MODULE__.t()
-  def exception(message) when is_bitstring(message) do
+  @spec exception(message :: binary()) :: Exception.t()
+  def exception(message) when is_binary(message) do
     %__MODULE__{message: message}
   end
 

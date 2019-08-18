@@ -18,10 +18,12 @@ defmodule Crux.Rest.CDN do
   """
   Version.typesince("0.1.5")
 
-  @type format_options :: %{
-          optional(:size) => pos_integer(),
-          optional(:extension) => String.t()
-        }
+  @type format_options ::
+          %{
+            optional(:size) => pos_integer(),
+            optional(:extension) => String.t()
+          }
+          | [{:size, pos_integer()} | {:extension, String.t()}]
 
   @base_url "https://cdn.discordapp.com"
 

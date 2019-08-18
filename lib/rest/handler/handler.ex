@@ -179,7 +179,7 @@ defmodule Crux.Rest.Handler do
   end
 
   # Rate limited, figure out for how long and if globally
-  @spec handle_response(term(), term()) :: {Handler, non_neg_integer() | nil}
+  @spec handle_response(term(), term()) :: {Handler.t(), non_neg_integer() | nil}
   defp handle_response(
          %Handler{name: name, route: route, reset: reset} = state,
          {:ok, %HTTPoison.Response{headers: headers, status_code: 429, body: body}}

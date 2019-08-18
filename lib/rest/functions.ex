@@ -1042,7 +1042,7 @@ defmodule Crux.Rest.Functions do
     guild_id = Util.resolve_guild_id(guild)
 
     path = Endpoints.guild_audit_logs(guild_id)
-    data = Map.new(data)
+    data = Keyword.new(data)
 
     :get
     |> Request.new(path)

@@ -1631,7 +1631,7 @@ defmodule Crux.Rest do
     Executes a request.
   """
   Version.since("0.2.0")
-  @spec request(name :: atom(), request :: Request.t()) :: {:ok, term()} | {:error, term()}
+  @spec request(name :: atom(), request :: Request.t()) :: :ok | {:ok, term()} | {:error, term()}
   def request(name, request) do
     case Crux.Rest.Handler.queue(name, request) do
       # Empty resonse

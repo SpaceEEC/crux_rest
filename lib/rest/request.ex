@@ -37,14 +37,14 @@ defmodule Crux.Rest.Request do
           # HTTP headers
           headers: list(),
           # HTTP querystring parameter
-          params: list()
+          params: list() | nil
         }
 
   ### Create / Set
 
   @doc false
   Version.since("0.2.0")
-  @spec new(method :: atom(), path :: String.t(), data: term()) :: t()
+  @spec new(method :: atom(), path :: String.t(), data :: term()) :: t()
   def new(method, path, data \\ "")
 
   def new(method, path, data) do
