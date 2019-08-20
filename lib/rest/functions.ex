@@ -406,9 +406,12 @@ defmodule Crux.Rest.Functions do
       |> Map.new()
       |> Util.resolve_image_in_map(:image)
       |> case do
-        %{:roles => [_ | _] = roles} = data ->
+        %{roles: [_ | _] = roles} = data ->
           roles = Enum.map(roles, &Util.resolve_role_id/1)
-          Map.put(data, :roles, roles)
+          %{data | roles: roles}
+
+        data ->
+          data
       end
 
     :post
@@ -426,10 +429,10 @@ defmodule Crux.Rest.Functions do
     data
     |> Map.new()
     |> case do
-      %{roles: roles} ->
-        Map.put(data, :roles, Enum.map(roles, &Util.resolve_role_id/1))
+      %{roles: roles} = data ->
+        %{data | roles: Enum.map(roles, &Util.resolve_role_id/1)}
 
-      _ ->
+      data ->
         data
     end
 
