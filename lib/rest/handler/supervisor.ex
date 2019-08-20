@@ -11,7 +11,7 @@ defmodule Crux.Rest.Handler.Supervisor do
     Supervisor.start_link(__MODULE__, args, name: name)
   end
 
-  @spec init(term()) ::  {:ok, {:supervisor.sup_flags(), [:supervisor.child_spec()]}} | :ignore
+  @spec init(term()) :: {:ok, {:supervisor.sup_flags(), [:supervisor.child_spec()]}} | :ignore
   def init({name, state}) do
     registry = Module.concat(name, Registry)
 
