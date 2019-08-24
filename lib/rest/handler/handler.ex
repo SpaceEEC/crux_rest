@@ -4,13 +4,13 @@ defmodule Crux.Rest.Handler do
   defstruct [:name, :retries, :route, :remaining, :reset, :timer]
 
   @type t :: %__MODULE__{
-    name: String.t(),
-    route: String.t(),
-    remaining: non_neg_integer(),
-    retries: non_neg_integer(),
-    reset: non_neg_integer() | nil,
-    timer: :timer.tref(),
-  }
+          name: String.t(),
+          route: String.t(),
+          remaining: non_neg_integer(),
+          retries: non_neg_integer(),
+          reset: non_neg_integer() | nil,
+          timer: :timer.tref()
+        }
 
   alias Crux.Rest.Handler.{Global, State}
   alias Crux.Rest.{Handler, HTTP, Request}
