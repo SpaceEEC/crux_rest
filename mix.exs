@@ -39,7 +39,9 @@ defmodule Crux.Rest.MixProject do
 
   defp deps do
     [
-      {:crux_structs, "~> 0.2"},
+      # {:crux_structs, "~> 0.2"},
+      {:crux_structs,
+       git: "https://github.com/spaceeec/crux_structs", branch: "feat/resolvables"},
       {:httpoison, "~> 1.5"},
       {:jason, "~> 1.1"},
       {:ex_doc,
