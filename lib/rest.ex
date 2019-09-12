@@ -6,6 +6,7 @@ defmodule Crux.Rest do
 
     Possible `use` options are:
     * `raw` - return the parsed json from the api as-is without any further transformation.
+      Defaults to `false`.
 
     ### Example
 
@@ -1721,7 +1722,9 @@ defmodule Crux.Rest do
 
   @spec __using__() :: term()
   defmacro __using__(opts \\ []) do
-    quote bind_quoted: [opts: opts], location: :keep do
+    quote location: :keep do
+      raw = !!unquote(opts)[:raw]
+
       @behaviour Crux.Rest
 
       @name __MODULE__
@@ -1736,7 +1739,7 @@ defmodule Crux.Rest do
         Crux.Rest.child_spec({@name, arg})
       end
 
-      if opts[:raw] do
+      if raw do
         def request(request) do
           Crux.Rest.request(@name, %{request | transform: nil})
         end
