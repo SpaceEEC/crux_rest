@@ -65,7 +65,7 @@ defmodule Crux.Rest.MixProject do
       |> Enum.slice(0..-2)
       |> Enum.map(&%{"url" => "https://hexdocs.pm/#{@name}/" <> &1, "version" => &1})
       |> Enum.reverse()
-      |> Poison.encode!()
+      |> Jason.encode!()
 
     config = "var versionNodes = " <> config
 
