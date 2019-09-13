@@ -399,8 +399,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_current_user_guilds!(data :: Crux.Rest.get_current_user_guild_data()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Guild.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Guild.t()} | no_return()
 
       @doc "The same as `c:get_guild/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -426,7 +425,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @callback get_guild_bans!(guild :: Crux.Structs.Guild.id_resolvable()) ::
                   %{
-                    required(Crux.Structs.Snowflake.resolvable()) => %{
+                    required(Crux.Structs.Snowflake.t()) => %{
                       required(:user) => Crux.Structs.User.t(),
                       required(:reason) => String.t() | nil
                     }
@@ -437,7 +436,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_guild_channels!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Channel.t()}
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Channel.t()}
                   | no_return()
 
       @doc "The same as `c:get_guild_embed/1`, but raises an exception if it fails."
@@ -486,8 +485,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_guild_roles!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
 
       @doc "The same as `c:get_guild_vanity_url/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -520,14 +518,14 @@ defmodule Crux.Rest.Gen.Bang do
                   channel :: Crux.Structs.Channel.id_resolvable(),
                   args :: Crux.Rest.get_messages_data()
                 ) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()}
                   | no_return()
 
       @doc "The same as `c:get_pinned_messages/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
       @callback get_pinned_messages!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()}
                   | no_return()
 
       @doc "The same as `c:get_reactions/3`, but raises an exception if it fails."
@@ -538,8 +536,7 @@ defmodule Crux.Rest.Gen.Bang do
                   emoji :: Crux.Structs.Emoji.identifier_resolvable(),
                   args :: Crux.Rest.get_reactions_data()
                 ) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.User.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()} | no_return()
 
       @doc "The same as `c:get_reactions/4`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -550,8 +547,7 @@ defmodule Crux.Rest.Gen.Bang do
                   emoji :: Crux.Structs.Emoji.identifier_resolvable(),
                   args :: Crux.Rest.get_reactions_data()
                 ) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.User.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()} | no_return()
 
       @doc "The same as `c:get_user/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -573,14 +569,13 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback list_channel_webhooks!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()} | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
 
       @doc "The same as `c:list_guild_emojis/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
       @callback list_guild_emojis!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Emoji.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Emoji.t()} | no_return()
 
       @doc "The same as `c:list_guild_members/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -588,13 +583,13 @@ defmodule Crux.Rest.Gen.Bang do
       @callback list_guild_members!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   options :: Crux.Rest.list_guild_members_options()
-                ) :: %{required(Crux.Structs.Snowflake.resolvable()) => Member.t()} | no_return()
+                ) :: %{required(Crux.Structs.Snowflake.t()) => Member.t()} | no_return()
 
       @doc "The same as `c:list_guild_webhooks/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
       @callback list_guild_webhooks!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()} | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
 
       @doc "The same as `c:modify_channel/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -632,7 +627,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @callback modify_guild_channel_positions!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
-                  channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
+                  channels :: [Crux.Structs.Channel.position_resolvable()]
                 ) :: :ok | no_return()
 
       @doc "The same as `c:modify_guild_embed/2`, but raises an exception if it fails."
@@ -643,9 +638,12 @@ defmodule Crux.Rest.Gen.Bang do
                   data ::
                     %{
                       optional(:enabled) => boolean(),
-                      optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                      optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                     }
-                    | [{:enabled, boolean()} | {:channel_id, Crux.Structs.Snowflake.resolvable()}]
+                    | [
+                        {:enabled, boolean()}
+                        | {:channel_id, Crux.Structs.Channel.id_resolvable()}
+                      ]
                 ) :: term() | no_return()
 
       @doc "The same as `c:modify_guild_emoji/3`, but raises an exception if it fails."
@@ -701,8 +699,7 @@ defmodule Crux.Rest.Gen.Bang do
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   data :: Crux.Rest.Util.modify_guild_role_positions_data()
                 ) ::
-                  %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}
-                  | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
 
       @doc "The same as `c:remove_guild_ban/3`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -747,12 +744,12 @@ defmodule Crux.Rest.Gen.Bang do
                     %{
                       optional(:name) => String.t(),
                       optional(:avatar) => Crux.Rest.Util.image(),
-                      optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                      optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                     }
                     | [
                         {:name, String.t()}
                         | {:avatar, Crux.Rest.Util.image()}
-                        | {:channel_id, Crux.Structs.Snowflake.resolvable()}
+                        | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                       ]
                 ) :: Webhook.t() | no_return()
 
@@ -1879,7 +1876,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_current_user_guilds/1`"
 
       @spec get_current_user_guilds(data :: Crux.Rest.get_current_user_guild_data()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Guild.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Guild.t()}}
               | {:error, term()}
       def get_current_user_guilds(data) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
@@ -1889,8 +1886,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_current_user_guilds/1`, but raises an exception if it fails."
 
       @spec get_current_user_guilds!(data :: Crux.Rest.get_current_user_guild_data()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Guild.t()}
-              | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Guild.t()} | no_return()
       def get_current_user_guilds!(data) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
         request!(request)
@@ -1946,7 +1942,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_guild_bans(guild :: Crux.Structs.Guild.id_resolvable()) ::
               {:ok,
                %{
-                 required(Crux.Structs.Snowflake.resolvable()) => %{
+                 required(Crux.Structs.Snowflake.t()) => %{
                    required(:user) => Crux.Structs.User.t(),
                    required(:reason) => String.t() | nil
                  }
@@ -1961,7 +1957,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec get_guild_bans!(guild :: Crux.Structs.Guild.id_resolvable()) ::
               %{
-                required(Crux.Structs.Snowflake.resolvable()) => %{
+                required(Crux.Structs.Snowflake.t()) => %{
                   required(:user) => Crux.Structs.User.t(),
                   required(:reason) => String.t() | nil
                 }
@@ -1975,7 +1971,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_guild_channels/1`"
 
       @spec get_guild_channels(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Channel.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Channel.t()}}
               | {:error, term()}
       def get_guild_channels(guild) do
         request = Crux.Rest.Functions.get_guild_channels(guild)
@@ -1985,8 +1981,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_guild_channels/1`, but raises an exception if it fails."
 
       @spec get_guild_channels!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Channel.t()}
-              | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Channel.t()} | no_return()
       def get_guild_channels!(guild) do
         request = Crux.Rest.Functions.get_guild_channels(guild)
         request!(request)
@@ -2114,7 +2109,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_guild_roles/1`"
 
       @spec get_guild_roles(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()}}
               | {:error, term()}
       def get_guild_roles(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
@@ -2124,8 +2119,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_guild_roles/1`, but raises an exception if it fails."
 
       @spec get_guild_roles!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}
-              | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
       def get_guild_roles!(guild) do
         request = Crux.Rest.Functions.get_guild_roles(guild)
         request!(request)
@@ -2211,7 +2205,7 @@ defmodule Crux.Rest.Gen.Bang do
               channel :: Crux.Structs.Channel.id_resolvable(),
               args :: Crux.Rest.get_messages_data()
             ) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()}}
               | {:error, term()}
       def get_messages(channel, data) do
         request = Crux.Rest.Functions.get_messages(channel, data)
@@ -2223,9 +2217,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_messages!(
               channel :: Crux.Structs.Channel.id_resolvable(),
               args :: Crux.Rest.get_messages_data()
-            ) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}
-              | no_return()
+            ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()} | no_return()
       def get_messages!(channel, data) do
         request = Crux.Rest.Functions.get_messages(channel, data)
         request!(request)
@@ -2234,7 +2226,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_pinned_messages/1`"
 
       @spec get_pinned_messages(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()}}
               | {:error, term()}
       def get_pinned_messages(channel) do
         request = Crux.Rest.Functions.get_pinned_messages(channel)
@@ -2244,8 +2236,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_pinned_messages/1`, but raises an exception if it fails."
 
       @spec get_pinned_messages!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Message.t()}
-              | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Message.t()} | no_return()
       def get_pinned_messages!(channel) do
         request = Crux.Rest.Functions.get_pinned_messages(channel)
         request!(request)
@@ -2259,7 +2250,7 @@ defmodule Crux.Rest.Gen.Bang do
               emoji :: Crux.Structs.Emoji.identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
             ) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.User.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()}}
               | {:error, term()}
       def get_reactions(
             channel_or_message,
@@ -2285,9 +2276,7 @@ defmodule Crux.Rest.Gen.Bang do
               message :: Crux.Structs.Message.id_resolvable(),
               emoji :: Crux.Structs.Emoji.identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
-            ) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.User.t()}
-              | no_return()
+            ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()} | no_return()
       def get_reactions!(
             channel_or_message,
             emoji_or_message_id,
@@ -2360,8 +2349,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.list_channel_webhooks/1`"
 
       @spec list_channel_webhooks(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()}}
-              | {:error, term()}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Webhook.t()}} | {:error, term()}
       def list_channel_webhooks(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
         request(request)
@@ -2370,7 +2358,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.list_channel_webhooks/1`, but raises an exception if it fails."
 
       @spec list_channel_webhooks!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()} | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
       def list_channel_webhooks!(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
         request!(request)
@@ -2379,7 +2367,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.list_guild_emojis/1`"
 
       @spec list_guild_emojis(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Emoji.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Emoji.t()}}
               | {:error, term()}
       def list_guild_emojis(guild) do
         request = Crux.Rest.Functions.list_guild_emojis(guild)
@@ -2389,8 +2377,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.list_guild_emojis/1`, but raises an exception if it fails."
 
       @spec list_guild_emojis!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Emoji.t()}
-              | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Emoji.t()} | no_return()
       def list_guild_emojis!(guild) do
         request = Crux.Rest.Functions.list_guild_emojis(guild)
         request!(request)
@@ -2401,9 +2388,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec list_guild_members(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.list_guild_members_options()
-            ) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Member.t()}}
-              | {:error, term()}
+            ) :: {:ok, %{required(Crux.Structs.Snowflake.t()) => Member.t()}} | {:error, term()}
       def list_guild_members(guild, options) do
         request = Crux.Rest.Functions.list_guild_members(guild, options)
         request(request)
@@ -2414,7 +2399,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec list_guild_members!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.list_guild_members_options()
-            ) :: %{required(Crux.Structs.Snowflake.resolvable()) => Member.t()} | no_return()
+            ) :: %{required(Crux.Structs.Snowflake.t()) => Member.t()} | no_return()
       def list_guild_members!(guild, options) do
         request = Crux.Rest.Functions.list_guild_members(guild, options)
         request!(request)
@@ -2423,8 +2408,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.list_guild_webhooks/1`"
 
       @spec list_guild_webhooks(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()}}
-              | {:error, term()}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Webhook.t()}} | {:error, term()}
       def list_guild_webhooks(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
         request(request)
@@ -2433,7 +2417,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.list_guild_webhooks/1`, but raises an exception if it fails."
 
       @spec list_guild_webhooks!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Webhook.t()} | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
       def list_guild_webhooks!(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
         request!(request)
@@ -2529,7 +2513,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec modify_guild_channel_positions(
               guild :: Crux.Structs.Guild.id_resolvable(),
-              channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
+              channels :: [Crux.Structs.Channel.position_resolvable()]
             ) :: :ok | {:error, term()}
       def modify_guild_channel_positions(guild, channels) do
         request = Crux.Rest.Functions.modify_guild_channel_positions(guild, channels)
@@ -2540,7 +2524,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec modify_guild_channel_positions!(
               guild :: Crux.Structs.Guild.id_resolvable(),
-              channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
+              channels :: [Crux.Structs.Channel.position_resolvable()]
             ) :: :ok | no_return()
       def modify_guild_channel_positions!(guild, channels) do
         request = Crux.Rest.Functions.modify_guild_channel_positions(guild, channels)
@@ -2554,9 +2538,9 @@ defmodule Crux.Rest.Gen.Bang do
               data ::
                 %{
                   optional(:enabled) => boolean(),
-                  optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                  optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                 }
-                | [{:enabled, boolean()} | {:channel_id, Crux.Structs.Snowflake.resolvable()}]
+                | [{:enabled, boolean()} | {:channel_id, Crux.Structs.Channel.id_resolvable()}]
             ) :: {:ok, term()} | {:error, term()}
       def modify_guild_embed(guild, data) do
         request = Crux.Rest.Functions.modify_guild_embed(guild, data)
@@ -2570,9 +2554,9 @@ defmodule Crux.Rest.Gen.Bang do
               data ::
                 %{
                   optional(:enabled) => boolean(),
-                  optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                  optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                 }
-                | [{:enabled, boolean()} | {:channel_id, Crux.Structs.Snowflake.resolvable()}]
+                | [{:enabled, boolean()} | {:channel_id, Crux.Structs.Channel.id_resolvable()}]
             ) :: term() | no_return()
       def modify_guild_embed!(guild, data) do
         request = Crux.Rest.Functions.modify_guild_embed(guild, data)
@@ -2701,7 +2685,7 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               data :: Crux.Rest.Util.modify_guild_role_positions_data()
             ) ::
-              {:ok, %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()}}
               | {:error, term()}
       def modify_guild_role_positions(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
@@ -2713,9 +2697,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec modify_guild_role_positions!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               data :: Crux.Rest.Util.modify_guild_role_positions_data()
-            ) ::
-              %{required(Crux.Structs.Snowflake.resolvable()) => Crux.Structs.Role.t()}
-              | no_return()
+            ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
       def modify_guild_role_positions!(guild, data) do
         request = Crux.Rest.Functions.modify_guild_role_positions(guild, data)
         request!(request)
@@ -2819,12 +2801,12 @@ defmodule Crux.Rest.Gen.Bang do
                 %{
                   optional(:name) => String.t(),
                   optional(:avatar) => Crux.Rest.Util.image(),
-                  optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                  optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                 }
                 | [
                     {:name, String.t()}
                     | {:avatar, Crux.Rest.Util.image()}
-                    | {:channel_id, Crux.Structs.Snowflake.resolvable()}
+                    | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                   ]
             ) :: {:ok, Webhook.t()} | {:error, term()}
       def update_webhook(user, token \\ nil, data) do
@@ -2841,12 +2823,12 @@ defmodule Crux.Rest.Gen.Bang do
                 %{
                   optional(:name) => String.t(),
                   optional(:avatar) => Crux.Rest.Util.image(),
-                  optional(:channel_id) => Crux.Structs.Snowflake.resolvable()
+                  optional(:channel_id) => Crux.Structs.Channel.id_resolvable()
                 }
                 | [
                     {:name, String.t()}
                     | {:avatar, Crux.Rest.Util.image()}
-                    | {:channel_id, Crux.Structs.Snowflake.resolvable()}
+                    | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                   ]
             ) :: Webhook.t() | no_return()
       def update_webhook!(user, token \\ nil, data) do
