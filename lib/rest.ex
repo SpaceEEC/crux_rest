@@ -5,8 +5,8 @@ defmodule Crux.Rest do
     For a more convenient way to consume this module you can `use` it in your own.
 
     Possible `use` options are:
-    * `raw` - return the parsed json from the api as-is without any further transformation.
-      Defaults to `false`.
+    * `transform` - whether to transform the received JSON further into the documented structs.
+      Defaults to `true`.
 
     ### Example
 
@@ -1723,7 +1723,7 @@ defmodule Crux.Rest do
   @spec __using__() :: term()
   defmacro __using__(opts \\ []) do
     quote location: :keep do
-      raw = !!unquote(opts)[:raw]
+      transform = !!unquote(opts)[:transform]
 
       @behaviour Crux.Rest
 
@@ -1739,21 +1739,21 @@ defmodule Crux.Rest do
         Crux.Rest.child_spec({@name, arg})
       end
 
-      if raw do
-        def request(request) do
-          Crux.Rest.request(@name, %{request | transform: nil})
-        end
-
-        def request!(request) do
-          Crux.Rest.request!(@name, %{request | transform: nil})
-        end
-      else
+      if transform do
         def request(request) do
           Crux.Rest.request(@name, request)
         end
 
         def request!(request) do
           Crux.Rest.request!(@name, request)
+        end
+      else
+        def request(request) do
+          Crux.Rest.request(@name, %{request | transform: nil})
+        end
+
+        def request!(request) do
+          Crux.Rest.request!(@name, %{request | transform: nil})
         end
       end
 
