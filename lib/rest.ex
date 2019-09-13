@@ -2,7 +2,30 @@ defmodule Crux.Rest do
   @moduledoc """
     Main entry point for `Crux.Rest`.
 
+    For a more convenient way to consume this module you can `use` it in your own.
+
+    Possible `use` options are:
+    * `transform` - whether to transform the received JSON further into the documented structs.
+      Defaults to `true`.
+
+    ### Example
+
+    ```elixir
+    defmodule MyBot.Rest do
+      use Crux.Rest
+
+      # Define helper functions as needed
+      def gateway_bot_additional_info() do
+        with {:ok, data} <- gateway_bot() do
+          Map.put(data, "additional_info", MyBot.Additional.info())
+        end
+      end
+    end
+
+    ```
+
     This module fits under a supervision tree, see `start_link/1`'s' arguments for configuration.
+    The same applies to modules `use`-ing this module.
   """
 
   alias Crux.Rest.{ApiError, Handler, Request, Util, Version}
@@ -1697,8 +1720,11 @@ defmodule Crux.Rest do
     }
   end
 
-  defmacro __using__(_ \\ []) do
+  @spec __using__() :: term()
+  defmacro __using__(opts \\ []) do
     quote location: :keep do
+      transform = !!unquote(opts)[:transform]
+
       @behaviour Crux.Rest
 
       @name __MODULE__
@@ -1713,12 +1739,22 @@ defmodule Crux.Rest do
         Crux.Rest.child_spec({@name, arg})
       end
 
-      def request(request) do
-        Crux.Rest.request(@name, request)
-      end
+      if transform do
+        def request(request) do
+          Crux.Rest.request(@name, request)
+        end
 
-      def request!(request) do
-        Crux.Rest.request!(@name, request)
+        def request!(request) do
+          Crux.Rest.request!(@name, request)
+        end
+      else
+        def request(request) do
+          Crux.Rest.request(@name, %{request | transform: nil})
+        end
+
+        def request!(request) do
+          Crux.Rest.request!(@name, %{request | transform: nil})
+        end
       end
 
       @deprecated "Use request/1 instead"
