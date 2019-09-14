@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-08-18T17:02:54.052000Z
+  # Generated 2019-09-14T09:18:23.437000Z
 
   alias Crux.Rest.Version
   require Version
@@ -2149,17 +2149,25 @@ defmodule Crux.Rest.Gen.Bang do
         request!(request)
       end
 
-      @doc "See `c:Crux.Rest.get_message/3`"
+      @doc "See `c:Crux.Rest.get_message/2`"
 
-      def get_message(message_or_channel, data_or_channel \\ [], data \\ []) do
-        request = Crux.Rest.Functions.get_message(message_or_channel, data_or_channel, data)
+      @spec get_message(
+              channel :: Crux.Rest.Util.channel_id_resolvable(),
+              message_id :: Crux.Rest.Util.message_id_resolvable()
+            ) :: {:ok, Message} | {:error, term()}
+      def get_message(channel, message) do
+        request = Crux.Rest.Functions.get_message(channel, message)
         request(request)
       end
 
-      @doc "The same as `c:Crux.Rest.get_message/3`, but raises an exception if it fails."
+      @doc "The same as `c:Crux.Rest.get_message/2`, but raises an exception if it fails."
 
-      def get_message!(message_or_channel, data_or_channel \\ [], data \\ []) do
-        request = Crux.Rest.Functions.get_message(message_or_channel, data_or_channel, data)
+      @spec get_message!(
+              channel :: Crux.Rest.Util.channel_id_resolvable(),
+              message_id :: Crux.Rest.Util.message_id_resolvable()
+            ) :: Message | no_return()
+      def get_message!(channel, message) do
+        request = Crux.Rest.Functions.get_message(channel, message)
         request!(request)
       end
 
