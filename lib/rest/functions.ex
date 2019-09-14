@@ -47,15 +47,7 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def get_message(message_or_channel, data_or_channel \\ [], data \\ [])
-
-  def get_message(%{channel_id: channel_id, id: message_id}, data, _) do
-    get_message(channel_id, message_id, data)
-  end
-
-  def get_message(channel, message, data) do
-    data = Keyword.new(data)
-
+  def get_message(channel, message) do
     :get
     |> common_message(
       channel,
@@ -63,7 +55,6 @@ defmodule Crux.Rest.Functions do
       &Endpoints.channel_messages/2,
       &Request.new(&1, &2)
     )
-    |> Request.set_params(data)
     |> Request.set_transform(Message)
   end
 
