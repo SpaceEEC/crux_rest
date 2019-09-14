@@ -87,7 +87,7 @@ defmodule Crux.Rest.Request do
   Version.since("0.2.0")
   @spec set_token(t(), token :: String.t() | nil) :: t()
   def set_token(%__MODULE__{headers: headers} = t, token) do
-    %{t | headers: [{"authorization", "Bot " <> token} | headers]}
+    %{t | headers: [{:authorization, "Bot " <> token} | headers]}
   end
 
   ### End Create / Set

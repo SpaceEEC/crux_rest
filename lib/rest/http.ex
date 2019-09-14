@@ -26,8 +26,9 @@ defmodule Crux.Rest.HTTP do
   @spec process_request_headers(Keyword.t()) :: Keyword.t()
   def process_request_headers(headers) do
     headers
+    |> Keyword.put_new(:accept, "application/json")
     |> Keyword.put_new(:"content-type", "application/json")
-    |> Keyword.put_new(:"X-RateLimit-Precision", "millisecond")
+    |> Keyword.put_new(:"x-ratelimit-precision", "millisecond")
     |> Keyword.put_new(:"user-agent", @user_agent)
   end
 
