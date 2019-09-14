@@ -78,4 +78,7 @@ defmodule Crux.Rest.HTTP do
       options: [params: params]
     })
   end
+
+  # Make dialyzer happy
+  def request(%HTTPoison.Request{}=request), do: super(request)
 end
