@@ -29,7 +29,20 @@ defmodule Crux.Rest do
   """
 
   alias Crux.Rest.{ApiError, Handler, Request, Util, Version}
-  alias Crux.Structs.{Channel, Emoji, Guild, Message, Overwrite, Role, Snowflake, User}
+
+  alias Crux.Structs.{
+    AuditLog,
+    Channel,
+    Emoji,
+    Guild,
+    Invite,
+    Message,
+    Overwrite,
+    Role,
+    Snowflake,
+    User,
+    Webhook
+  }
 
   require Version
 
