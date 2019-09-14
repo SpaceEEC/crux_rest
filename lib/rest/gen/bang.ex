@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-09-14T09:46:44.292000Z
+  # Generated 2019-09-14T10:01:02.300000Z
 
   alias Crux.Rest.Version
   require Version
@@ -23,7 +23,7 @@ defmodule Crux.Rest.Gen.Bang do
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   member :: Crux.Structs.User.id_resolvable(),
                   role :: Crux.Structs.Role.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:add_pinned_message/1`, but raises an exception if it fails."
@@ -70,7 +70,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback create_guild_ban!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   user :: Crux.Structs.User.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:create_guild_channel/2`, but raises an exception if it fails."
@@ -157,7 +157,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @callback delete_channel!(
                   channel :: Crux.Structs.Channel.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: Crux.Structs.Channel.t() | no_return()
 
       @doc "The same as `c:delete_channel_permissions/3`, but raises an exception if it fails."
@@ -166,7 +166,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback delete_channel_permissions!(
                   channel :: Crux.Structs.Channel.id_resolvable(),
                   target :: Crux.Structs.Overwrite.target_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:delete_guild/1`, but raises an exception if it fails."
@@ -179,7 +179,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback delete_guild_emoji!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   emoji :: Crux.Structs.Emoji.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:delete_guild_integration/2`, but raises an exception if it fails."
@@ -196,7 +196,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback delete_guild_role!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   role :: Crux.Structs.Role.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:delete_invite/1`, but raises an exception if it fails."
@@ -613,7 +613,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback modify_current_users_nick!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   nick :: String.t(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:modify_guild/2`, but raises an exception if it fails."
@@ -709,7 +709,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback remove_guild_ban!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   user :: Crux.Structs.User.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:remove_guild_member_role/4`, but raises an exception if it fails."
@@ -719,7 +719,7 @@ defmodule Crux.Rest.Gen.Bang do
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   member :: Crux.Structs.User.id_resolvable(),
                   role :: Crux.Structs.Role.id_resolvable(),
-                  reason :: String.t()
+                  reason :: String.t() | nil
                 ) :: :ok | no_return()
 
       @doc "The same as `c:sync_guild_integration/2`, but raises an exception if it fails."
@@ -884,9 +884,9 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               member :: Crux.Structs.User.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
-      def add_guild_member_role(guild, user, role, reason) do
+      def add_guild_member_role(guild, user, role, reason \\ nil) do
         request = Crux.Rest.Functions.add_guild_member_role(guild, user, role, reason)
         request(request)
       end
@@ -897,9 +897,9 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               member :: Crux.Structs.User.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
-      def add_guild_member_role!(guild, user, role, reason) do
+      def add_guild_member_role!(guild, user, role, reason \\ nil) do
         request = Crux.Rest.Functions.add_guild_member_role(guild, user, role, reason)
         request!(request)
       end
@@ -1025,7 +1025,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_guild_ban(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def create_guild_ban(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.create_guild_ban(guild, user, reason)
@@ -1037,7 +1037,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_guild_ban!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def create_guild_ban!(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.create_guild_ban(guild, user, reason)
@@ -1258,8 +1258,10 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.delete_channel/2`"
 
-      @spec delete_channel(channel :: Crux.Structs.Channel.id_resolvable(), reason :: String.t()) ::
-              {:ok, Crux.Structs.Channel.t()} | {:error, term()}
+      @spec delete_channel(
+              channel :: Crux.Structs.Channel.id_resolvable(),
+              reason :: String.t() | nil
+            ) :: {:ok, Crux.Structs.Channel.t()} | {:error, term()}
       def delete_channel(channel, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel(channel, reason)
         request(request)
@@ -1267,8 +1269,10 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.delete_channel/2`, but raises an exception if it fails."
 
-      @spec delete_channel!(channel :: Crux.Structs.Channel.id_resolvable(), reason :: String.t()) ::
-              Crux.Structs.Channel.t() | no_return()
+      @spec delete_channel!(
+              channel :: Crux.Structs.Channel.id_resolvable(),
+              reason :: String.t() | nil
+            ) :: Crux.Structs.Channel.t() | no_return()
       def delete_channel!(channel, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel(channel, reason)
         request!(request)
@@ -1279,7 +1283,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_channel_permissions(
               channel :: Crux.Structs.Channel.id_resolvable(),
               target :: Crux.Structs.Overwrite.target_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def delete_channel_permissions(channel, target, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel_permissions(channel, target, reason)
@@ -1291,7 +1295,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_channel_permissions!(
               channel :: Crux.Structs.Channel.id_resolvable(),
               target :: Crux.Structs.Overwrite.target_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def delete_channel_permissions!(channel, target, reason \\ nil) do
         request = Crux.Rest.Functions.delete_channel_permissions(channel, target, reason)
@@ -1319,7 +1323,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild_emoji(
               guild :: Crux.Structs.Guild.id_resolvable(),
               emoji :: Crux.Structs.Emoji.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def delete_guild_emoji(guild, emoji, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_emoji(guild, emoji, reason)
@@ -1331,7 +1335,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild_emoji!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               emoji :: Crux.Structs.Emoji.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def delete_guild_emoji!(guild, emoji, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_emoji(guild, emoji, reason)
@@ -1365,7 +1369,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild_role(
               guild :: Crux.Structs.Guild.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def delete_guild_role(guild, role, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_role(guild, role, reason)
@@ -1377,7 +1381,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec delete_guild_role!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def delete_guild_role!(guild, role, reason \\ nil) do
         request = Crux.Rest.Functions.delete_guild_role(guild, role, reason)
@@ -2484,9 +2488,9 @@ defmodule Crux.Rest.Gen.Bang do
       @spec modify_current_users_nick(
               guild :: Crux.Structs.Guild.id_resolvable(),
               nick :: String.t(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
-      def modify_current_users_nick(guild, nick, reason) do
+      def modify_current_users_nick(guild, nick, reason \\ nil) do
         request = Crux.Rest.Functions.modify_current_users_nick(guild, nick, reason)
         request(request)
       end
@@ -2496,9 +2500,9 @@ defmodule Crux.Rest.Gen.Bang do
       @spec modify_current_users_nick!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               nick :: String.t(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
-      def modify_current_users_nick!(guild, nick, reason) do
+      def modify_current_users_nick!(guild, nick, reason \\ nil) do
         request = Crux.Rest.Functions.modify_current_users_nick(guild, nick, reason)
         request!(request)
       end
@@ -2724,7 +2728,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec remove_guild_ban(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def remove_guild_ban(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_ban(guild, user, reason)
@@ -2736,7 +2740,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec remove_guild_ban!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def remove_guild_ban!(guild, user, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_ban(guild, user, reason)
@@ -2749,7 +2753,7 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               member :: Crux.Structs.User.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
       def remove_guild_member_role(guild, user, role, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_member_role(guild, user, role, reason)
@@ -2762,7 +2766,7 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               member :: Crux.Structs.User.id_resolvable(),
               role :: Crux.Structs.Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | no_return()
       def remove_guild_member_role!(guild, user, role, reason \\ nil) do
         request = Crux.Rest.Functions.remove_guild_member_role(guild, user, role, reason)

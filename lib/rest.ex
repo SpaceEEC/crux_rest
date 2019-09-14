@@ -468,7 +468,7 @@ defmodule Crux.Rest do
             optional(:permission_overwrites) => [Overwrite.t()],
             optional(:position) => non_neg_integer(),
             optional(:rate_limit_per_user) => non_neg_integer(),
-            optional(:reason) => String.t(),
+            optional(:reason) => String.t() | nil,
             optional(:topic) => String.t() | nil,
             optional(:user_limit) => non_neg_integer() | nil
           }
@@ -481,7 +481,7 @@ defmodule Crux.Rest do
               | {:permission_overwrites, [Overwrite.t()]}
               | {:position, non_neg_integer()}
               | {:rate_limit_per_user, non_neg_integer()}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
               | {:topic, String.t() | nil}
               | {:user_limit, integer() | nil}
             ]
@@ -507,7 +507,7 @@ defmodule Crux.Rest do
 
   @callback delete_channel(
               channel :: Channel.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: {:ok, Channel.t()} | {:error, term()}
 
   @typedoc """
@@ -522,12 +522,14 @@ defmodule Crux.Rest do
             optional(:allow) => non_neg_integer(),
             optional(:deny) => non_neg_integer(),
             optional(:type) => String.t(),
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
-          | {{:allow, non_neg_integer()}
-             | {:deny, non_neg_integer()}
-             | {:type, :member | :role | String.t()}
-             | {:reason, String.t()}}
+          | [
+              {:allow, non_neg_integer()}
+              | {:deny, non_neg_integer()}
+              | {:type, :member | :role | String.t()}
+              | {:reason, String.t() | nil}
+            ]
 
   @doc """
   Edits or creates an overwrite for a user, or member.
@@ -573,14 +575,14 @@ defmodule Crux.Rest do
             optional(:max_uses) => non_neg_integer(),
             optional(:temporary) => boolean(),
             optional(:unique) => boolean(),
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:max_age, non_neg_integer()}
               | {:max_uses, non_neg_integer()}
               | {:temporary, boolean()}
               | {:unique, boolean()}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -605,7 +607,7 @@ defmodule Crux.Rest do
   @callback delete_channel_permissions(
               channel :: Channel.id_resolvable(),
               target :: Overwrite.target_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -662,13 +664,13 @@ defmodule Crux.Rest do
             required(:name) => String.t(),
             required(:image) => Util.image(),
             optional(:roles) => [Role.id_resolvable()],
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:name, String.t()}
               | {:image, Util.image()}
               | {:roles, [Role.id_resolvable()]}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -694,12 +696,12 @@ defmodule Crux.Rest do
           %{
             optional(:name) => String.t(),
             optional(:roles) => [Role.id_resolvable()],
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:name, String.t()}
               | {:roles, [Role.id_resolvable()]}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -725,7 +727,7 @@ defmodule Crux.Rest do
   @callback delete_guild_emoji(
               guild :: Guild.id_resolvable(),
               emoji :: Emoji.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   ### End Emoji
@@ -763,7 +765,7 @@ defmodule Crux.Rest do
             optional(:banner) => Util.image(),
             optional(:owner_id) => User.id_resolvable(),
             optional(:system_channel_id) => Channel.id_resolvable() | nil,
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:name, String.t()}
@@ -778,7 +780,7 @@ defmodule Crux.Rest do
               | {:banner, Util.image()}
               | {:owner_id, User.id_resolvable()}
               | {:system_channel_id, Channel.id_resolvable() | nil}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -867,7 +869,7 @@ defmodule Crux.Rest do
             ],
             optional(:parent_id) => Channel.id_resolvable() | nil,
             optional(:nsfw) => boolean(),
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:name, String.t()}
@@ -886,7 +888,7 @@ defmodule Crux.Rest do
                  ]}
               | {:parent_id, Channel.id_resolvable() | nil}
               | {:nsfw, boolean()}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -972,7 +974,7 @@ defmodule Crux.Rest do
             optional(:roles) => [Role.id_resolvable()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:access_token, String.t()}
@@ -980,7 +982,7 @@ defmodule Crux.Rest do
               | {:roles, [Role.id_resolvable()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -1011,7 +1013,7 @@ defmodule Crux.Rest do
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
             optional(:channel_id) => Channel.id_resolvable() | nil,
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:nick, String.t() | nil}
@@ -1019,7 +1021,7 @@ defmodule Crux.Rest do
               | {:mute, boolean()}
               | {:deaf, boolean()}
               | {:channel_id, Channel.id_resolvable() | nil}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -1048,7 +1050,7 @@ defmodule Crux.Rest do
   @callback modify_current_users_nick(
               guild :: Guild.id_resolvable(),
               nick :: String.t(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1062,7 +1064,7 @@ defmodule Crux.Rest do
               guild :: Guild.id_resolvable(),
               member :: User.id_resolvable(),
               role :: Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1076,7 +1078,7 @@ defmodule Crux.Rest do
               guild :: Guild.id_resolvable(),
               member :: User.id_resolvable(),
               role :: Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1112,7 +1114,7 @@ defmodule Crux.Rest do
   @callback create_guild_ban(
               guild :: Guild.id_resolvable(),
               user :: User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1125,7 +1127,7 @@ defmodule Crux.Rest do
   @callback remove_guild_ban(
               guild :: Guild.id_resolvable(),
               user :: User.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1151,7 +1153,7 @@ defmodule Crux.Rest do
             optional(:color) => non_neg_integer(),
             optional(:hoist) => boolean(),
             optional(:mentionable) => boolean(),
-            optional(:reason) => String.t()
+            optional(:reason) => String.t() | nil
           }
           | [
               {:name, String.t()}
@@ -1159,7 +1161,7 @@ defmodule Crux.Rest do
               | {:color, non_neg_integer()}
               | {:hoist, boolean()}
               | {:mentionable, boolean()}
-              | {:reason, String.t()}
+              | {:reason, String.t() | nil}
             ]
 
   @doc """
@@ -1209,7 +1211,7 @@ defmodule Crux.Rest do
   @callback delete_guild_role(
               guild :: Guild.id_resolvable(),
               role :: Role.id_resolvable(),
-              reason :: String.t()
+              reason :: String.t() | nil
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1614,11 +1616,17 @@ defmodule Crux.Rest do
   """
   Version.typesince("0.1.4")
 
-  @type get_current_user_guild_data :: %{
-          optional(:before) => Message.id_resolvable(),
-          optional(:after) => Message.id_resolvable(),
-          optional(:limit) => pos_integer()
-        }
+  @type get_current_user_guild_data ::
+          %{
+            optional(:before) => Message.id_resolvable(),
+            optional(:after) => Message.id_resolvable(),
+            optional(:limit) => pos_integer()
+          }
+          | [
+              {:before, Message.id_resolvable()}
+              | {:after, Message.id_resolvable()}
+              | {:limit, pos_integer()}
+            ]
 
   @doc """
   Gets a list of partial `Crux.Structs.Guild`s the current user is a member of.

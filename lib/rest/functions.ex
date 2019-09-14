@@ -656,7 +656,7 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def modify_current_users_nick(guild, nick, reason) do
+  def modify_current_users_nick(guild, nick, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_own_nick(guild_id)
@@ -752,7 +752,7 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def add_guild_member_role(guild, user, role, reason) do
+  def add_guild_member_role(guild, user, role, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
     role_id = resolve_not_nil(role, Role)
