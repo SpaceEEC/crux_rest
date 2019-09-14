@@ -1185,17 +1185,19 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def get_current_user_guilds(data) do
+  def get_current_user_guilds(data \\ []) do
     path = Endpoints.me_guilds()
 
-    data =
+    query =
       data
       |> Map.new()
       |> Util.optional_update_in_map(:after, &Structs.resolve_id(&1, Message))
       |> Util.optional_update_in_map(:before, &Structs.resolve_id(&1, Message))
+      |> Keyword.new()
 
     :get
-    |> Request.new(path, data)
+    |> Request.new(path)
+    |> Request.set_params(query)
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Guild))
   end
 

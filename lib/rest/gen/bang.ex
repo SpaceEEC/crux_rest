@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-09-14T09:18:23.437000Z
+  # Generated 2019-09-14T09:46:44.292000Z
 
   alias Crux.Rest.Version
   require Version
@@ -52,7 +52,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback create_channel_invite!(
                   channel :: Crux.Structs.Channel.id_resolvable(),
                   args :: Crux.Rest.create_channel_invite_data()
-                ) :: Invite.t() | no_return()
+                ) :: Crux.Structs.Invite.t() | no_return()
 
       @doc "The same as `c:create_dm/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -202,8 +202,8 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:delete_invite/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback delete_invite!(invite_or_code :: String.t() | Invite.t()) ::
-                  Invite.t() | no_return()
+      @callback delete_invite!(invite_or_code :: String.t() | Crux.Structs.Invite.t()) ::
+                  Crux.Structs.Invite.t() | no_return()
 
       @doc "The same as `c:delete_message/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -285,7 +285,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback execute_github_webhook!(
-                  webhook :: Webhook.t(),
+                  webhook :: Crux.Structs.Webhook.t(),
                   event :: String.t(),
                   data :: term()
                 ) :: :ok | no_return()
@@ -294,7 +294,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback execute_github_webhook!(
-                  webhook :: Webhook.t(),
+                  webhook :: Crux.Structs.Webhook.t(),
                   event :: String.t(),
                   wait :: boolean() | nil,
                   data :: term()
@@ -314,14 +314,14 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:execute_slack_webhook/2`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback execute_slack_webhook!(webhook :: Webhook.t(), data :: term()) ::
+      @callback execute_slack_webhook!(webhook :: Crux.Structs.Webhook.t(), data :: term()) ::
                   :ok | no_return()
 
       @doc "The same as `c:execute_slack_webhook/3`, but raises an exception if it fails."
       Version.since("0.2.0")
 
       @callback execute_slack_webhook!(
-                  webhook :: Webhook.t(),
+                  webhook :: Crux.Structs.Webhook.t(),
                   wait :: boolean() | nil,
                   data :: term()
                 ) :: :ok | no_return()
@@ -340,7 +340,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback execute_webhook!(
-                  webhook :: Webhook.t(),
+                  webhook :: Crux.Structs.Webhook.t(),
                   data :: Crux.Rest.execute_webhook_options()
                 ) :: :ok | no_return()
 
@@ -348,7 +348,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback execute_webhook!(
-                  webhook :: Webhook.t(),
+                  webhook :: Crux.Structs.Webhook.t(),
                   wait :: boolean() | nil,
                   data :: Crux.Rest.execute_webhook_options()
                 ) :: :ok | no_return()
@@ -377,7 +377,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback get_audit_logs!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   options :: Crux.Rest.audit_log_options() | nil
-                ) :: AuditLog.t() | no_return()
+                ) :: Crux.Structs.AuditLog.t() | no_return()
 
       @doc "The same as `c:get_channel/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -389,7 +389,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_channel_invites!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-                  %{required(String.t()) => Invite.t()} | no_return()
+                  %{required(String.t()) => Crux.Structs.Invite.t()} | no_return()
 
       @doc "The same as `c:get_current_user/0`, but raises an exception if it fails."
       Version.since("0.2.1")
@@ -463,7 +463,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_guild_invites!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(String.t()) => Invite.t()} | no_return()
+                  %{required(String.t()) => Crux.Structs.Invite.t()} | no_return()
 
       @doc "The same as `c:get_guild_member/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -501,7 +501,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:get_invite/1`, but raises an exception if it fails."
       Version.since("0.2.0")
-      @callback get_invite!(code :: String.t()) :: Invite.t() | no_return()
+      @callback get_invite!(code :: String.t()) :: Crux.Structs.Invite.t() | no_return()
 
       @doc "The same as `c:get_message/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -559,7 +559,7 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback get_webhook!(user :: Crux.Structs.User.id_resolvable(), token :: String.t() | nil) ::
-                  Webhook.t() | no_return()
+                  Crux.Structs.Webhook.t() | no_return()
 
       @doc "The same as `c:leave_guild/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -569,7 +569,8 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback list_channel_webhooks!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()}
+                  | no_return()
 
       @doc "The same as `c:list_guild_emojis/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -589,7 +590,8 @@ defmodule Crux.Rest.Gen.Bang do
       Version.since("0.2.0")
 
       @callback list_guild_webhooks!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-                  %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()}
+                  | no_return()
 
       @doc "The same as `c:modify_channel/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -751,7 +753,7 @@ defmodule Crux.Rest.Gen.Bang do
                         | {:avatar, Crux.Rest.Util.image()}
                         | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                       ]
-                ) :: Webhook.t() | no_return()
+                ) :: Crux.Structs.Webhook.t() | no_return()
 
       # Required for `Crux.Rest.Functions`
       @optional_callbacks add_guild_member!: 3,
@@ -967,7 +969,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_channel_invite(
               channel :: Crux.Structs.Channel.id_resolvable(),
               args :: Crux.Rest.create_channel_invite_data()
-            ) :: {:ok, Invite.t()} | {:error, term()}
+            ) :: {:ok, Crux.Structs.Invite.t()} | {:error, term()}
       def create_channel_invite(channel, data) do
         request = Crux.Rest.Functions.create_channel_invite(channel, data)
         request(request)
@@ -978,7 +980,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec create_channel_invite!(
               channel :: Crux.Structs.Channel.id_resolvable(),
               args :: Crux.Rest.create_channel_invite_data()
-            ) :: Invite.t() | no_return()
+            ) :: Crux.Structs.Invite.t() | no_return()
       def create_channel_invite!(channel, data) do
         request = Crux.Rest.Functions.create_channel_invite(channel, data)
         request!(request)
@@ -1384,8 +1386,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.delete_invite/1`"
 
-      @spec delete_invite(invite_or_code :: String.t() | Invite.t()) ::
-              {:ok, Invite.t()} | {:error, term()}
+      @spec delete_invite(invite_or_code :: String.t() | Crux.Structs.Invite.t()) ::
+              {:ok, Crux.Structs.Invite.t()} | {:error, term()}
       def delete_invite(code) do
         request = Crux.Rest.Functions.delete_invite(code)
         request(request)
@@ -1393,7 +1395,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.delete_invite/1`, but raises an exception if it fails."
 
-      @spec delete_invite!(invite_or_code :: String.t() | Invite.t()) :: Invite.t() | no_return()
+      @spec delete_invite!(invite_or_code :: String.t() | Crux.Structs.Invite.t()) ::
+              Crux.Structs.Invite.t() | no_return()
       def delete_invite!(code) do
         request = Crux.Rest.Functions.delete_invite(code)
         request!(request)
@@ -1637,8 +1640,11 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_github_webhook/3`"
 
-      @spec execute_github_webhook(webhook :: Webhook.t(), event :: String.t(), data :: term()) ::
-              :ok
+      @spec execute_github_webhook(
+              webhook :: Crux.Structs.Webhook.t(),
+              event :: String.t(),
+              data :: term()
+            ) :: :ok
       def execute_github_webhook(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
         request(request)
@@ -1646,8 +1652,11 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_github_webhook/3`, but raises an exception if it fails."
 
-      @spec execute_github_webhook!(webhook :: Webhook.t(), event :: String.t(), data :: term()) ::
-              :ok | no_return()
+      @spec execute_github_webhook!(
+              webhook :: Crux.Structs.Webhook.t(),
+              event :: String.t(),
+              data :: term()
+            ) :: :ok | no_return()
       def execute_github_webhook!(map, event, data) do
         request = Crux.Rest.Functions.execute_github_webhook(map, event, data)
         request!(request)
@@ -1683,7 +1692,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_slack_webhook/2`"
 
-      @spec execute_slack_webhook(webhook :: Webhook.t(), data :: term()) :: :ok
+      @spec execute_slack_webhook(webhook :: Crux.Structs.Webhook.t(), data :: term()) :: :ok
       def execute_slack_webhook(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
         request(request)
@@ -1691,7 +1700,8 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_slack_webhook/2`, but raises an exception if it fails."
 
-      @spec execute_slack_webhook!(webhook :: Webhook.t(), data :: term()) :: :ok | no_return()
+      @spec execute_slack_webhook!(webhook :: Crux.Structs.Webhook.t(), data :: term()) ::
+              :ok | no_return()
       def execute_slack_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_slack_webhook(map, data)
         request!(request)
@@ -1725,8 +1735,10 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.execute_webhook/2`"
 
-      @spec execute_webhook(webhook :: Webhook.t(), data :: Crux.Rest.execute_webhook_options()) ::
-              :ok
+      @spec execute_webhook(
+              webhook :: Crux.Structs.Webhook.t(),
+              data :: Crux.Rest.execute_webhook_options()
+            ) :: :ok
       def execute_webhook(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
         request(request)
@@ -1734,8 +1746,10 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.execute_webhook/2`, but raises an exception if it fails."
 
-      @spec execute_webhook!(webhook :: Webhook.t(), data :: Crux.Rest.execute_webhook_options()) ::
-              :ok | no_return()
+      @spec execute_webhook!(
+              webhook :: Crux.Structs.Webhook.t(),
+              data :: Crux.Rest.execute_webhook_options()
+            ) :: :ok | no_return()
       def execute_webhook!(map, data) do
         request = Crux.Rest.Functions.execute_webhook(map, data)
         request!(request)
@@ -1804,7 +1818,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_audit_logs(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.audit_log_options() | nil
-            ) :: {:ok, AuditLog.t()} | {:error, term()}
+            ) :: {:ok, Crux.Structs.AuditLog.t()} | {:error, term()}
       def get_audit_logs(guild, data \\ []) do
         request = Crux.Rest.Functions.get_audit_logs(guild, data)
         request(request)
@@ -1815,7 +1829,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_audit_logs!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.audit_log_options() | nil
-            ) :: AuditLog.t() | no_return()
+            ) :: Crux.Structs.AuditLog.t() | no_return()
       def get_audit_logs!(guild, data \\ []) do
         request = Crux.Rest.Functions.get_audit_logs(guild, data)
         request!(request)
@@ -1842,7 +1856,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_channel_invites/1`"
 
       @spec get_channel_invites(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              {:ok, %{required(String.t()) => Invite.t()}} | {:error, term()}
+              {:ok, %{required(String.t()) => Crux.Structs.Invite.t()}} | {:error, term()}
       def get_channel_invites(channel) do
         request = Crux.Rest.Functions.get_channel_invites(channel)
         request(request)
@@ -1851,7 +1865,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_channel_invites/1`, but raises an exception if it fails."
 
       @spec get_channel_invites!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              %{required(String.t()) => Invite.t()} | no_return()
+              %{required(String.t()) => Crux.Structs.Invite.t()} | no_return()
       def get_channel_invites!(channel) do
         request = Crux.Rest.Functions.get_channel_invites(channel)
         request!(request)
@@ -1878,7 +1892,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_current_user_guilds(data :: Crux.Rest.get_current_user_guild_data()) ::
               {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Guild.t()}}
               | {:error, term()}
-      def get_current_user_guilds(data) do
+      def get_current_user_guilds(data \\ []) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
         request(request)
       end
@@ -1887,7 +1901,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec get_current_user_guilds!(data :: Crux.Rest.get_current_user_guild_data()) ::
               %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Guild.t()} | no_return()
-      def get_current_user_guilds!(data) do
+      def get_current_user_guilds!(data \\ []) do
         request = Crux.Rest.Functions.get_current_user_guilds(data)
         request!(request)
       end
@@ -2047,7 +2061,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_guild_invites/1`"
 
       @spec get_guild_invites(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(String.t()) => Invite.t()}} | {:error, term()}
+              {:ok, %{required(String.t()) => Crux.Structs.Invite.t()}} | {:error, term()}
       def get_guild_invites(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
         request(request)
@@ -2056,7 +2070,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_guild_invites/1`, but raises an exception if it fails."
 
       @spec get_guild_invites!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(String.t()) => Invite.t()} | no_return()
+              %{required(String.t()) => Crux.Structs.Invite.t()} | no_return()
       def get_guild_invites!(guild) do
         request = Crux.Rest.Functions.get_guild_invites(guild)
         request!(request)
@@ -2163,7 +2177,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.get_invite/1`"
 
-      @spec get_invite(code :: String.t()) :: {:ok, Invite.t()} | {:error, term()}
+      @spec get_invite(code :: String.t()) :: {:ok, Crux.Structs.Invite.t()} | {:error, term()}
       def get_invite(code) do
         request = Crux.Rest.Functions.get_invite(code)
         request(request)
@@ -2171,7 +2185,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.get_invite/1`, but raises an exception if it fails."
 
-      @spec get_invite!(code :: String.t()) :: Invite.t() | no_return()
+      @spec get_invite!(code :: String.t()) :: Crux.Structs.Invite.t() | no_return()
       def get_invite!(code) do
         request = Crux.Rest.Functions.get_invite(code)
         request!(request)
@@ -2180,9 +2194,9 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_message/2`"
 
       @spec get_message(
-              channel :: Crux.Rest.Util.channel_id_resolvable(),
-              message_id :: Crux.Rest.Util.message_id_resolvable()
-            ) :: {:ok, Message} | {:error, term()}
+              channel :: Crux.Structs.Channel.id_resolvable(),
+              message_id :: Crux.Structs.Message.id_resolvable()
+            ) :: {:ok, Crux.Structs.Message} | {:error, term()}
       def get_message(channel, message) do
         request = Crux.Rest.Functions.get_message(channel, message)
         request(request)
@@ -2191,9 +2205,9 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_message/2`, but raises an exception if it fails."
 
       @spec get_message!(
-              channel :: Crux.Rest.Util.channel_id_resolvable(),
-              message_id :: Crux.Rest.Util.message_id_resolvable()
-            ) :: Message | no_return()
+              channel :: Crux.Structs.Channel.id_resolvable(),
+              message_id :: Crux.Structs.Message.id_resolvable()
+            ) :: Crux.Structs.Message | no_return()
       def get_message!(channel, message) do
         request = Crux.Rest.Functions.get_message(channel, message)
         request!(request)
@@ -2315,7 +2329,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.get_webhook/2`"
 
       @spec get_webhook(user :: Crux.Structs.User.id_resolvable(), token :: String.t() | nil) ::
-              {:ok, Webhook.t()} | {:error, term()}
+              {:ok, Crux.Structs.Webhook.t()} | {:error, term()}
       def get_webhook(user, token \\ nil) do
         request = Crux.Rest.Functions.get_webhook(user, token)
         request(request)
@@ -2324,7 +2338,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.get_webhook/2`, but raises an exception if it fails."
 
       @spec get_webhook!(user :: Crux.Structs.User.id_resolvable(), token :: String.t() | nil) ::
-              Webhook.t() | no_return()
+              Crux.Structs.Webhook.t() | no_return()
       def get_webhook!(user, token \\ nil) do
         request = Crux.Rest.Functions.get_webhook(user, token)
         request!(request)
@@ -2349,7 +2363,8 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.list_channel_webhooks/1`"
 
       @spec list_channel_webhooks(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.t()) => Webhook.t()}} | {:error, term()}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()}}
+              | {:error, term()}
       def list_channel_webhooks(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
         request(request)
@@ -2358,7 +2373,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.list_channel_webhooks/1`, but raises an exception if it fails."
 
       @spec list_channel_webhooks!(channel :: Crux.Structs.Channel.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()} | no_return()
       def list_channel_webhooks!(channel) do
         request = Crux.Rest.Functions.list_channel_webhooks(channel)
         request!(request)
@@ -2408,7 +2423,8 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "See `c:Crux.Rest.list_guild_webhooks/1`"
 
       @spec list_guild_webhooks(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              {:ok, %{required(Crux.Structs.Snowflake.t()) => Webhook.t()}} | {:error, term()}
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()}}
+              | {:error, term()}
       def list_guild_webhooks(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
         request(request)
@@ -2417,7 +2433,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:Crux.Rest.list_guild_webhooks/1`, but raises an exception if it fails."
 
       @spec list_guild_webhooks!(guild :: Crux.Structs.Guild.id_resolvable()) ::
-              %{required(Crux.Structs.Snowflake.t()) => Webhook.t()} | no_return()
+              %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Webhook.t()} | no_return()
       def list_guild_webhooks!(guild) do
         request = Crux.Rest.Functions.list_guild_webhooks(guild)
         request!(request)
@@ -2808,7 +2824,7 @@ defmodule Crux.Rest.Gen.Bang do
                     | {:avatar, Crux.Rest.Util.image()}
                     | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                   ]
-            ) :: {:ok, Webhook.t()} | {:error, term()}
+            ) :: {:ok, Crux.Structs.Webhook.t()} | {:error, term()}
       def update_webhook(user, token \\ nil, data) do
         request = Crux.Rest.Functions.update_webhook(user, token, data)
         request(request)
@@ -2830,7 +2846,7 @@ defmodule Crux.Rest.Gen.Bang do
                     | {:avatar, Crux.Rest.Util.image()}
                     | {:channel_id, Crux.Structs.Channel.id_resolvable()}
                   ]
-            ) :: Webhook.t() | no_return()
+            ) :: Crux.Structs.Webhook.t() | no_return()
       def update_webhook!(user, token \\ nil, data) do
         request = Crux.Rest.Functions.update_webhook(user, token, data)
         request!(request)
