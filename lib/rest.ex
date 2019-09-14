@@ -30,6 +30,20 @@ defmodule Crux.Rest do
 
   alias Crux.Rest.{ApiError, Handler, Request, Util, Version}
 
+  alias Crux.Structs.{
+    AuditLog,
+    Channel,
+    Emoji,
+    Guild,
+    Invite,
+    Message,
+    Overwrite,
+    Role,
+    Snowflake,
+    User,
+    Webhook
+  }
+
   require Version
 
   use Crux.Rest.Gen.Bang, :callbacks
@@ -42,6 +56,8 @@ defmodule Crux.Rest do
     Received as integers via the gateway, but as strings via http.
 
   > They are normalized to integers via `Crux.Structs`.
+
+  > Deprecated: Use `Crux.Snowflake.resolvable()` instead
   """
   Version.typesince("0.1.0")
   @type snowflake :: non_neg_integer()
@@ -118,12 +134,12 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_message(
-              channel :: Util.channel_id_resolvable(),
+              channel :: Channel.id_resolvable(),
               args :: Crux.Rest.create_message_data()
             ) :: {:ok, Message.t()} | {:error, term()}
 
   @typedoc """
-    Used to edit messages via `c:edit_message/2` or `edit_message/3`.
+    Used to edit messages via `c:edit_message/2` or `c:edit_message/3`.
 
     The content my not exceed 2000 chars, this limit is enfored on discord's end.
   """
@@ -157,8 +173,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback edit_message(
-              channel_id :: Util.channel_id_resolvable(),
-              message_id :: Util.message_id_resolvable(),
+              channel_id :: Channel.id_resolvable(),
+              message_id :: Message.id_resolvable(),
               args :: Crux.Rest.message_edit_data()
             ) :: {:ok, Message.t()} | {:error, term()}
 
@@ -179,8 +195,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_message(
-              channel_id :: Util.channel_id_resolvable(),
-              message_id :: Util.message_id_resolvable()
+              channel_id :: Channel.id_resolvable(),
+              message_id :: Message.id_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -191,8 +207,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_messages(
-              channel :: Util.channel_id_resolvable(),
-              messages :: [Util.message_id_resolvable()]
+              channel :: Channel.id_resolvable(),
+              messages :: [Message.id_resolvable()]
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -203,8 +219,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_message(
-              channel :: Util.channel_id_resolvable(),
-              message_id :: Util.message_id_resolvable()
+              channel :: Channel.id_resolvable(),
+              message_id :: Message.id_resolvable()
             ) :: {:ok, Message} | {:error, term()}
 
   @typedoc """
@@ -219,15 +235,15 @@ defmodule Crux.Rest do
 
   @type get_messages_data ::
           %{
-            optional(:around) => Crux.Rest.snowflake(),
-            optional(:before) => Crux.Rest.snowflake(),
-            optional(:after) => Crux.Rest.snowflake(),
+            optional(:around) => Message.id_resolvable(),
+            optional(:before) => Message.id_resolvable(),
+            optional(:after) => Message.id_resolvable(),
             optional(:limit) => pos_integer()
           }
           | [
-              {:around, Crux.Rest.snowflake()}
-              | {:before, Crux.Rest.snowflake()}
-              | {:after, Crux.Rest.snowflake()}
+              {:around, Message.id_resolvable()}
+              | {:before, Message.id_resolvable()}
+              | {:after, Message.id_resolvable()}
               | {:limit, pos_integer()}
             ]
 
@@ -239,9 +255,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_messages(
-              channel :: Util.channel_id_resolvable(),
+              channel :: Channel.id_resolvable(),
               args :: Crux.Rest.get_messages_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake()) => Message.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Snowflake.t()) => Message.t()}} | {:error, term()}
 
   ### End Message
 
@@ -255,8 +271,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_reaction(
-              message :: Util.message_id_resolvable(),
-              emoji :: Util.emoji_identifier_resolvable()
+              message :: Message.id_resolvable(),
+              emoji :: Emoji.identifier_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -267,9 +283,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_reaction(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable(),
-              emoji :: Util.emoji_id_resolvable()
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable(),
+              emoji :: Emoji.id_resolvable()
             ) :: :ok | {:error, term()}
 
   @typedoc """
@@ -283,13 +299,13 @@ defmodule Crux.Rest do
 
   @type get_reactions_data ::
           %{
-            optional(:before) => Crux.Rest.snowflake(),
-            optional(:after) => Crux.Rest.snowflake(),
+            optional(:before) => User.id_resolvable(),
+            optional(:after) => User.id_resolvable(),
             optional(:limit) => pos_integer()
           }
           | [
-              {:before, Crux.Rest.snowflake()}
-              | {:after, Crux.Rest.snowflake()}
+              {:before, User.id_resolvable()}
+              | {:after, Snowflake.id_resolvable()}
               | {:limit, pos_integer()}
             ]
 
@@ -303,19 +319,19 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_reactions(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable(),
-              emoji :: Util.emoji_identifier_resolvable(),
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable(),
+              emoji :: Emoji.identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake()) => User.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Snowflake.t()) => User.t()}} | {:error, term()}
 
   Version.since("0.2.0")
 
   @callback get_reactions(
               message :: Message.t(),
-              emoji :: Util.emoji_identifier_resolvable(),
+              emoji :: Emoji.identifier_resolvable(),
               args :: Crux.Rest.get_reactions_data()
-            ) :: {:ok, %{required(Crux.Rest.snowflake()) => User.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Snowflake.t()) => User.t()}} | {:error, term()}
 
   @doc """
     Deletes a user from a reaction.
@@ -327,10 +343,10 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_reaction(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable(),
-              emoji :: Util.emoji_identifier_resolvable(),
-              user :: Util.user_id_resolvable()
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable(),
+              emoji :: Emoji.identifier_resolvable(),
+              user :: User.id_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -342,7 +358,7 @@ defmodule Crux.Rest do
 
   @callback delete_all_reactions(
               message :: Message.t(),
-              emoji :: Util.emoji_identifier_resolvable()
+              emoji :: Emoji.identifier_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -353,9 +369,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_all_reactions(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable(),
-              emoji :: Util.emoji_identifier_resolvable()
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable(),
+              emoji :: Emoji.identifier_resolvable()
             ) :: :ok | {:error, term()}
 
   ### End Reactions
@@ -371,7 +387,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/channel#trigger-typing-indicator).
   """
   Version.since("0.2.0")
-  @callback trigger_typing(channel :: Util.channel_id_resolvable()) :: :ok | {:error, term()}
+  @callback trigger_typing(channel :: Channel.id_resolvable()) :: :ok | {:error, term()}
 
   @doc """
     Adds a message to the pinned messages of a channel.
@@ -392,8 +408,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback add_pinned_message(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable()
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -413,8 +429,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_pinned_message(
-              channel :: Util.channel_id_resolvable(),
-              message :: Util.message_id_resolvable()
+              channel :: Channel.id_resolvable(),
+              message :: Message.id_resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -425,7 +441,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_channel(channel :: Util.resolve_channel_id()) ::
+  @callback get_channel(channel :: Channel.id_resolvable()) ::
               {:ok, Channel.t()} | {:error, term()}
 
   @typedoc """
@@ -448,7 +464,7 @@ defmodule Crux.Rest do
             optional(:icon) => Util.image(),
             optional(:name) => String.t() | nil,
             optional(:nsfw) => boolean(),
-            optional(:parent_id) => Crux.Rest.snowflake() | nil,
+            optional(:parent_id) => Channel.id_resolvable() | nil,
             optional(:permission_overwrites) => [Overwrite.t()],
             optional(:position) => non_neg_integer(),
             optional(:rate_limit_per_user) => non_neg_integer(),
@@ -461,7 +477,7 @@ defmodule Crux.Rest do
               | {:icon, Util.image()}
               | {:name, String.t() | nil}
               | {:nsfw, boolean()}
-              | {:parent_id, Crux.Rest.snowflake() | nil}
+              | {:parent_id, Channel.id_resolvable() | nil}
               | {:permission_overwrites, [Overwrite.t()]}
               | {:position, non_neg_integer()}
               | {:rate_limit_per_user, non_neg_integer()}
@@ -478,7 +494,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_channel(
-              channel :: Util.channel_id_resolvable(),
+              channel :: Channel.id_resolvable(),
               data :: Crux.Rest.modify_channel_data()
             ) :: {:ok, Channel.t()} | {:error, term()}
 
@@ -490,7 +506,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_channel(
-              channel :: Util.channel_id_resolvable(),
+              channel :: Channel.id_resolvable(),
               reason :: String.t()
             ) :: {:ok, Channel.t()} | {:error, term()}
 
@@ -523,8 +539,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback edit_channel_permissions(
-              channel :: Util.channel_id_resolvable(),
-              target :: Util.overwrite_target_resolvable(),
+              channel :: Channel.id_resolvable(),
+              target :: Overwrite.target_resolvable(),
               data :: Crux.Rest.edit_channel_permissions_data()
             ) :: :ok | {:error, :missing_target} | {:error, term()}
 
@@ -535,7 +551,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_channel_invites(channel :: Util.channel_id_resolvable()) ::
+  @callback get_channel_invites(channel :: Channel.id_resolvable()) ::
               {:ok, %{required(String.t()) => Invite.t()}} | {:error, term()}
 
   @typedoc """
@@ -575,7 +591,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_channel_invite(
-              channel :: Util.channel_id_resolvable(),
+              channel :: Channel.id_resolvable(),
               args :: Crux.Rest.create_channel_invite_data()
             ) :: {:ok, Invite.t()} | {:error, term()}
 
@@ -587,8 +603,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_channel_permissions(
-              channel :: Util.channel_id_resolvable(),
-              target :: Util.overwrite_target_resolvable(),
+              channel :: Channel.id_resolvable(),
+              target :: Overwrite.target_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -599,8 +615,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_pinned_messages(channel :: Util.channel_id_resolvable()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Message.t()}} | {:error, term()}
+  @callback get_pinned_messages(channel :: Channel.id_resolvable()) ::
+              {:ok, %{required(Snowflake.t()) => Message.t()}} | {:error, term()}
 
   ### End Channel
 
@@ -614,8 +630,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback list_guild_emojis(guild :: Util.guild_id_resolvable()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Emoji.t()}} | {:error, term()}
+  @callback list_guild_emojis(guild :: Guild.id_resolvable()) ::
+              {:ok, %{required(Snowflake.t()) => Emoji.t()}} | {:error, term()}
 
   @doc """
     Gets an emoji from a guild
@@ -626,8 +642,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_guild_emoji(
-              guild :: Util.guild_id_resolvable(),
-              emoji :: Util.emoji_id_resolvable()
+              guild :: Guild.id_resolvable(),
+              emoji :: Emoji.id_resolvable()
             ) :: {:ok, Emoji} | {:error, term()}
 
   @typedoc """
@@ -645,13 +661,13 @@ defmodule Crux.Rest do
           %{
             required(:name) => String.t(),
             required(:image) => Util.image(),
-            optional(:roles) => [Role.t() | Crux.Rest.snowflake()],
+            optional(:roles) => [Role.id_resolvable()],
             optional(:reason) => String.t()
           }
           | [
               {:name, String.t()}
               | {:image, Util.image()}
-              | {:roles, [Role.t() | Crux.Rest.snowflake()]}
+              | {:roles, [Role.id_resolvable()]}
               | {:reason, String.t()}
             ]
 
@@ -663,7 +679,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_guild_emoji(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data :: Crux.Rest.create_guild_emoji_data()
             ) :: {:ok, Emoji} | {:error, term}
 
@@ -677,12 +693,12 @@ defmodule Crux.Rest do
   @type modify_guild_emoji_data ::
           %{
             optional(:name) => String.t(),
-            optional(:roles) => [Role.t() | Crux.Rest.snowflake()],
+            optional(:roles) => [Role.id_resolvable()],
             optional(:reason) => String.t()
           }
           | [
               {:name, String.t()}
-              | {:roles, [Role.t() | Crux.Rest.snowflake()]}
+              | {:roles, [Role.id_resolvable()]}
               | {:reason, String.t()}
             ]
 
@@ -694,8 +710,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_emoji(
-              guild :: Util.guild_id_resolvable(),
-              emoji :: Util.emoji_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              emoji :: Emoji.id_resolvable(),
               data :: Crux.Rest.modify_guild_emoji_data()
             ) :: {:ok, Emoji} | {:error, term()}
 
@@ -707,8 +723,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_guild_emoji(
-              guild :: Util.guild_id_resolvable(),
-              emoji :: Util.emoji_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              emoji :: Emoji.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -726,11 +742,10 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild)
   """
   Version.since("0.2.0")
-  @callback get_guild(guild :: Util.guild_id_resolvable()) :: {:ok, Guild.t()} | {:error, term()}
+  @callback get_guild(guild :: Guild.id_resolvable()) :: {:ok, Guild.t()} | {:error, term()}
 
-  # TODO: :that:
   @typedoc """
-    TBD, see `c:modify_guild/2`
+    Used to modify a guild using `c:modify_guild/2`.
   """
   Version.typesince("0.1.0")
 
@@ -741,13 +756,13 @@ defmodule Crux.Rest do
             optional(:verification_level) => non_neg_integer(),
             optional(:default_message_notifications) => non_neg_integer(),
             optional(:explicit_content_filter) => non_neg_integer(),
-            optional(:afk_channel_id) => Crux.Rest.snowflake() | nil,
+            optional(:afk_channel_id) => Channel.id_resolvable() | nil,
             optional(:afk_timeout) => non_neg_integer(),
             optional(:icon) => Util.image(),
             optional(:splash) => Util.image(),
             optional(:banner) => Util.image(),
-            optional(:owner_id) => Crux.Rest.snowflake(),
-            optional(:system_channel_id) => Crux.Rest.snowflake() | nil,
+            optional(:owner_id) => User.id_resolvable(),
+            optional(:system_channel_id) => Channel.id_resolvable() | nil,
             optional(:reason) => String.t()
           }
           | [
@@ -756,13 +771,13 @@ defmodule Crux.Rest do
               | {:verification_level, non_neg_integer()}
               | {:default_message_notifications, non_neg_integer()}
               | {:explicit_content_filter, non_neg_integer()}
-              | {:afk_channel_id, Crux.Rest.snowflake() | nil}
+              | {:afk_channel_id, Channel.id_resolvable() | nil}
               | {:afk_timeout, non_neg_integer()}
               | {:icon, Util.image()}
               | {:splash, Util.image()}
               | {:banner, Util.image()}
-              | {:owner_id, Crux.Rest.snowflake()}
-              | {:system_channel_id, Crux.Rest.snowflake() | nil}
+              | {:owner_id, User.id_resolvable()}
+              | {:system_channel_id, Channel.id_resolvable() | nil}
               | {:reason, String.t()}
             ]
 
@@ -774,17 +789,17 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data :: Crux.Rest.modify_guild_data()
             ) :: {:ok, Guild.t()} | {:error, term()}
 
   @doc """
-    Deletes a guild, can only be used if the executing user is the owner.
+    Deletes a guild, can only be used if the executing user is the owner of the guild.
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#delete-guild).
   """
   Version.since("0.2.0")
-  @callback delete_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  @callback delete_guild(guild :: Guild.id_resolvable()) :: :ok | {:error, term()}
 
   @typedoc """
     Used to filter audit log results via `c:get_audit_logs/2`.
@@ -794,15 +809,15 @@ defmodule Crux.Rest do
 
   @type audit_log_options ::
           %{
-            optional(:user_id) => Crux.Rest.snowflake(),
+            optional(:user_id) => User.id_resolvable(),
             optional(:action_type) => pos_integer(),
-            optional(:before) => Crux.Rest.snowflake(),
+            optional(:before) => User.id_resolvable(),
             optional(:limit) => pos_integer()
           }
           | [
-              {:user_id, Crux.Rest.snowflake()}
+              {:user_id, User.id_resolvable()}
               | {:action_type, pos_integer()}
-              | {:before, Crux.Rest.snowflake()}
+              | {:before, User.id_resolvable()}
               | {:limit, pos_integer}
             ]
 
@@ -812,7 +827,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_audit_logs(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               options :: Crux.Rest.audit_log_options() | nil
             ) :: {:ok, AuditLog.t()} | {:error, term()}
 
@@ -824,8 +839,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_channels(guild :: Util.guild_id_resolvable()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Channel.t()}} | {:error, term()}
+  @callback get_guild_channels(guild :: Guild.id_resolvable()) ::
+              {:ok, %{required(Snowflake.t()) => Channel.t()}} | {:error, term()}
 
   @typedoc """
     Used to create a channel via `c:create_guild_channel/2`.
@@ -844,13 +859,13 @@ defmodule Crux.Rest do
             optional(:permission_overwrites) => [
               Overwrite.t()
               | %{
-                  required(:id) => Crux.Rest.snowflake(),
+                  required(:id) => Role.id_resolvable() | Channel.id_resolvable(),
                   required(:type) => String.t(),
                   optional(:allow) => non_neg_integer(),
                   optional(:deny) => non_neg_integer()
                 }
             ],
-            optional(:parent_id) => Crux.Rest.snowflake() | nil,
+            optional(:parent_id) => Channel.id_resolvable() | nil,
             optional(:nsfw) => boolean(),
             optional(:reason) => String.t()
           }
@@ -863,13 +878,13 @@ defmodule Crux.Rest do
                  [
                    Overwrite.t()
                    | %{
-                       required(:id) => Crux.Rest.snowflake(),
+                       required(:id) => Role.id_resolvable() | Channel.id_resolvable(),
                        required(:type) => String.t(),
                        optional(:allow) => non_neg_integer(),
                        optional(:deny) => non_neg_integer()
                      }
                  ]}
-              | {:parent_id, Crux.Rest.snowflake() | nil}
+              | {:parent_id, Channel.id_resolvable() | nil}
               | {:nsfw, boolean()}
               | {:reason, String.t()}
             ]
@@ -882,20 +897,18 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_guild_channel(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data :: Crux.Rest.create_guild_channel_data()
             ) :: {:ok, Channel.t()} | {:error, term()}
 
   @typedoc """
     Used to change a channel's position via `c:modify_guild_channel_positions/2`.
+
+  > Deprecated: Use `Crux.Structs.Channel.position_resolvable()` instead
   """
   Version.typesince("0.1.0")
 
-  @type modify_guild_channel_positions_data_entry ::
-          {Channel.t(), integer()}
-          | {Crux.Rest.snowflake(), integer()}
-          | %{required(:channel) => Channel.t(), required(:position) => integer()}
-          | %{required(:id) => Crux.Rest.snowflake(), required(:position) => integer()}
+  @type modify_guild_channel_positions_data_entry :: Channel.position_resolvable()
 
   @doc """
     Modifyies the position of a list of channels in a guild.
@@ -905,8 +918,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_channel_positions(
-              guild :: Util.guild_id_resolvable(),
-              channels :: [Crux.Rest.modify_guild_channel_positions_data_entry()]
+              guild :: Guild.id_resolvable(),
+              channels :: [Channel.position_resolvable()]
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -919,21 +932,21 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_guild_member(
-              guild :: Util.guild_id_resolvable(),
-              user :: Util.user_id_resolvable()
+              guild :: Guild.id_resolvable(),
+              user :: User.id_resolvable()
             ) :: {:ok, Member.t()} | {:error, term()}
 
   @typedoc """
-    Used to list guild members via `c:listt_guild_members/2`.
+    Used to list guild members via `c:list_guild_members/2`.
   """
   Version.typesince("0.1.0")
 
   @type list_guild_members_options ::
           %{
             optional(:limit) => pos_integer(),
-            optional(:after) => Crux.Rest.snowflake()
+            optional(:after) => User.id_resolvable()
           }
-          | [{:limit, pos_integer()} | {:after, Crux.Rest.snowflake()}]
+          | [{:limit, pos_integer()} | {:after, User.id_resolvable()}]
 
   @doc """
     Gets a list of members from the guild.
@@ -943,9 +956,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback list_guild_members(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               options :: Crux.Rest.list_guild_members_options()
-            ) :: {:ok, %{required(Crux.Rest.snowflake()) => Member.t()}} | {:error, term()}
+            ) :: {:ok, %{required(Snowflake.t()) => Member.t()}} | {:error, term()}
 
   @typedoc """
     Used to add a member to a guild via `c:add_guild_member/3`.
@@ -956,7 +969,7 @@ defmodule Crux.Rest do
           %{
             required(:access_token) => String.t(),
             optional(:nick) => String.t() | nil,
-            optional(:roles) => [Crux.Rest.snowflake()],
+            optional(:roles) => [Role.id_resolvable()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
             optional(:reason) => String.t()
@@ -964,7 +977,7 @@ defmodule Crux.Rest do
           | [
               {:access_token, String.t()}
               | {:nick, String.t() | nil}
-              | {:roles, [Crux.Rest.snowflake()]}
+              | {:roles, [Role.id_resolvable()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
               | {:reason, String.t()}
@@ -978,8 +991,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback add_guild_member(
-              guild :: Util.guild_id_resolvable(),
-              user :: Util.user_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              user :: User.id_resolvable(),
               data :: Crux.Rest.add_guild_member_data()
             ) :: {:ok, Member.t()} | {:error, term()}
 
@@ -994,18 +1007,18 @@ defmodule Crux.Rest do
   @type modify_guild_member_data ::
           %{
             optional(:nick) => String.t() | nil,
-            optional(:roles) => [Crux.Rest.snowflake()],
+            optional(:roles) => [Role.id_resolvable()],
             optional(:mute) => boolean(),
             optional(:deaf) => boolean(),
-            optional(:channel_id) => Crux.Rest.snowflake() | nil,
+            optional(:channel_id) => Channel.id_resolvable() | nil,
             optional(:reason) => String.t()
           }
           | [
               {:nick, String.t() | nil}
-              | {:roles, [Crux.Rest.snowflake()]}
+              | {:roles, [Role.id_resolvable()]}
               | {:mute, boolean()}
               | {:deaf, boolean()}
-              | {:channel_id, Crux.Rest.snowflake() | nil}
+              | {:channel_id, Channel.id_resolvable() | nil}
               | {:reason, String.t()}
             ]
 
@@ -1017,8 +1030,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_member(
-              guild :: Util.guild_id_resolvable(),
-              member :: Util.user_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              member :: User.id_resolvable(),
               data :: Crux.Rest.modify_guild_member_data()
             ) :: :ok | {:error, term()}
 
@@ -1033,7 +1046,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_current_users_nick(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               nick :: String.t(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
@@ -1046,9 +1059,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback add_guild_member_role(
-              guild :: Util.guild_id_resolvable(),
-              member :: Util.user_id_resolvable(),
-              role :: Util.role_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              member :: User.id_resolvable(),
+              role :: Role.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -1060,9 +1073,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback remove_guild_member_role(
-              guild :: Util.guild_id_resolvable(),
-              member :: Util.user_id_resolvable(),
-              role :: Util.role_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              member :: User.id_resolvable(),
+              role :: Role.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -1073,8 +1086,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_bans(guild :: Util.guild_id_resolvable()) ::
-              {:ok, %{Crux.Rest.snowflake() => %{user: User.t(), reason: String.t() | nil}}}
+  @callback get_guild_bans(guild :: Guild.id_resolvable()) ::
+              {:ok, %{Snowflake.t() => %{user: User.t(), reason: String.t() | nil}}}
               | {:error, term()}
 
   @doc """
@@ -1086,7 +1099,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_ban(guild :: Util.guild_id_resolvable(), user :: Util.user_id_resolvable()) ::
+  @callback get_guild_ban(guild :: Guild.id_resolvable(), user :: User.id_resolvable()) ::
               {:ok, %{user: User.t(), reason: String.t() | nil}} | {:error, term()}
 
   @doc """
@@ -1097,8 +1110,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_guild_ban(
-              guild :: Util.guild_id_resolvable(),
-              user :: Util.user_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              user :: User.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -1110,8 +1123,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback remove_guild_ban(
-              guild :: Util.guild_id_resolvable(),
-              user :: Util.user_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              user :: User.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -1123,8 +1136,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_roles(guild :: Util.guild_id_resolvable()) ::
-              {:ok, %{Crux.Rest.snowflake() => Role.t()}} | {:error, term()}
+  @callback get_guild_roles(guild :: Guild.id_resolvable()) ::
+              {:ok, %{Snowflake.t() => Role.t()}} | {:error, term()}
 
   @typedoc """
     Used to create a role in a guild with `c:create_guild_role/2`.
@@ -1157,7 +1170,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_guild_role(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data :: Crux.Rest.guild_role_data()
             ) :: {:ok, Role.t()} | {:error, term()}
 
@@ -1169,9 +1182,9 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_role_positions(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data :: Util.modify_guild_role_positions_data()
-            ) :: {:ok, %{Crux.Rest.snowflake() => Role.t()}} | {:error, term()}
+            ) :: {:ok, %{Snowflake.t() => Role.t()}} | {:error, term()}
 
   @doc """
     Modifies a role in a guild.
@@ -1181,8 +1194,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_role(
-              guild :: Util.guild_id_resolvable(),
-              role :: Util.role_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              role :: Role.id_resolvable(),
               data :: Crux.Rest.guild_role_data()
             ) :: {:ok, Role.t()} | {:error, term()}
 
@@ -1194,8 +1207,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_guild_role(
-              guild :: Util.guild_id_resolvable(),
-              role :: Util.role_id_resolvable(),
+              guild :: Guild.id_resolvable(),
+              role :: Role.id_resolvable(),
               reason :: String.t()
             ) :: :ok | {:error, term()}
 
@@ -1206,7 +1219,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_prune_count(guild :: Util.guild_id_resolvable(), days :: pos_integer()) ::
+  @callback get_guild_prune_count(guild :: Guild.id_resolvable(), days :: pos_integer()) ::
               {:ok, non_neg_integer()} | {:error, term()}
 
   @typedoc """
@@ -1229,7 +1242,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback begin_guild_prune(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               opts :: Crux.Rest.begin_guild_prune_opts()
             ) :: {:ok, non_neg_integer()} | {:error, term()}
 
@@ -1242,7 +1255,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_voice_regions(guild :: Util.guild_id_resolvable()) ::
+  @callback get_guild_voice_regions(guild :: Guild.id_resolvable()) ::
               {:ok, term()} | {:error, term()}
 
   @doc """
@@ -1252,7 +1265,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_invites(guild :: Util.guild_id_resolvable()) ::
+  @callback get_guild_invites(guild :: Guild.id_resolvable()) ::
               {:ok, %{String.t() => Invite.t()}} | {:error, term()}
 
   @doc """
@@ -1264,7 +1277,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_integrations(guild :: Util.guild_id_resolvable()) ::
+  @callback get_guild_integrations(guild :: Guild.id_resolvable()) ::
               {:ok, list()} | {:error, term()}
 
   @doc """
@@ -1275,10 +1288,10 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback create_guild_integration(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data ::
-                %{type: String.t(), id: Crux.Rest.snowflake()}
-                | [{:type, String.t()} | {:id, Crux.Rest.snowflake()}]
+                %{type: String.t(), id: Snowflake.resolvable()}
+                | [{:type, String.t()} | {:id, Snowflake.resolvable()}]
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1289,8 +1302,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback modify_guild_integration(
-              guild :: Util.guild_id_resolvable(),
-              integration_id :: Crux.Rest.snowflake(),
+              guild :: Guild.id_resolvable(),
+              integration_id :: Snowflake.resolvable(),
               data ::
                 %{
                   optional(:expire_behavior) => integer(),
@@ -1312,8 +1325,8 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback delete_guild_integration(
-              guild :: Util.guild_id_resolvable(),
-              integration_id :: Crux.Rest.snowflake()
+              guild :: Guild.id_resolvable(),
+              integration_id :: Snowflake.resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
@@ -1324,39 +1337,39 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback sync_guild_integration(
-              guild :: Util.guild_id_resolvable(),
-              integration_id :: Crux.Rest.snowflake()
+              guild :: Guild.id_resolvable(),
+              integration_id :: Snowflake.resolvable()
             ) :: :ok | {:error, term()}
 
   @doc """
     Gets a guild's embed (server widget).
 
-  > Returns a [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+  > Returns a [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#guild-embed-object).
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
   """
   Version.since("0.2.0")
 
-  @callback get_guild_embed(guild :: Util.guild_id_resolvable()) ::
+  @callback get_guild_embed(guild :: Guild.id_resolvable()) ::
               {:ok, term()} | {:error, term()}
 
   @doc """
     Modifies a guild's embed (server widget).
 
-  > Returns the updated [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+  > Returns the updated [Guild Embed Object](https://discordapp.com/developers/docs/resources/guild#guild-embed-object).
 
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/guild#modify-guild-embed).
   """
   Version.since("0.2.0")
 
   @callback modify_guild_embed(
-              guild :: Util.guild_id_resolvable(),
+              guild :: Guild.id_resolvable(),
               data ::
                 %{
                   optional(:enabled) => boolean(),
-                  optional(:channel_id) => Crux.Rest.snowflake()
+                  optional(:channel_id) => Channel.id_resolvable()
                 }
-                | [{:enabled, boolean()} | {:channel_id, Crux.Rest.snowflake()}]
+                | [{:enabled, boolean()} | {:channel_id, Channel.id_resolvable()}]
             ) :: {:ok, term()} | {:error, term()}
 
   @doc """
@@ -1364,7 +1377,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_guild_vanity_url(guild :: Util.guild_id_resolvable()) ::
+  @callback get_guild_vanity_url(guild :: Guild.id_resolvable()) ::
               {:ok, String.t()} | {:error, term()}
 
   ### End Guild
@@ -1378,8 +1391,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback list_guild_webhooks(guild :: Util.guild_id_resolvable()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Webhook.t()}} | {:error, term()}
+  @callback list_guild_webhooks(guild :: Guild.id_resolvable()) ::
+              {:ok, %{required(Snowflake.t()) => Webhook.t()}} | {:error, term()}
 
   @doc """
     Gets a channel's webhook list
@@ -1388,8 +1401,8 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback list_channel_webhooks(channel :: Util.channel_id_resolvable()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Webhook.t()}} | {:error, term()}
+  @callback list_channel_webhooks(channel :: Channel.id_resolvable()) ::
+              {:ok, %{required(Snowflake.t()) => Webhook.t()}} | {:error, term()}
 
   @doc """
     Gets a webhook
@@ -1398,7 +1411,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
+  @callback get_webhook(user :: User.id_resolvable(), token :: String.t() | nil) ::
               {:ok, Webhook.t()} | {:error, term()}
 
   @doc """
@@ -1409,18 +1422,18 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback update_webhook(
-              user :: Util.user_id_resolvable(),
+              user :: User.id_resolvable(),
               token :: String.t() | nil,
               data ::
                 %{
                   optional(:name) => String.t(),
                   optional(:avatar) => Util.image(),
-                  optional(:channel_id) => Crux.Rest.snowflake()
+                  optional(:channel_id) => Channel.id_resolvable()
                 }
                 | [
                     {:name, String.t()}
                     | {:avatar, Util.image()}
-                    | {:channel_id, Crux.Rest.snowflake()}
+                    | {:channel_id, Channel.id_resolvable()}
                   ]
             ) :: {:ok, Webhook.t()} | {:error, term()}
 
@@ -1431,7 +1444,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback delete_webhook(user :: Util.user_id_resolvable(), token :: String.t() | nil) ::
+  @callback delete_webhook(user :: User.id_resolvable(), token :: String.t() | nil) ::
               :ok | {:error, term()}
 
   @typedoc """
@@ -1473,7 +1486,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback execute_webhook(
-              user :: Util.user_id_resolvable(),
+              user :: User.id_resolvable(),
               token :: String.t(),
               wait :: boolean() | nil,
               data :: Crux.Rest.execute_webhook_options()
@@ -1499,7 +1512,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback execute_slack_webhook(
-              user :: Util.user_id_resolvable(),
+              user :: User.id_resolvable(),
               token :: String.t(),
               wait :: boolean() | nil,
               data :: term()
@@ -1530,7 +1543,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback execute_github_webhook(
-              user :: Util.user_id_resolvable(),
+              user :: User.id_resolvable(),
               token :: String.t(),
               event :: String.t(),
               wait :: boolean() | nil,
@@ -1564,7 +1577,7 @@ defmodule Crux.Rest do
   """
   Version.since("0.2.0")
 
-  @callback get_user(user :: Util.user_id_resolvable()) :: {:ok, User.t()} | {:error, term()}
+  @callback get_user(user :: User.id_resolvable()) :: {:ok, User.t()} | {:error, term()}
 
   @doc """
   Gets the current user from the api.
@@ -1597,18 +1610,18 @@ defmodule Crux.Rest do
               {:ok, User.t()} | {:error, term()}
 
   @typedoc """
-    Used to list the current user's guilds in `c:get_current_user_guild_/1`.
+    Used to list the current user's guilds in `c:get_current_user_guild/1`.
   """
   Version.typesince("0.1.4")
 
   @type get_current_user_guild_data :: %{
-          optional(:before) => Crux.Rest.snowflake(),
-          optional(:after) => Crux.Rest.snowflake(),
+          optional(:before) => Message.id_resolvable(),
+          optional(:after) => Message.id_resolvable(),
           optional(:limit) => pos_integer()
         }
 
   @doc """
-  Gets a list of partial `Crux.Structs.Guilds` the current user is a member of.
+  Gets a list of partial `Crux.Structs.Guild`s the current user is a member of.
 
   For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#get-current-user-guilds).
   """
@@ -1616,7 +1629,7 @@ defmodule Crux.Rest do
   Version.since("0.2.0")
 
   @callback get_current_user_guilds(data :: Crux.Rest.get_current_user_guild_data()) ::
-              {:ok, %{required(Crux.Rest.snowflake()) => Guild.t()}} | {:error, term()}
+              {:ok, %{required(Snowflake.t()) => Guild.t()}} | {:error, term()}
 
   @doc """
     Leaves a guild.
@@ -1624,7 +1637,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#leave-guild).
   """
   Version.since("0.2.0")
-  @callback leave_guild(guild :: Util.guild_id_resolvable()) :: :ok | {:error, term()}
+  @callback leave_guild(guild :: Guild.id_resolvable()) :: :ok | {:error, term()}
 
   @doc """
     Creates a new dm channel with a user.
@@ -1632,7 +1645,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-dm).
   """
   Version.since("0.2.0")
-  @callback create_dm(user :: Util.user_id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
+  @callback create_dm(user :: Guild.id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
 
   @doc """
     Gets the gateway url from the api.

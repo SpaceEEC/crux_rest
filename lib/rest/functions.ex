@@ -20,6 +20,7 @@ defmodule Crux.Rest.Functions do
     Invite,
     Member,
     Message,
+    Overwrite,
     Role,
     User,
     Webhook
@@ -27,11 +28,26 @@ defmodule Crux.Rest.Functions do
 
   alias Crux.Structs
 
+  @spec resolve_not_nil(term(), module()) :: Snowflake.t() | no_return()
+  defp resolve_not_nil(data, target) do
+    case Structs.resolve_id(data, target) do
+      nil ->
+        raise ArgumentError, """
+        Could not resolve the id of #{target}:
+
+        Got #{inspect(data)}
+        """
+
+      target_id ->
+        target_id
+    end
+  end
+
   ### Message
 
   @impl true
   def create_message(channel_or_message, data) do
-    channel_id = Util.resolve_channel_id(channel_or_message)
+    channel_id = resolve_not_nil(channel_or_message, Channel)
 
     path = Endpoints.channel_messages(channel_id)
 
@@ -60,10 +76,17 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_messages(channel, data) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_messages(channel_id)
-    data = Keyword.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:around, &Structs.resolve_id(&1, Message))
+      |> Util.optional_update_in_map(:before, &Structs.resolve_id(&1, Message))
+      |> Util.optional_update_in_map(:after, &Structs.resolve_id(&1, Message))
+      |> Keyword.new()
 
     :get
     |> Request.new(path)
@@ -111,8 +134,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_messages(channel, messages) do
-    channel_id = Util.resolve_channel_id(channel)
-    message_ids = Enum.map(messages, &Util.resolve_message_id/1)
+    channel_id = resolve_not_nil(channel, Channel)
+    message_ids = Enum.map(messages, &resolve_not_nil(&1, Message))
 
     path = Endpoints.channel_messages_bulk_delete(channel_id)
     data = %{messages: message_ids}
@@ -152,7 +175,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_pinned_messages(channel) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_pins(channel_id)
 
@@ -174,6 +197,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_reaction(channel, message, emoji) do
+    emoji = Emoji.to_identifier(emoji)
+
     common_message(
       :put,
       channel,
@@ -195,7 +220,14 @@ defmodule Crux.Rest.Functions do
   end
 
   def get_reactions(channel, message, emoji, data) do
-    data = Keyword.new(data)
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:after, &Structs.resolve_id(&1, User))
+      |> Util.optional_update_in_map(:before, &Structs.resolve_id(&1, User))
+      |> Keyword.new()
+
+    emoji = Emoji.to_identifier(emoji)
 
     :get
     |> common_message(
@@ -220,7 +252,7 @@ defmodule Crux.Rest.Functions do
   end
 
   def delete_reaction(channel, message, emoji, user) do
-    user = Util.resolve_user_id(user)
+    user = resolve_not_nil(user, User)
 
     emoji = Emoji.to_identifier(emoji)
 
@@ -255,7 +287,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def trigger_typing(channel) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_typing(channel_id)
 
@@ -264,7 +296,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_channel(channel) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel(channel_id)
 
@@ -275,7 +307,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_channel(channel, data) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel(channel_id)
 
@@ -283,15 +315,16 @@ defmodule Crux.Rest.Functions do
       data
       |> Map.new()
       |> Util.resolve_image_in_map(:icon)
+      |> Util.optional_update_in_map(:parent_id, &Structs.resolve_id(&1, Channel))
 
-    :path
+    :patch
     |> Request.new(path, data)
     |> Request.set_transform(Channel)
   end
 
   @impl true
   def delete_channel(channel, reason \\ nil) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel(channel_id)
 
@@ -303,9 +336,9 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def edit_channel_permissions(channel, target, data) when is_map(target) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
-    {type, target_id} = Util.resolve_overwrite_target(target)
+    {type, target_id} = Overwrite.resolve_target(target)
 
     data =
       data
@@ -316,7 +349,7 @@ defmodule Crux.Rest.Functions do
   end
 
   def edit_channel_permissions(channel, target_id, data) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_permissions(channel_id, target_id)
     data = Map.new(data)
@@ -326,8 +359,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_channel_permissions(channel, target, reason \\ nil) do
-    channel_id = Util.resolve_channel_id(channel)
-    {_type, target_id} = Util.resolve_overwrite_target(target)
+    channel_id = resolve_not_nil(channel, Channel)
+    {_type, target_id} = Overwrite.resolve_target(target)
 
     path = Endpoints.channel_permissions(channel_id, target_id)
 
@@ -338,7 +371,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_channel_invites(channel) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_invites(channel_id)
 
@@ -349,7 +382,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_channel_invite(channel, data) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_invites(channel_id)
     data = Map.new(data)
@@ -365,7 +398,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def list_guild_emojis(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_emojis(guild_id)
 
@@ -376,8 +409,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_emoji(guild, emoji) do
-    guild_id = Util.resolve_guild_id(guild)
-    emoji_id = Util.resolve_emoji_id(emoji)
+    guild_id = resolve_not_nil(guild, Guild)
+    emoji_id = resolve_not_nil(emoji, Emoji)
 
     path = Endpoints.guild_emojis(guild_id, emoji_id)
 
@@ -388,7 +421,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_guild_emoji(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_emojis(guild_id)
 
@@ -398,7 +431,7 @@ defmodule Crux.Rest.Functions do
       |> Util.resolve_image_in_map(:image)
       |> case do
         %{roles: [_ | _] = roles} = data ->
-          roles = Enum.map(roles, &Util.resolve_role_id/1)
+          roles = Enum.map(roles, &resolve_not_nil(&1, Role))
           %{data | roles: roles}
 
         data ->
@@ -412,8 +445,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild_emoji(guild, emoji, data) do
-    guild_id = Util.resolve_guild_id(guild)
-    emoji_id = Util.resolve_emoji_id(emoji)
+    guild_id = resolve_not_nil(guild, Guild)
+    emoji_id = resolve_not_nil(emoji, Emoji)
 
     path = Endpoints.guild_emojis(guild_id, emoji_id)
 
@@ -421,7 +454,7 @@ defmodule Crux.Rest.Functions do
     |> Map.new()
     |> case do
       %{roles: roles} = data ->
-        %{data | roles: Enum.map(roles, &Util.resolve_role_id/1)}
+        %{data | roles: Enum.map(roles, &resolve_not_nil(&1, Role))}
 
       data ->
         data
@@ -434,8 +467,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_guild_emoji(guild, emoji, reason \\ nil) do
-    guild_id = Util.resolve_guild_id(guild)
-    emoji_id = Util.resolve_emoji_id(emoji)
+    guild_id = resolve_not_nil(guild, Guild)
+    emoji_id = resolve_not_nil(emoji, Emoji)
 
     path = Endpoints.guild_emojis(guild_id, emoji_id)
 
@@ -464,7 +497,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild(guild_id)
 
@@ -475,13 +508,16 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild(guild_id)
 
     data =
       data
       |> Map.new()
+      |> Util.optional_update_in_map(:owner_id, &resolve_not_nil(&1, User))
+      |> Util.optional_update_in_map(:afk_channel_id, &Structs.resolve_id(&1, Channel))
+      |> Util.optional_update_in_map(:system_channel_id, &Structs.resolve_id(&1, Channel))
       |> Util.resolve_image_in_map(:icon)
       |> Util.resolve_image_in_map(:splash)
       |> Util.resolve_image_in_map(:banner)
@@ -493,7 +529,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_guild(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild(guild_id)
 
@@ -506,7 +542,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_channels(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_channels(guild_id)
 
@@ -517,10 +553,23 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_guild_channel(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_channels(guild_id)
-    data = Map.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:parent_id, &Structs.resolve_id(&1, Channel))
+      |> Util.optional_update_in_map(:permission_overwrites, fn overwrites ->
+        Enum.map(overwrites, fn
+          %Overwrite{} = overwrite ->
+            overwrite
+
+          %{id: id} = overwrite ->
+            %{overwrite | id: Structs.resolve_id(id, Role) || resolve_not_nil(id, Channel)}
+        end)
+      end)
 
     :post
     |> Request.new(path, data)
@@ -529,10 +578,10 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild_channel_positions(guild, channels) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_channels(guild_id)
-    data = Enum.map(channels, &Util.resolve_channel_position/1)
+    data = Enum.map(channels, &Channel.resolve_position/1)
 
     Request.new(:patch, path, data)
   end
@@ -543,8 +592,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_member(guild, user) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(user)
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_members(guild_id, user_id)
 
@@ -555,10 +604,14 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def list_guild_members(guild, options) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_members(guild_id)
-    data = Map.new(options)
+
+    data =
+      options
+      |> Map.new()
+      |> Util.optional_update_in_map(:after, &Structs.resolve_id(&1, User))
 
     :get
     |> Request.new(path, data)
@@ -567,11 +620,17 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def add_guild_member(guild, user, data) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(user)
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_members(guild_id, user_id)
-    data = Map.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:roles, fn roles ->
+        Enum.map(roles, &resolve_not_nil(&1, Role))
+      end)
 
     :put
     |> Request.new(path, data)
@@ -579,19 +638,26 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def modify_guild_member(guild, member, data) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(member)
+  def modify_guild_member(guild, user, data) do
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_members(guild_id, user_id)
-    data = Map.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:roles, fn roles ->
+        Enum.map(roles, &resolve_not_nil(&1, Role))
+      end)
+      |> Util.optional_update_in_map(:channel_id, &Structs.resolve_id(&1, Channel))
 
     Request.new(:patch, path, data)
   end
 
   @impl true
   def modify_current_users_nick(guild, nick, reason) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_own_nick(guild_id)
 
@@ -608,7 +674,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_bans(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_bans(guild_id)
 
@@ -624,8 +690,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_ban(guild, user) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(user)
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_bans(guild_id, user_id)
 
@@ -636,8 +702,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_guild_ban(guild, user, reason \\ nil) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(user)
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_bans(guild_id, user_id)
 
@@ -648,8 +714,8 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def remove_guild_ban(guild, user, reason \\ nil) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(user)
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.guild_bans(guild_id, user_id)
 
@@ -664,7 +730,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_roles(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_roles(guild_id)
 
@@ -675,7 +741,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_guild_role(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_roles(guild_id)
     data = Map.new(data)
@@ -686,10 +752,10 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def add_guild_member_role(guild, member, role, reason) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(member)
-    role_id = Util.resolve_role_id(role)
+  def add_guild_member_role(guild, user, role, reason) do
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
+    role_id = resolve_not_nil(role, Role)
 
     path = Endpoints.guild_member_roles(guild_id, user_id, role_id)
 
@@ -699,10 +765,10 @@ defmodule Crux.Rest.Functions do
   end
 
   @impl true
-  def remove_guild_member_role(guild, member, role, reason \\ nil) do
-    guild_id = Util.resolve_guild_id(guild)
-    user_id = Util.resolve_user_id(member)
-    role_id = Util.resolve_role_id(role)
+  def remove_guild_member_role(guild, user, role, reason \\ nil) do
+    guild_id = resolve_not_nil(guild, Guild)
+    user_id = resolve_not_nil(user, User)
+    role_id = resolve_not_nil(role, Role)
 
     path = Endpoints.guild_member_roles(guild_id, user_id, role_id)
 
@@ -713,18 +779,18 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild_role_positions(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_roles(guild_id)
-    data = Enum.map(data, &Util.resolve_guild_role_position/1)
+    data = Enum.map(data, &Role.resolve_position/1)
 
     Request.new(:patch, path, data)
   end
 
   @impl true
   def modify_guild_role(guild, role, data) do
-    guild_id = Util.resolve_guild_id(guild)
-    role_id = Util.resolve_role_id(role)
+    guild_id = resolve_not_nil(guild, Guild)
+    role_id = resolve_not_nil(role, Role)
 
     path = Endpoints.guild_roles(guild_id, role_id)
     data = Map.new(data)
@@ -736,12 +802,12 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_guild_role(guild, role, reason \\ nil) do
-    guild_id = Util.resolve_guild_id(guild)
-    role_id = Util.resolve_role_id(role)
+    guild_id = resolve_not_nil(guild, Guild)
+    role_id = resolve_not_nil(role, Role)
 
     path = Endpoints.guild_roles(guild_id, role_id)
 
-    :data
+    :delete
     |> Request.new(path)
     |> Request.set_reason(reason)
   end
@@ -752,7 +818,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_prune_count(guild, days) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_prune(guild_id)
 
@@ -764,7 +830,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def begin_guild_prune(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_prune(guild_id)
     data = Keyword.new(data)
@@ -781,7 +847,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_integrations(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_integrations(guild_id)
 
@@ -790,7 +856,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_guild_integration(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_integrations(guild_id)
     data = Map.new(data)
@@ -800,7 +866,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild_integration(guild, integration, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
 
     path = Endpoints.guild_integrations(guild_id, integration_id)
@@ -811,7 +877,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_guild_integration(guild, integration) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
 
     path = Endpoints.guild_integrations(guild_id, integration_id)
@@ -821,7 +887,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def sync_guild_integration(guild, integration) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
 
     path = Endpoints.guild_integrations(guild_id, integration_id)
@@ -835,7 +901,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_embed(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_embed(guild_id)
 
@@ -844,10 +910,14 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def modify_guild_embed(guild, data) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_embed(guild_id)
-    data = Map.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:channel_id, &Structs.resolve_id(&1, Channel))
 
     Request.new(:patch, path, data)
   end
@@ -858,7 +928,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_invites(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_invites(guild_id)
 
@@ -869,7 +939,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_vanity_url(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_invites(guild_id)
 
@@ -884,7 +954,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def list_guild_webhooks(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_webhooks(guild_id)
 
@@ -895,7 +965,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def list_channel_webhooks(channel) do
-    channel_id = Util.resolve_channel_id(channel)
+    channel_id = resolve_not_nil(channel, Channel)
 
     path = Endpoints.channel_webhooks(channel_id)
 
@@ -906,7 +976,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_webhook(user, token \\ nil) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook(user_id, token)
 
@@ -917,7 +987,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def update_webhook(user, token \\ nil, data) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook(user_id, token)
 
@@ -925,6 +995,7 @@ defmodule Crux.Rest.Functions do
       data
       |> Map.new()
       |> Util.resolve_image_in_map(:avatar)
+      |> Util.optional_update_in_map(:channel_id, &resolve_not_nil(&1, Channel))
 
     :patch
     |> Request.new(path, data)
@@ -933,7 +1004,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def delete_webhook(user, token \\ nil) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook(user_id, token)
 
@@ -955,7 +1026,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def execute_webhook(user, token, wait, data) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook(user_id, token)
 
@@ -986,7 +1057,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def execute_slack_webhook(user, token, wait, data) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook_slack(user_id, token)
     data = Map.new(data)
@@ -1012,7 +1083,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def execute_github_webhook(user, token, event, wait, data) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.webhook_github(user_id, token)
     data = Map.new(data)
@@ -1033,10 +1104,16 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_audit_logs(guild, data \\ []) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_audit_logs(guild_id)
-    data = Keyword.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:user_id, &Structs.resolve_id(&1, User))
+      |> Util.optional_update_in_map(:before, &Structs.resolve_id(&1, User))
+      |> Keyword.new()
 
     :get
     |> Request.new(path)
@@ -1046,7 +1123,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_guild_voice_regions(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.guild_regions(guild_id)
 
@@ -1075,7 +1152,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def get_user(user) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.users(user_id)
 
@@ -1110,7 +1187,12 @@ defmodule Crux.Rest.Functions do
   @impl true
   def get_current_user_guilds(data) do
     path = Endpoints.me_guilds()
-    data = Map.new(data)
+
+    data =
+      data
+      |> Map.new()
+      |> Util.optional_update_in_map(:after, &Structs.resolve_id(&1, Message))
+      |> Util.optional_update_in_map(:before, &Structs.resolve_id(&1, Message))
 
     :get
     |> Request.new(path, data)
@@ -1119,7 +1201,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def leave_guild(guild) do
-    guild_id = Util.resolve_guild_id(guild)
+    guild_id = resolve_not_nil(guild, Guild)
 
     path = Endpoints.me_guilds(guild_id)
 
@@ -1128,7 +1210,7 @@ defmodule Crux.Rest.Functions do
 
   @impl true
   def create_dm(user) do
-    user_id = Util.resolve_user_id(user)
+    user_id = resolve_not_nil(user, User)
 
     path = Endpoints.me_channels()
     data = %{recipient_id: user_id}
@@ -1158,8 +1240,8 @@ defmodule Crux.Rest.Functions do
 
   # helper function to reduce redundant resolving
   defp common_message(verb, channel, message, path_fun, request_fun \\ &Request.new/2) do
-    channel_id = Util.resolve_channel_id(channel)
-    message_id = Util.resolve_message_id(message)
+    channel_id = resolve_not_nil(channel, Channel)
+    message_id = resolve_not_nil(message, Message)
 
     path = path_fun.(channel_id, message_id)
     request_fun.(verb, path)

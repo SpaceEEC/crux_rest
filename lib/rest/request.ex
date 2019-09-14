@@ -9,6 +9,8 @@ defmodule Crux.Rest.Request do
 
   Version.modulesince("0.2.0")
 
+  @methods ~w(get put patch post delete)a
+
   @enforce_keys [:method, :path]
   defstruct [
     :method,
@@ -40,14 +42,17 @@ defmodule Crux.Rest.Request do
           params: list() | nil
         }
 
+  @type method :: :get | :put | :patch | :post | :delete
+
   ### Create / Set
 
   @doc false
   Version.since("0.2.0")
-  @spec new(method :: atom(), path :: String.t(), data :: term()) :: t()
+  @spec new(method :: method(), path :: String.t(), data :: term()) :: t()
   def new(method, path, data \\ "")
 
-  def new(method, path, data) do
+  def new(method, path, data)
+      when method in @methods do
     %__MODULE__{
       method: method,
       route: get_route(path),

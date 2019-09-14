@@ -117,10 +117,25 @@ defmodule Crux.Rest.Util do
 
   ### End Attachment / Image
 
+  @doc """
+    Updates a value in `map` with the given `fun`.
+    Is a noop if `key` is not in `map`.
+  """
+  Version.since("0.2.1")
+  @spec optional_update_in_map(map(), atom(), (term -> term)) :: map()
+  def optional_update_in_map(map, key, fun) do
+    case map do
+      %{^key => val} -> Map.put(map, key, fun.(val))
+      _ -> map
+    end
+  end
+
   ### Resolvables
 
   @typedoc """
     All available types that can be resolved into a role id.
+
+  > Deprecated: Use `Crux.Structs.Role.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type role_id_resolvable :: Role.t() | Crux.Rest.snowflake()
@@ -142,6 +157,7 @@ defmodule Crux.Rest.Util do
   376146940762783746
 
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.Role)` instead"
   @spec resolve_role_id(role :: role_id_resolvable()) :: integer()
   Version.since("0.1.0")
   def resolve_role_id(%Role{id: role_id}), do: role_id
@@ -149,12 +165,16 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into an emoji identifier.
+
+  > Deprecated: Use `Crux.Structs.Emoji.identifier_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type emoji_identifier_resolvable :: Reaction.t() | Emoji.t() | String.t()
 
   @typedoc """
     All available types that can be resolved into an emoji id.
+
+  > Deprecated: Use `Crux.Structs.Emoji.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type emoji_id_resolvable :: Reaction.t() | Emoji.t() | String.t()
@@ -179,6 +199,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.Emoji)` instead"
   @spec resolve_emoji_id(emoji :: emoji_id_resolvable()) :: String.t()
   Version.since("0.1.1")
   def resolve_emoji_id(%Emoji{id: id}) when not is_nil(id), do: id
@@ -187,6 +208,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a user id.
+
+  > Deprecated: Use `Crux.Structs.User.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type user_id_resolvable :: Member.t() | User.t() | integer()
@@ -211,6 +234,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.User)` instead"
   @spec resolve_user_id(user :: user_id_resolvable()) :: Crux.Rest.snowflake()
   Version.since("0.1.0")
   def resolve_user_id(%User{id: id}), do: id
@@ -219,6 +243,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a guild id.
+
+  > Deprecated: Use `Crux.Structs.Guild.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type guild_id_resolvable :: Guild.t() | Channel.t() | Message.t() | Crux.Rest.snowflake()
@@ -247,6 +273,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.Guild)` instead"
   @spec resolve_guild_id(guild :: guild_id_resolvable()) :: Crux.Rest.snowflake()
   Version.since("0.1.1")
   def resolve_guild_id(%Guild{id: id}), do: id
@@ -256,6 +283,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a channel id.
+
+  > Deprecated: Use `Crux.Structs.CHannel.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type channel_id_resolvable :: Message.t() | Channel.t() | Crux.Rest.snowflake()
@@ -280,6 +309,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.Channel)` instead"
   @spec resolve_channel_id(channel :: channel_id_resolvable()) :: Crux.Rest.snowflake()
   Version.since("0.1.1")
   def resolve_channel_id(%Channel{id: id}), do: id
@@ -288,6 +318,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a target for a permission overwrite.
+
+  > Deprecated: Use `Crux.Structs.Overwrite.target_resolvable()` instead
   """
   Version.typesince("0.1.1")
 
@@ -322,6 +354,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.Overwrite.resolve_target/1` instead"
   @spec resolve_overwrite_target(overwrite :: overwrite_target_resolvable()) ::
           {String.t() | :unknown, Crux.Rest.snowflake()}
   Version.since("0.1.1")
@@ -333,6 +366,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a message id.
+
+  > Deprecated: Use `Crux.Structs.Message.id_resolvable()` instead
   """
   Version.typesince("0.1.1")
   @type message_id_resolvable :: Message.t() | Crux.Rest.snowflake()
@@ -353,6 +388,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.resolve_id(&1, Crux.Structs.Message)` instead"
   @spec resolve_message_id(message :: message_id_resolvable()) :: Crux.Rest.snowflake()
   Version.since("0.1.0")
   def resolve_message_id(%Message{id: id}), do: id
@@ -360,6 +396,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types that can be resolved into a channel position.
+
+  > Deprecated: Use `Crux.Structs.Channel.position_resolvable()` instead
   """
   Version.typesince("0.1.1")
 
@@ -393,8 +431,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
-  Version.typesince("0.1.1")
-
+  @deprecated "Use `Crux.Structs.Channel.resolve_position/1` instead"
   @spec resolve_channel_position(channel :: channel_position_resolvable()) :: %{
           id: Crux.Rest.snowflake(),
           position: integer()
@@ -410,6 +447,8 @@ defmodule Crux.Rest.Util do
 
   @typedoc """
     All available types which can be resolved into a role position.
+
+  > Deprecated: Use `Crux.Structs.Role.position_resolvable()` instead.
   """
   Version.typesince("0.1.2")
 
@@ -442,6 +481,7 @@ defmodule Crux.Rest.Util do
 
     ```
   """
+  @deprecated "Use `Crux.Structs.Role.resolve_position/1` instead"
   @spec resolve_guild_role_position(role :: guild_role_position_resolvable()) :: %{
           id: Crux.Rest.snowflake(),
           position: integer()
