@@ -79,6 +79,18 @@ defmodule Crux.Rest.ApiError do
     }
   end
 
+  # Thank you, Cloudflare
+  def exception(%{method: method, path: path}, %{status_code: status_code, body: message})
+      when is_binary(message) do
+    %__MODULE__{
+      status_code: status_code,
+      code: nil,
+      message: message,
+      path: path,
+      method: method
+    }
+  end
+
   defp map_inner(error, key \\ nil)
   defp map_inner(nil, _key), do: nil
 

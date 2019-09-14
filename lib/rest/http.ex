@@ -42,7 +42,7 @@ defmodule Crux.Rest.HTTP do
         %{res | body: body}
 
       _ ->
-        body
+        res
     end
   end
 
