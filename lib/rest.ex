@@ -1744,7 +1744,7 @@ defmodule Crux.Rest do
   @spec __using__() :: term()
   defmacro __using__(opts \\ []) do
     quote location: :keep do
-      transform = !!unquote(opts)[:transform]
+      transform = !!Keyword.get(unquote(opts), :transform, true)
 
       @behaviour Crux.Rest
 
