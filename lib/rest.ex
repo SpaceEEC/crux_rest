@@ -1741,10 +1741,20 @@ defmodule Crux.Rest do
     }
   end
 
+  @doc false
+  def apply_options(%{transform: transform} = request, %{transform: false} = opts)
+      when not is_nil(transform) do
+    apply_options(%{request | transform: nil}, opts)
+  end
+
+  def apply_options(request, _opts) do
+    request
+  end
+
   @spec __using__() :: term()
   defmacro __using__(opts \\ []) do
     quote location: :keep do
-      transform = !!Keyword.get(unquote(opts), :transform, true)
+      @opts unquote(opts) |> Map.new()
 
       @behaviour Crux.Rest
 
@@ -1760,22 +1770,12 @@ defmodule Crux.Rest do
         Crux.Rest.child_spec({@name, arg})
       end
 
-      if transform do
-        def request(request) do
-          Crux.Rest.request(@name, request)
-        end
+      def request(request) do
+        Crux.Rest.request(@name, request)
+      end
 
-        def request!(request) do
-          Crux.Rest.request!(@name, request)
-        end
-      else
-        def request(request) do
-          Crux.Rest.request(@name, %{request | transform: nil})
-        end
-
-        def request!(request) do
-          Crux.Rest.request!(@name, %{request | transform: nil})
-        end
+      def request!(request) do
+        Crux.Rest.request!(@name, request)
       end
 
       @deprecated "Use request/1 instead"

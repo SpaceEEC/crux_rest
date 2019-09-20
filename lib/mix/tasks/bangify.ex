@@ -38,16 +38,18 @@ defmodule Mix.Tasks.Bangify do
     __maybe_version__
     __maybe_spec__
     def __name__(__arguments_with_defaults__) do
-      request = Crux.Rest.Functions.__name__(__arguments__)
-      request(request)
+      Crux.Rest.Functions.__name__(__arguments__)
+      |> Crux.Rest.apply_options(@opts)
+      |> request()
     end
 
     @doc "The same as \`c:Crux.Rest.__name__/__arity__\`, but raises an exception if it fails."
     __maybe_version__
     __maybe_spec!__
     def __name__!(__arguments_with_defaults__) do
-      request = Crux.Rest.Functions.__name__(__arguments__)
-      request!(request)
+      Crux.Rest.Functions.__name__(__arguments__)
+      |> Crux.Rest.apply_options(@opts)
+      |> request!()
     end
   """
 
