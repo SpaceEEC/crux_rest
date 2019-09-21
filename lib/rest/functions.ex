@@ -1179,7 +1179,7 @@ defmodule Crux.Rest.Functions do
       |> Map.new()
       |> Util.resolve_image_in_map(:avatar)
 
-    :post
+    :patch
     |> Request.new(path, data)
     |> Request.set_transform(User)
   end
