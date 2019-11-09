@@ -1379,9 +1379,17 @@ defmodule Crux.Rest do
     Gets the vanity url of a guild, if any
   """
   Version.since("0.2.0")
+  Version.deprecated("Use get_guild_vanity_invite/1 instead")
 
   @callback get_guild_vanity_url(guild :: Guild.id_resolvable()) ::
               {:ok, String.t()} | {:error, term()}
+
+  @doc """
+    Gets the vanity invite of a guild, if any
+  """
+  Version.since("0.2.1")
+  @callback get_guild_vanity_invite(guild :: Guild.id_resolvable()) ::
+  {:ok, Invite.t()} | {:error, term()}
 
   ### End Guild
 

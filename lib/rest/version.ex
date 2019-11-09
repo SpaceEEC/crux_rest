@@ -20,6 +20,12 @@ defmodule Crux.Rest.Version do
         @typedoc since: unquote(version)
       end
     end
+
+    defmacro deprecated(message) when is_binary(message) do
+      quote do
+        @doc deprecated: unquote(message)
+      end
+    end
   else
     defmacro since(version) when is_binary(version) do
       quote do
@@ -29,5 +35,6 @@ defmodule Crux.Rest.Version do
 
     defmacro modulesince(version) when is_binary(version), do: nil
     defmacro typesince(version) when is_binary(version), do: nil
+    defmacro deprecated(message) when is_binary(message), do: nil
   end
 end

@@ -10,7 +10,9 @@ defmodule Crux.Rest.Functions do
 
   @behaviour Crux.Rest
 
-  alias Crux.Rest.{Endpoints, Request, Util}
+  alias Crux.Rest.{Endpoints, Request, Util, Version}
+
+  require Version
 
   alias Crux.Structs.{
     AuditLog,
@@ -937,6 +939,7 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Invite, :code))
   end
 
+  Version.deprecated("Use get_guild_vanity_invite/1 instead")
   @impl true
   def get_guild_vanity_url(guild) do
     guild_id = resolve_not_nil(guild, Guild)
@@ -945,7 +948,18 @@ defmodule Crux.Rest.Functions do
 
     :get
     |> Request.new(path)
-    |> Request.set_transform(&Map.get(&1, :code))
+    |> Request.set_transform(&Map.get(&1, "code"))
+  end
+
+  @impl true
+  def get_guild_vanity_invite(guild) do
+    guild_id = resolve_not_nil(guild, Guild)
+
+    path = Endpoints.guild_invites(guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.set_transform(Invite)
   end
 
   ### End Guild Invite

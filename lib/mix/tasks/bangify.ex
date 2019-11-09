@@ -21,6 +21,7 @@ defmodule Mix.Tasks.Bangify do
 
     defmacro __using__(:functions) do
       quote location: :keep do
+        require Version
         __functions__
       end
     end
@@ -30,6 +31,7 @@ defmodule Mix.Tasks.Bangify do
   @callback_template """
     @doc "The same as \`c:__name__/__arity__\`, but raises an exception if it fails."
     __version__
+    __maybe_deprecated__
     __callback__
   """
 
@@ -37,6 +39,7 @@ defmodule Mix.Tasks.Bangify do
   @doc "See \`c:Crux.Rest.__name__/__arity__\`"
     __maybe_version__
     __maybe_spec__
+    __maybe_deprecated__
     def __name__(__arguments_with_defaults__) do
       Crux.Rest.Functions.__name__(__arguments__)
       |> Crux.Rest.apply_options(@opts)
@@ -46,6 +49,7 @@ defmodule Mix.Tasks.Bangify do
     @doc "The same as \`c:Crux.Rest.__name__/__arity__\`, but raises an exception if it fails."
     __maybe_version__
     __maybe_spec!__
+    __maybe_deprecated__
     def __name__!(__arguments_with_defaults__) do
       Crux.Rest.Functions.__name__(__arguments__)
       |> Crux.Rest.apply_options(@opts)
@@ -113,11 +117,21 @@ defmodule Mix.Tasks.Bangify do
       version = Map.get(meta, :since) || raise "Missing since for #{name}/#{arity}"
       version = ~s{Version.since("#{version}")}
 
+      maybe_deprecated =
+        case meta do
+          %{deprecated: deprecated} ->
+            ~s{Version.deprecated("#{deprecated}")}
+
+          _ ->
+            ""
+        end
+
       callback =
         @callback_template
         |> String.replace("__name__", name |> to_string())
         |> String.replace("__arity__", arity |> to_string())
         |> String.replace("__version__", version)
+        |> String.replace("__maybe_deprecated__", maybe_deprecated)
         |> String.replace("__callback__", callback)
 
       optional = "#{Atom.to_string(name)}!: #{arity}"
@@ -143,6 +157,15 @@ defmodule Mix.Tasks.Bangify do
             {"", ""}
         end
 
+      maybe_deprecated =
+        case meta do
+          %{deprecated: deprecated} ->
+            ~s{Version.deprecated("#{deprecated}")}
+
+          _ ->
+            ""
+        end
+
       since =
         case meta do
           %{since: since} ->
@@ -161,6 +184,7 @@ defmodule Mix.Tasks.Bangify do
       @function_template
       |> String.replace("__maybe_spec__", maybe_spec)
       |> String.replace("__maybe_spec!__", maybe_spec!)
+      |> String.replace("__maybe_deprecated__", maybe_deprecated)
       |> String.replace("__name__", name |> to_string())
       |> String.replace("__arity__", arity |> to_string())
       |> String.replace("__arguments_with_defaults__", signature)
