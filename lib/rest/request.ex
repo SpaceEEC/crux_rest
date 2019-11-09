@@ -42,6 +42,7 @@ defmodule Crux.Rest.Request do
           params: list() | nil
         }
 
+  @typedoc false
   @type method :: :get | :put | :patch | :post | :delete
 
   ### Create / Set
