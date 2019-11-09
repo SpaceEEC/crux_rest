@@ -68,22 +68,23 @@ defmodule Crux.Rest do
     Used to send messages via `c:create_message/2`.
 
     The content my not exceed 2000 chars.
-    The nonce has to fit in a 64 bit integer.
+    The nonce has to fit in a 64 bit integer or be a string.
     The whole message payload may not be larger than 8mb, this should only be possible when attaching (a) large file(s).
+    Exception to this rule are boosted guilds where the limit may differ.
   """
   Version.typesince("0.1.0")
 
   @type create_message_data ::
           %{
             optional(:content) => String.t(),
-            optional(:nonce) => non_neg_integer(),
+            optional(:nonce) => String.t() | integer(),
             optional(:tts) => boolean(),
             optional(:embed) => embed(),
             optional(:files) => [Util.attachment()]
           }
           | [
               {:content, String.t()}
-              | {:nonce, non_neg_integer()}
+              | {:nonce, String.t() | integer()}
               | {:tts, boolean()}
               | {:embed, embed()}
               | {:files, [Util.attachment()]}
