@@ -224,7 +224,7 @@ defmodule Crux.Rest do
   @callback get_message(
               channel :: Channel.id_resolvable(),
               message_id :: Message.id_resolvable()
-            ) :: {:ok, Message} | {:error, term()}
+            ) :: {:ok, Message.t()} | {:error, term()}
 
   @typedoc """
     Used to get messages from the api via `c:get_messages/2`.
