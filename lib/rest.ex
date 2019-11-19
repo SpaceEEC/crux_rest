@@ -36,6 +36,7 @@ defmodule Crux.Rest do
     Emoji,
     Guild,
     Invite,
+    Member,
     Message,
     Overwrite,
     Role,

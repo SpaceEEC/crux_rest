@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-11-19T11:54:17.866000Z
+  # Generated 2019-11-19T12:08:18.001000Z
 
   alias Crux.Rest.Version
   require Version
@@ -14,7 +14,7 @@ defmodule Crux.Rest.Gen.Bang do
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   user :: Crux.Structs.User.id_resolvable(),
                   data :: Crux.Rest.add_guild_member_data()
-                ) :: Member.t() | no_return()
+                ) :: Crux.Structs.Member.t() | no_return()
 
       @doc "The same as `c:add_guild_member_role/4`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -479,7 +479,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback get_guild_member!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   user :: Crux.Structs.User.id_resolvable()
-                ) :: Member.t() | no_return()
+                ) :: Crux.Structs.Member.t() | no_return()
 
       @doc "The same as `c:get_guild_prune_count/2`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -601,7 +601,8 @@ defmodule Crux.Rest.Gen.Bang do
       @callback list_guild_members!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
                   options :: Crux.Rest.list_guild_members_options()
-                ) :: %{required(Crux.Structs.Snowflake.t()) => Member.t()} | no_return()
+                ) ::
+                  %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Member.t()} | no_return()
 
       @doc "The same as `c:list_guild_webhooks/1`, but raises an exception if it fails."
       Version.since("0.2.0")
@@ -879,7 +880,7 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
               data :: Crux.Rest.add_guild_member_data()
-            ) :: {:ok, Member.t()} | {:error, term()}
+            ) :: {:ok, Crux.Structs.Member.t()} | {:error, term()}
 
       def add_guild_member(guild, user, data) do
         Crux.Rest.Functions.add_guild_member(guild, user, data)
@@ -893,7 +894,7 @@ defmodule Crux.Rest.Gen.Bang do
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable(),
               data :: Crux.Rest.add_guild_member_data()
-            ) :: Member.t() | no_return()
+            ) :: Crux.Structs.Member.t() | no_return()
 
       def add_guild_member!(guild, user, data) do
         Crux.Rest.Functions.add_guild_member(guild, user, data)
@@ -2324,7 +2325,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_guild_member(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable()
-            ) :: {:ok, Member.t()} | {:error, term()}
+            ) :: {:ok, Crux.Structs.Member.t()} | {:error, term()}
 
       def get_guild_member(guild, user) do
         Crux.Rest.Functions.get_guild_member(guild, user)
@@ -2337,7 +2338,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_guild_member!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               user :: Crux.Structs.User.id_resolvable()
-            ) :: Member.t() | no_return()
+            ) :: Crux.Structs.Member.t() | no_return()
 
       def get_guild_member!(guild, user) do
         Crux.Rest.Functions.get_guild_member(guild, user)
@@ -2726,7 +2727,9 @@ defmodule Crux.Rest.Gen.Bang do
       @spec list_guild_members(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.list_guild_members_options()
-            ) :: {:ok, %{required(Crux.Structs.Snowflake.t()) => Member.t()}} | {:error, term()}
+            ) ::
+              {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Member.t()}}
+              | {:error, term()}
 
       def list_guild_members(guild, options) do
         Crux.Rest.Functions.list_guild_members(guild, options)
@@ -2739,7 +2742,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec list_guild_members!(
               guild :: Crux.Structs.Guild.id_resolvable(),
               options :: Crux.Rest.list_guild_members_options()
-            ) :: %{required(Crux.Structs.Snowflake.t()) => Member.t()} | no_return()
+            ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Member.t()} | no_return()
 
       def list_guild_members!(guild, options) do
         Crux.Rest.Functions.list_guild_members(guild, options)
