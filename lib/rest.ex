@@ -1665,7 +1665,7 @@ defmodule Crux.Rest do
     For more informations see [Discord Docs](https://discordapp.com/developers/docs/resources/user#create-dm).
   """
   Version.since("0.2.0")
-  @callback create_dm(user :: Guild.id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
+  @callback create_dm(user :: User.id_resolvable()) :: {:ok, Channel.t()} | {:error, term()}
 
   @doc """
     Gets the gateway url from the api.
