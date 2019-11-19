@@ -1187,7 +1187,7 @@ defmodule Crux.Rest do
 
   @callback modify_guild_role_positions(
               guild :: Guild.id_resolvable(),
-              data :: Util.modify_guild_role_positions_data()
+              data :: [Role.position_resolvable()]
             ) :: {:ok, %{Snowflake.t() => Role.t()}} | {:error, term()}
 
   @doc """

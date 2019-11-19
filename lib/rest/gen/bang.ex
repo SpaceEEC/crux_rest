@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-11-09T18:42:36.024000Z
+  # Generated 2019-11-19T11:54:17.866000Z
 
   alias Crux.Rest.Version
   require Version
@@ -716,7 +716,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @callback modify_guild_role_positions!(
                   guild :: Crux.Structs.Guild.id_resolvable(),
-                  data :: Crux.Rest.Util.modify_guild_role_positions_data()
+                  data :: [Crux.Structs.Role.position_resolvable()]
                 ) ::
                   %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
 
@@ -3070,7 +3070,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec modify_guild_role_positions(
               guild :: Crux.Structs.Guild.id_resolvable(),
-              data :: Crux.Rest.Util.modify_guild_role_positions_data()
+              data :: [Crux.Structs.Role.position_resolvable()]
             ) ::
               {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()}}
               | {:error, term()}
@@ -3085,7 +3085,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @spec modify_guild_role_positions!(
               guild :: Crux.Structs.Guild.id_resolvable(),
-              data :: Crux.Rest.Util.modify_guild_role_positions_data()
+              data :: [Crux.Structs.Role.position_resolvable()]
             ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.Role.t()} | no_return()
 
       def modify_guild_role_positions!(guild, data) do
