@@ -324,7 +324,7 @@ defmodule Crux.Rest do
   @callback get_reactions(
               channel :: Channel.id_resolvable(),
               message :: Message.id_resolvable(),
-              emoji :: Emoji.identifier_resolvable(),
+              emoji :: Emoji.identifier_resolvable() | list(),
               args :: Crux.Rest.get_reactions_data()
             ) :: {:ok, %{required(Snowflake.t()) => User.t()}} | {:error, term()}
 

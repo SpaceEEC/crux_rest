@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-11-19T12:29:13.229000Z
+  # Generated 2019-11-19T13:21:21.537000Z
 
   alias Crux.Rest.Version
   require Version
@@ -560,7 +560,7 @@ defmodule Crux.Rest.Gen.Bang do
       @callback get_reactions!(
                   channel :: Crux.Structs.Channel.id_resolvable(),
                   message :: Crux.Structs.Message.id_resolvable(),
-                  emoji :: Crux.Structs.Emoji.identifier_resolvable(),
+                  emoji :: Crux.Structs.Emoji.identifier_resolvable() | list(),
                   args :: Crux.Rest.get_reactions_data()
                 ) ::
                   %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()} | no_return()
@@ -2565,7 +2565,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_reactions(
               channel :: Crux.Structs.Channel.id_resolvable(),
               message :: Crux.Structs.Message.id_resolvable(),
-              emoji :: Crux.Structs.Emoji.identifier_resolvable(),
+              emoji :: Crux.Structs.Emoji.identifier_resolvable() | list(),
               args :: Crux.Rest.get_reactions_data()
             ) ::
               {:ok, %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()}}
@@ -2592,7 +2592,7 @@ defmodule Crux.Rest.Gen.Bang do
       @spec get_reactions!(
               channel :: Crux.Structs.Channel.id_resolvable(),
               message :: Crux.Structs.Message.id_resolvable(),
-              emoji :: Crux.Structs.Emoji.identifier_resolvable(),
+              emoji :: Crux.Structs.Emoji.identifier_resolvable() | list(),
               args :: Crux.Rest.get_reactions_data()
             ) :: %{required(Crux.Structs.Snowflake.t()) => Crux.Structs.User.t()} | no_return()
 
