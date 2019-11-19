@@ -307,7 +307,7 @@ defmodule Crux.Rest do
           }
           | [
               {:before, User.id_resolvable()}
-              | {:after, Snowflake.id_resolvable()}
+              | {:after, User.id_resolvable()}
               | {:limit, pos_integer()}
             ]
 
