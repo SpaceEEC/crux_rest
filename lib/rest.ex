@@ -149,7 +149,8 @@ defmodule Crux.Rest do
   @type message_edit_data ::
           %{
             optional(:content) => String.t() | nil,
-            optional(:embed) => embed() | nil
+            optional(:embed) => embed() | nil,
+            optional(:flags) => non_neg_integer()
           }
           | [{:content, String.t()} | {:embed, embed()}]
 
