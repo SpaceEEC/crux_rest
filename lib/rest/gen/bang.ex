@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-11-19T15:35:43.383000Z
+  # Generated 2019-11-19T15:54:58.759000Z
 
   alias Crux.Rest.Version
   require Version
@@ -58,7 +58,7 @@ defmodule Crux.Rest.Gen.Bang do
       @doc "The same as `c:create_dm/1`, but raises an exception if it fails."
       Version.since("0.2.0")
 
-      @callback create_dm!(user :: Crux.Structs.Guild.id_resolvable()) ::
+      @callback create_dm!(user :: Crux.Structs.User.id_resolvable()) ::
                   Crux.Structs.Channel.t() | no_return()
 
       @doc "The same as `c:create_guild/1`, but raises an exception if it fails."
@@ -1040,7 +1040,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "See `c:Crux.Rest.create_dm/1`"
 
-      @spec create_dm(user :: Crux.Structs.Guild.id_resolvable()) ::
+      @spec create_dm(user :: Crux.Structs.User.id_resolvable()) ::
               {:ok, Crux.Structs.Channel.t()} | {:error, term()}
 
       def create_dm(user) do
@@ -1051,7 +1051,7 @@ defmodule Crux.Rest.Gen.Bang do
 
       @doc "The same as `c:Crux.Rest.create_dm/1`, but raises an exception if it fails."
 
-      @spec create_dm!(user :: Crux.Structs.Guild.id_resolvable()) ::
+      @spec create_dm!(user :: Crux.Structs.User.id_resolvable()) ::
               Crux.Structs.Channel.t() | no_return()
 
       def create_dm!(user) do
