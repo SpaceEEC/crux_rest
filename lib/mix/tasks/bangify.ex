@@ -21,6 +21,14 @@ defmodule Mix.Tasks.Bangify do
 
     defmacro __using__(:functions) do
       quote location: :keep do
+        # I can't make the dialyzer happy about either of those :(
+        @dialyzer {:nowarn_function, execute_github_webhook: 4}
+        @dialyzer {:nowarn_function, execute_github_webhook!: 4}
+        @dialyzer {:nowarn_function, execute_slack_webhook: 3}
+        @dialyzer {:nowarn_function, execute_slack_webhook!: 3}
+        @dialyzer {:nowarn_function, execute_webhook: 3}
+        @dialyzer {:nowarn_function, execute_webhook!: 3}
+
         require Version
         __functions__
       end

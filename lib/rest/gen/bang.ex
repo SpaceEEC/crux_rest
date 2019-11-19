@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Gen.Bang do
   @moduledoc false
-  # Generated 2019-11-19T13:21:21.537000Z
+  # Generated 2019-11-19T15:35:43.383000Z
 
   alias Crux.Rest.Version
   require Version
@@ -873,6 +873,14 @@ defmodule Crux.Rest.Gen.Bang do
 
   defmacro __using__(:functions) do
     quote location: :keep do
+      # I can't make the dialyzer happy about either of those :(
+      @dialyzer {:nowarn_function, execute_github_webhook: 4}
+      @dialyzer {:nowarn_function, execute_github_webhook!: 4}
+      @dialyzer {:nowarn_function, execute_slack_webhook: 3}
+      @dialyzer {:nowarn_function, execute_slack_webhook!: 3}
+      @dialyzer {:nowarn_function, execute_webhook: 3}
+      @dialyzer {:nowarn_function, execute_webhook!: 3}
+
       require Version
       @doc "See `c:Crux.Rest.add_guild_member/3`"
 

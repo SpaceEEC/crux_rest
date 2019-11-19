@@ -8,7 +8,8 @@ defmodule Crux.Rest.Functions do
     * Parameters are as described in `Crux.Rest` behaviour.
   """
 
-  @behaviour Crux.Rest
+  # Using the Crux.Rest behaviour would not work as the return value differs here
+  # credo:disable-for-this-file Credo.Check.Readability.Specs
 
   alias Crux.Rest.{Endpoints, Request, Util, Version}
 
@@ -24,6 +25,7 @@ defmodule Crux.Rest.Functions do
     Message,
     Overwrite,
     Role,
+    Snowflake,
     User,
     Webhook
   }
@@ -47,7 +49,6 @@ defmodule Crux.Rest.Functions do
 
   ### Message
 
-  @impl true
   def create_message(channel_or_message, data) do
     channel_id = resolve_not_nil(channel_or_message, Channel)
 
@@ -64,7 +65,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Message)
   end
 
-  @impl true
   def get_message(channel, message) do
     :get
     |> common_message(
@@ -76,7 +76,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Message)
   end
 
-  @impl true
   def get_messages(channel, data) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -96,12 +95,10 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Message))
   end
 
-  @impl true
   def edit_message(%{channel_id: channel_id, id: message_id}, data) do
     edit_message(channel_id, message_id, data)
   end
 
-  @impl true
   def edit_message(channel, message, data) do
     data = Map.new(data)
 
@@ -115,12 +112,10 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Message)
   end
 
-  @impl true
   def delete_message(%{channel_id: channel_id, id: message_id}) do
     delete_message(channel_id, message_id)
   end
 
-  @impl true
   def delete_message(channel, message) do
     :delete
     |> common_message(
@@ -134,7 +129,6 @@ defmodule Crux.Rest.Functions do
     |> Map.update!(:route, &Kernel.<>(&1, "/delete"))
   end
 
-  @impl true
   def delete_messages(channel, messages) do
     channel_id = resolve_not_nil(channel, Channel)
     message_ids = Enum.map(messages, &resolve_not_nil(&1, Message))
@@ -145,12 +139,10 @@ defmodule Crux.Rest.Functions do
     Request.new(:post, path, data)
   end
 
-  @impl true
   def add_pinned_message(%{channel_id: channel_id, id: message_id}) do
     add_pinned_message(channel_id, message_id)
   end
 
-  @impl true
   def add_pinned_message(channel, message) do
     common_message(
       :put,
@@ -160,12 +152,10 @@ defmodule Crux.Rest.Functions do
     )
   end
 
-  @impl true
   def delete_pinned_message(%{channel_id: channel_id, id: message_id}) do
     delete_pinned_message(channel_id, message_id)
   end
 
-  @impl true
   def delete_pinned_message(channel, message) do
     common_message(
       :delete,
@@ -175,7 +165,6 @@ defmodule Crux.Rest.Functions do
     )
   end
 
-  @impl true
   def get_pinned_messages(channel) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -192,12 +181,10 @@ defmodule Crux.Rest.Functions do
 
   ### Reaction
 
-  @impl true
   def create_reaction(%{channel_id: channel_id, id: message_id}, emoji) do
     create_reaction(channel_id, message_id, emoji)
   end
 
-  @impl true
   def create_reaction(channel, message, emoji) do
     emoji = Emoji.to_identifier(emoji)
 
@@ -209,7 +196,6 @@ defmodule Crux.Rest.Functions do
     )
   end
 
-  @impl true
   def get_reactions(
         channel_or_message,
         emoji_or_message_id,
@@ -241,7 +227,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, User))
   end
 
-  @impl true
   def delete_reaction(
         message_or_channel,
         emoji_or_message_id,
@@ -266,12 +251,10 @@ defmodule Crux.Rest.Functions do
     )
   end
 
-  @impl true
   def delete_all_reactions(%{channel_id: channel_id, id: message_id}, emoji) do
     delete_all_reactions(channel_id, message_id, emoji)
   end
 
-  @impl true
   def delete_all_reactions(channel, message, emoji) do
     emoji = Emoji.to_identifier(emoji)
 
@@ -287,7 +270,6 @@ defmodule Crux.Rest.Functions do
 
   ### Channel
 
-  @impl true
   def trigger_typing(channel) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -296,7 +278,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:post, path)
   end
 
-  @impl true
   def get_channel(channel) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -307,7 +288,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Channel)
   end
 
-  @impl true
   def modify_channel(channel, data) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -324,7 +304,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Channel)
   end
 
-  @impl true
   def delete_channel(channel, reason \\ nil) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -336,7 +315,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_reason(reason)
   end
 
-  @impl true
   def edit_channel_permissions(channel, target, data) when is_map(target) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -359,7 +337,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:put, path, data)
   end
 
-  @impl true
   def delete_channel_permissions(channel, target, reason \\ nil) do
     channel_id = resolve_not_nil(channel, Channel)
     {_type, target_id} = Overwrite.resolve_target(target)
@@ -371,7 +348,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_reason(reason)
   end
 
-  @impl true
   def get_channel_invites(channel) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -382,7 +358,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Invite)
   end
 
-  @impl true
   def create_channel_invite(channel, data) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -398,7 +373,6 @@ defmodule Crux.Rest.Functions do
 
   ### Emojis
 
-  @impl true
   def list_guild_emojis(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -409,7 +383,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Emoji))
   end
 
-  @impl true
   def get_guild_emoji(guild, emoji) do
     guild_id = resolve_not_nil(guild, Guild)
     emoji_id = resolve_not_nil(emoji, Emoji)
@@ -421,7 +394,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Emoji)
   end
 
-  @impl true
   def create_guild_emoji(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -445,7 +417,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Emoji)
   end
 
-  @impl true
   def modify_guild_emoji(guild, emoji, data) do
     guild_id = resolve_not_nil(guild, Guild)
     emoji_id = resolve_not_nil(emoji, Emoji)
@@ -467,7 +438,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Emoji)
   end
 
-  @impl true
   def delete_guild_emoji(guild, emoji, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     emoji_id = resolve_not_nil(emoji, Emoji)
@@ -483,7 +453,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild
 
-  @impl true
   def create_guild(data) do
     path = Endpoints.guild()
 
@@ -497,7 +466,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Guild)
   end
 
-  @impl true
   def get_guild(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -508,7 +476,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Guild)
   end
 
-  @impl true
   def modify_guild(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -529,7 +496,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Guild)
   end
 
-  @impl true
   def delete_guild(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -542,7 +508,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Channel
 
-  @impl true
   def get_guild_channels(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -553,7 +518,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Channel))
   end
 
-  @impl true
   def create_guild_channel(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -578,7 +542,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Channel)
   end
 
-  @impl true
   def modify_guild_channel_positions(guild, channels) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -592,7 +555,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Member
 
-  @impl true
   def get_guild_member(guild, user) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -604,7 +566,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Member)
   end
 
-  @impl true
   def list_guild_members(guild, options) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -620,7 +581,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Member, :user))
   end
 
-  @impl true
   def add_guild_member(guild, user, data) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -639,7 +599,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Member)
   end
 
-  @impl true
   def modify_guild_member(guild, user, data) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -657,7 +616,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:patch, path, data)
   end
 
-  @impl true
   def modify_current_users_nick(guild, nick, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -674,7 +632,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Ban
 
-  @impl true
   def get_guild_bans(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -690,7 +647,6 @@ defmodule Crux.Rest.Functions do
     )
   end
 
-  @impl true
   def get_guild_ban(guild, user) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -702,7 +658,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Map.update!(&1, :user, fn user -> Structs.create(user, User) end))
   end
 
-  @impl true
   def create_guild_ban(guild, user, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -714,7 +669,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_reason(reason)
   end
 
-  @impl true
   def remove_guild_ban(guild, user, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -730,7 +684,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Roles
 
-  @impl true
   def get_guild_roles(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -741,7 +694,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Role))
   end
 
-  @impl true
   def create_guild_role(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -753,7 +705,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Role)
   end
 
-  @impl true
   def add_guild_member_role(guild, user, role, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -766,7 +717,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_reason(reason)
   end
 
-  @impl true
   def remove_guild_member_role(guild, user, role, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     user_id = resolve_not_nil(user, User)
@@ -779,7 +729,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_reason(reason)
   end
 
-  @impl true
   def modify_guild_role_positions(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -789,7 +738,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:patch, path, data)
   end
 
-  @impl true
   def modify_guild_role(guild, role, data) do
     guild_id = resolve_not_nil(guild, Guild)
     role_id = resolve_not_nil(role, Role)
@@ -802,7 +750,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Role)
   end
 
-  @impl true
   def delete_guild_role(guild, role, reason \\ nil) do
     guild_id = resolve_not_nil(guild, Guild)
     role_id = resolve_not_nil(role, Role)
@@ -818,7 +765,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Prune
 
-  @impl true
   def get_guild_prune_count(guild, days) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -830,7 +776,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Map.get(&1, :pruned))
   end
 
-  @impl true
   def begin_guild_prune(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -847,7 +792,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Integration
 
-  @impl true
   def get_guild_integrations(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -856,7 +800,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:get, path)
   end
 
-  @impl true
   def create_guild_integration(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -866,7 +809,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:post, path, data)
   end
 
-  @impl true
   def modify_guild_integration(guild, integration, data) do
     guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
@@ -877,7 +819,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:patch, path, data)
   end
 
-  @impl true
   def delete_guild_integration(guild, integration) do
     guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
@@ -887,7 +828,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:delete, path)
   end
 
-  @impl true
   def sync_guild_integration(guild, integration) do
     guild_id = resolve_not_nil(guild, Guild)
     integration_id = integration
@@ -901,7 +841,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Embed
 
-  @impl true
   def get_guild_embed(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -910,7 +849,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:get, path)
   end
 
-  @impl true
   def modify_guild_embed(guild, data) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -928,7 +866,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Invite
 
-  @impl true
   def get_guild_invites(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -940,7 +877,7 @@ defmodule Crux.Rest.Functions do
   end
 
   Version.deprecated("Use get_guild_vanity_invite/1 instead")
-  @impl true
+
   def get_guild_vanity_url(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -951,7 +888,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Map.get(&1, "code"))
   end
 
-  @impl true
   def get_guild_vanity_invite(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -966,7 +902,6 @@ defmodule Crux.Rest.Functions do
 
   ### Webhook
 
-  @impl true
   def list_guild_webhooks(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -977,7 +912,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Webhook))
   end
 
-  @impl true
   def list_channel_webhooks(channel) do
     channel_id = resolve_not_nil(channel, Channel)
 
@@ -988,7 +922,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Webhook))
   end
 
-  @impl true
   def get_webhook(user, token \\ nil) do
     user_id = resolve_not_nil(user, User)
 
@@ -999,7 +932,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Webhook)
   end
 
-  @impl true
   def update_webhook(user, token \\ nil, data) do
     user_id = resolve_not_nil(user, User)
 
@@ -1016,7 +948,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Webhook)
   end
 
-  @impl true
   def delete_webhook(user, token \\ nil) do
     user_id = resolve_not_nil(user, User)
 
@@ -1025,20 +956,16 @@ defmodule Crux.Rest.Functions do
     Request.new(:delete, path)
   end
 
-  @impl true
   def execute_webhook(%{id: id, token: token}, data) do
     execute_webhook(id, token, false, data)
   end
 
-  @impl true
   def execute_webhook(user, token, wait \\ false, data)
 
-  @impl true
   def execute_webhook(%{id: id, token: token}, wait, _, data) do
     execute_webhook(id, token, wait, data)
   end
 
-  @impl true
   def execute_webhook(user, token, wait, data) do
     user_id = resolve_not_nil(user, User)
 
@@ -1056,20 +983,16 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Message)
   end
 
-  @impl true
   def execute_slack_webhook(%{id: id, token: token}, data) do
     execute_slack_webhook(id, token, false, data)
   end
 
-  @impl true
   def execute_slack_webhook(user, token, wait \\ false, data)
 
-  @impl true
   def execute_slack_webhook(%{id: id, token: token}, wait, _, data) do
     execute_slack_webhook(id, token, wait, data)
   end
 
-  @impl true
   def execute_slack_webhook(user, token, wait, data) do
     user_id = resolve_not_nil(user, User)
 
@@ -1082,20 +1005,16 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Message)
   end
 
-  @impl true
   def execute_github_webhook(%{id: id, token: token}, event, data) do
     execute_github_webhook(id, token, event, false, data)
   end
 
-  @impl true
   def execute_github_webhook(user, token, event, wait \\ false, data)
 
-  @impl true
   def execute_github_webhook(%{id: id, token: token}, event, wait, _, data) do
     execute_github_webhook(id, token, event, wait, data)
   end
 
-  @impl true
   def execute_github_webhook(user, token, event, wait, data) do
     user_id = resolve_not_nil(user, User)
 
@@ -1116,7 +1035,6 @@ defmodule Crux.Rest.Functions do
 
   ### Guild Misc
 
-  @impl true
   def get_audit_logs(guild, data \\ []) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -1135,7 +1053,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(AuditLog)
   end
 
-  @impl true
   def get_guild_voice_regions(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -1144,7 +1061,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:get, path)
   end
 
-  @impl true
   def get_invite(code) do
     path = Endpoints.invite(code)
 
@@ -1155,7 +1071,6 @@ defmodule Crux.Rest.Functions do
 
   def delete_invite(%{code: code}), do: delete_invite(code)
 
-  @impl true
   def delete_invite(code) do
     path = Endpoints.invite(code)
 
@@ -1164,7 +1079,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Invite)
   end
 
-  @impl true
   def get_user(user) do
     user_id = resolve_not_nil(user, User)
 
@@ -1175,7 +1089,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(User)
   end
 
-  @impl true
   def get_current_user() do
     path = Endpoints.me()
 
@@ -1184,7 +1097,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(User)
   end
 
-  @impl true
   def modify_current_user(data) do
     path = Endpoints.me()
 
@@ -1198,7 +1110,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(User)
   end
 
-  @impl true
   def get_current_user_guilds(data \\ []) do
     path = Endpoints.me_guilds()
 
@@ -1215,7 +1126,6 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(&Structs.Util.raw_data_to_map(&1, Guild))
   end
 
-  @impl true
   def leave_guild(guild) do
     guild_id = resolve_not_nil(guild, Guild)
 
@@ -1224,7 +1134,6 @@ defmodule Crux.Rest.Functions do
     Request.new(:delete, path)
   end
 
-  @impl true
   def create_dm(user) do
     user_id = resolve_not_nil(user, User)
 
@@ -1236,14 +1145,12 @@ defmodule Crux.Rest.Functions do
     |> Request.set_transform(Channel)
   end
 
-  @impl true
   def gateway() do
     path = Endpoints.gateway()
 
     Request.new(:get, path)
   end
 
-  @impl true
   def gateway_bot() do
     path = Endpoints.gateway_bot()
 

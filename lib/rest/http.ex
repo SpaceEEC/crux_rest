@@ -13,17 +13,16 @@ defmodule Crux.Rest.HTTP do
   version = Project.config()[:version]
   @user_agent "DiscordBot (#{url}, v#{version})"
 
-  @spec process_request_url(HTTPoison.Base.url()) :: HTTPoison.Base.url()
+  # Disable credo here, because the dialyzer can not work with overloaded contracts here
+  # credo:disable-for-lines:40 Credo.Check.Readability.Specs
   def process_request_url(url) do
     super(Endpoints.base_url() <> url)
   end
 
-  @spec process_request_body(term()) :: term()
   def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
   def process_request_body(body), do: Jason.encode!(body)
 
-  @spec process_request_headers(Keyword.t()) :: Keyword.t()
   def process_request_headers(headers) do
     headers
     |> Keyword.put_new(:accept, "application/json")
@@ -32,7 +31,6 @@ defmodule Crux.Rest.HTTP do
     |> Keyword.put_new(:"user-agent", @user_agent)
   end
 
-  @spec process_response(HTTPoison.Base.response()) :: HTTPoison.Base.response()
   def process_response(%HTTPoison.Response{body: ""} = res), do: res
 
   def process_response(%HTTPoison.Response{body: body} = res) do
