@@ -23,6 +23,6 @@ erl_crash.dump
 crux_rest-*.tar
 
 .elixir_ls
-_lib/
+_*/
 
 lib/rest/test.ex
