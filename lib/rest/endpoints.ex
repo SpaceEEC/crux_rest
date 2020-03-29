@@ -1,7 +1,7 @@
 defmodule Crux.Rest.Endpoints do
   @moduledoc """
-    Endpoints being used by the `Crux.Rest` module.
-    You usually do not need to worry about this.
+  Endpoints being used by the `Crux.Rest` module.
+  You usually do not need to worry about this.
   """
   @moduledoc since: "0.1.0"
 
@@ -10,7 +10,7 @@ defmodule Crux.Rest.Endpoints do
   @base_url "https://discordapp.com/api"
 
   @doc """
-    Base API url, with or without a version.
+  Base API url, with or without a version.
   """
   @spec base_url(version :: integer() | nil) :: String.t()
   @doc since: "0.3.0"

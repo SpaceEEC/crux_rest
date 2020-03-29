@@ -1,8 +1,8 @@
 defmodule Crux.Rest.ApiError do
   @moduledoc """
-    Represents a Discord API error.
+  Represents a Discord API error.
 
-    Raised or returned whenever the api responded with a non `2xx` status code.
+  Raised or returned whenever the api responded with a non `2xx` status code.
   """
   @moduledoc since: "0.1.0"
 
@@ -39,9 +39,9 @@ defmodule Crux.Rest.ApiError do
         }
 
   @doc """
-    Default implementation only providing a `message` for `raise/2`.
+  Default implementation only providing a `message` for `raise/2`.
 
-    Not internally used.
+  Not internally used.
   """
   @typedoc since: "0.1.0"
   @spec exception(message :: binary()) :: Exception.t()
@@ -50,7 +50,7 @@ defmodule Crux.Rest.ApiError do
   end
 
   @doc """
-    Creates a full `t:Crux.Rest.ApiError.t/0` struct, returned / raised by all `Crux.Rest` functions in case of an API error.
+  Creates a full `t:Crux.Rest.ApiError.t/0` struct, returned / raised by all `Crux.Rest` functions in case of an API error.
   """
   @doc since: "0.1.0"
   @spec exception(

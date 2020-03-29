@@ -1,6 +1,6 @@
 defmodule Crux.Rest.Request do
   @moduledoc """
-    Struct representing an executable request.
+  Struct representing an executable request.
   """
   @moduledoc since: "0.2.0"
 
