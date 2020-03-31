@@ -5,6 +5,12 @@ defmodule Crux.Rest.Request do
   @moduledoc since: "0.2.0"
 
   alias Crux.Structs
+  alias Mix.Project
+
+  # See: https://discordapp.com/developers/docs/reference#user-agent
+  url = Project.config()[:source_url]
+  version = Project.config()[:version]
+  @user_agent "DiscordBot (#{url}, v#{version})"
 
   @methods ~w(get put patch post delete)a
 
@@ -13,33 +19,51 @@ defmodule Crux.Rest.Request do
     :method,
     :route,
     :path,
+    :version,
     :transform,
     :params,
     data: "",
-    headers: []
+    headers: [
+      accept: "application/json",
+      "content-type": "application/json",
+      "x-ratelimit-precision": "millisecond",
+      "user-agent": @user_agent
+    ]
   ]
 
-  @typedoc false
+  @typedoc """
+  * `:method` HTTP method
+  * `:path` URL path
+  * `:data` Request body
+  * `:headers` HTTP headers
+  * `:params` URL path params
+
+  Ignore other fields.
+  """
   @typedoc since: "0.2.0"
 
-  @opaque t :: %__MODULE__{
-            # HTTP verb
-            method: method(),
-            # Route for rate limit bucket
-            route: String.t(),
-            # Path for HTTP
-            path: String.t(),
-            # Transform to return transformed data (structs, etc)
-            transform: nil | atom() | (term() -> term()),
-            # HTTP body
-            data: term(),
-            # HTTP headers
-            headers: list(),
-            # HTTP querystring parameter
-            params: list() | nil
-          }
+  @type t :: %__MODULE__{
+          # HTTP verb
+          method: method(),
+          # Route for rate limit bucket
+          route: String.t(),
+          # Path for HTTP
+          path: String.t(),
+          # REST API version to use
+          version: integer() | nil,
+          # Transform to return transformed data (structs, etc)
+          transform: nil | atom() | (term() -> term()),
+          # HTTP body
+          data: term(),
+          # HTTP headers
+          headers: keyword(),
+          # HTTP querystring parameter
+          params: [{String.t(), String.t()}] | nil
+        }
 
-  @typedoc false
+  @typedoc """
+  Used HTTP verbs.
+  """
   @typedoc since: "0.2.0"
   @type method :: :get | :put | :patch | :post | :delete
 
@@ -63,7 +87,7 @@ defmodule Crux.Rest.Request do
   @spec put_headers(t(), headers :: keyword()) :: t()
   def put_headers(%__MODULE__{} = t, headers)
       when is_list(headers) do
-    %{t | headers: headers}
+    %{t | headers: Keyword.merge(t.headers, headers)}
   end
 
   @doc false
@@ -78,7 +102,8 @@ defmodule Crux.Rest.Request do
   @doc since: "0.3.0"
   @spec put_transform(t(), transform :: nil | atom() | (term() -> term())) :: t()
   def put_transform(%__MODULE__{} = t, transform)
-      when is_atom(transform) or is_function(transform, 1) do
+      when is_atom(transform)
+      when is_function(transform, 1) do
     %{t | transform: transform}
   end
 
@@ -95,7 +120,7 @@ defmodule Crux.Rest.Request do
     if reason == "" do
       t
     else
-      %{t | headers: [{"x-audit-log-reason", URI.encode(reason)} | headers]}
+      %{t | headers: Keyword.put(headers, :"x-audit-log-reason", URI.encode(reason))}
     end
   end
 
@@ -104,10 +129,21 @@ defmodule Crux.Rest.Request do
   @spec put_token(t(), token :: String.t()) :: t()
   def put_token(%__MODULE__{headers: headers} = t, token)
       when is_binary(token) do
-    %{t | headers: [{:authorization, "Bot " <> token} | headers]}
+    %{t | headers: Keyword.put(headers, :authorization, "Bot " <> token)}
   end
 
   @doc false
+  @doc since: "0.3.0"
+  @spec put_version(t(), version :: integer() | nil) :: t()
+  def put_version(%__MODULE__{} = t, version)
+      when is_nil(version)
+      when is_integer(version) do
+    %{t | version: version}
+  end
+
+  @doc """
+  Transforms the given data to the expected value for the given `t:#{__MODULE__}.t/0`.
+  """
   @doc since: "0.2.0"
   @spec transform(t(), data :: term()) :: term()
   def transform(%__MODULE__{transform: nil}, data), do: data
