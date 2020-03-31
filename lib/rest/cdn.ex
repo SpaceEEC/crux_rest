@@ -32,7 +32,7 @@ defmodule Crux.Rest.CDN do
   """
   @spec base_url() :: String.t()
   @doc since: "0.1.5"
-  def base_url, do: @base_url
+  def base_url(), do: @base_url
 
   @doc """
   Generates the url to an emoji.
@@ -99,9 +99,9 @@ defmodule Crux.Rest.CDN do
 
   def group_dm_icon(%{id: id, icon: icon}, options) do
     extension = get_extension(icon, options[:animated], options[:extension])
+    url = "#{@base_url}/channel-icons/#{id}/#{icon}.#{extension}"
 
-    "#{@base_url}/channel-icons/#{id}/#{icon}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @doc """
@@ -144,9 +144,9 @@ defmodule Crux.Rest.CDN do
 
   def guild_icon(%{id: id, icon: icon}, options) do
     extension = get_extension(icon, options[:animated], options[:extension])
+    url = "#{@base_url}/icons/#{id}/#{icon}.#{extension}"
 
-    "#{@base_url}/icons/#{id}/#{icon}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @doc """
@@ -189,9 +189,9 @@ defmodule Crux.Rest.CDN do
 
   def guild_splash(%{id: id, splash: splash}, options) do
     extension = get_extension(splash, options[:animated], options[:extension])
+    url = "#{@base_url}/splashes/#{id}/#{splash}.#{extension}"
 
-    "#{@base_url}/splashes/#{id}/#{splash}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @doc """
@@ -234,9 +234,9 @@ defmodule Crux.Rest.CDN do
 
   def guild_discovery_splash(%{id: id, splash: splash}, options) do
     extension = get_extension(splash, options[:animated], options[:extension])
+    url = "#{@base_url}/discovery-splashes/#{id}/#{splash}.#{extension}"
 
-    "#{@base_url}/discovery-splashes/#{id}/#{splash}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @doc """
@@ -279,9 +279,9 @@ defmodule Crux.Rest.CDN do
 
   def guild_banner(%{id: id, banner: banner}, options) do
     extension = get_extension(banner, options[:animated], options[:extension])
+    url = "#{@base_url}/banners/#{id}/#{banner}.#{extension}"
 
-    "#{@base_url}/banners/#{id}/#{banner}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @doc """
@@ -351,9 +351,9 @@ defmodule Crux.Rest.CDN do
 
   def user_avatar(%{id: id, avatar: avatar}, options) do
     extension = get_extension(avatar, options[:animated], options[:extension])
+    url = "#{@base_url}/avatars/#{id}/#{avatar}.#{extension}"
 
-    "#{@base_url}/avatars/#{id}/#{avatar}.#{extension}"
-    |> append_size(options[:size])
+    append_size(url, options[:size])
   end
 
   @spec get_extension(
