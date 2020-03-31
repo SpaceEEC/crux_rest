@@ -31,7 +31,7 @@
         {Credo.Check.Readability.ModuleAttributeNames},
         {Credo.Check.Readability.ModuleDoc},
         {Credo.Check.Readability.ModuleNames},
-        {Credo.Check.Readability.MultiAlias},
+        {Credo.Check.Readability.MultiAlias, false},
         {Credo.Check.Readability.ParenthesesInCondition},
         {Credo.Check.Readability.ParenthesesOnZeroArityDefs, parens: true},
         {Credo.Check.Readability.PredicateFunctionNames},
