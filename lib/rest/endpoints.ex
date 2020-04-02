@@ -11,6 +11,14 @@ defmodule Crux.Rest.Endpoints do
 
   @doc """
   Base API url, with or without a version.
+
+  ```elixir
+  iex> Crux.Rest.Endpoints.base_url(nil)
+  "#{@base_url}"
+
+  iex> Crux.Rest.Endpoints.base_url(7)
+  "#{@base_url}/v7"
+  ```
   """
   @spec base_url(version :: integer() | nil) :: String.t()
   @doc since: "0.3.0"
