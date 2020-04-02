@@ -28,13 +28,14 @@ defmodule Crux.Rest.HTTP.Default do
   def request(%Crux.Rest.Request{
         method: method,
         path: path,
+        version: version,
         data: data,
         headers: headers,
         params: nil
       }) do
     super(%HTTPoison.Request{
       method: method,
-      url: path,
+      url: get_url(path, version),
       headers: headers,
       body: data
     })
@@ -44,13 +45,14 @@ defmodule Crux.Rest.HTTP.Default do
   def request(%Crux.Rest.Request{
         method: method,
         path: path,
+        version: version,
         data: data,
         headers: headers,
         params: params
       }) do
     super(%HTTPoison.Request{
       method: method,
-      url: path,
+      url: get_url(path, version),
       headers: headers,
       body: data,
       options: [params: params]
@@ -59,4 +61,9 @@ defmodule Crux.Rest.HTTP.Default do
 
   # Make dialyzer happy
   def request(%HTTPoison.Request{} = request), do: super(request)
+
+  # Prefix the api url to the given path.
+  defp get_url(path, version) do
+    Crux.Rest.Endpoints.base_url(version) <> path
+  end
 end

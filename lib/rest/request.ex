@@ -34,6 +34,7 @@ defmodule Crux.Rest.Request do
   @typedoc """
   * `:method` HTTP method
   * `:path` URL path
+  * `:version` API version to use
   * `:data` Request body
   * `:headers` HTTP headers
   * `:params` URL path params

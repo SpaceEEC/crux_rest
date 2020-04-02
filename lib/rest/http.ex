@@ -13,6 +13,7 @@ defmodule Crux.Rest.HTTP do
   @type t :: module()
 
   @typedoc """
+  Normalized response object.
   """
   @typedoc since: "0.3.0"
   @type response :: %{
