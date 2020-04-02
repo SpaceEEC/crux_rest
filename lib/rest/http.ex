@@ -41,7 +41,13 @@ defmodule Crux.Rest.HTTP do
   @callback transform(Request.t(), response()) ::
               :ok | {:ok, term()} | {:error, ApiError.t()}
 
-  @optional_callbacks transform: 2
+  @doc """
+  Starts the HTTP module linked to the current process, usually a supervisor.
+  """
+  @doc since: "0.3.0"
+  @callback start_link(arg :: Crux.Rest.Opts.t()) :: Supervisor.on_start()
+
+  @optional_callbacks transform: 2, start_link: 1
 
   @doc """
   Default implementation for `c:#{__MODULE__}.transform/2`.
