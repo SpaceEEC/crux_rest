@@ -62,6 +62,18 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     {:ok, state, @timeout}
   end
 
+  # Stops the genserver once it's inactive for @timeout ms.
+  @impl GenServer
+  def handle_info(:timeout, state) do
+    debug(
+      "Inactive. Stopping.",
+      state
+    )
+
+    {:stop, :normal, state}
+  end
+
+  # Ensures that the genserver sleeps long enough once a rate limit limit was exhausted.
   @impl GenServer
   def handle_continue(reset_after, state) do
     debug(
