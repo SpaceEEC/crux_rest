@@ -25,7 +25,7 @@ defmodule Crux.Rest.HTTP.Default do
     end
   end
 
-  def request(%Crux.Rest.Request{
+  def request(_name, %Crux.Rest.Request{
         method: method,
         path: path,
         version: version,
@@ -33,7 +33,7 @@ defmodule Crux.Rest.HTTP.Default do
         headers: headers,
         params: nil
       }) do
-    super(%HTTPoison.Request{
+    request(%HTTPoison.Request{
       method: method,
       url: get_url(path, version),
       headers: headers,
@@ -42,7 +42,7 @@ defmodule Crux.Rest.HTTP.Default do
   end
 
   @spec request(Crux.Rest.Request.t()) :: :ok | {:ok, term()} | {:error, term()}
-  def request(%Crux.Rest.Request{
+  def request(_name, %Crux.Rest.Request{
         method: method,
         path: path,
         version: version,
@@ -50,7 +50,7 @@ defmodule Crux.Rest.HTTP.Default do
         headers: headers,
         params: params
       }) do
-    super(%HTTPoison.Request{
+    request(%HTTPoison.Request{
       method: method,
       url: get_url(path, version),
       headers: headers,

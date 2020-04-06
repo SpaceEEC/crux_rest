@@ -27,11 +27,12 @@ defmodule Crux.Rest.HTTP do
 
   The returned map contains
   * `:status_code` the status code as an integer
-  * `:header` The headers as a keyword with string keys and values
+  * `:header` The headers as a keyword with **downcased** string keys and values
   * `:body` The response JSON as a map or, if not json, the raw binary.
   """
   @doc since: "0.3.0"
-  @callback request(Request.t()) :: response()
+  # TODO: specify name
+  @callback request(name :: atom(), Request.t()) :: {:ok, response()} | {:error, term()}
 
   @doc """
   Transforms a response map to the expected data.

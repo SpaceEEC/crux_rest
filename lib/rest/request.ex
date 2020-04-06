@@ -28,16 +28,19 @@ defmodule Crux.Rest.Request do
       "content-type": "application/json",
       "x-ratelimit-precision": "millisecond",
       "user-agent": @user_agent
-    ]
+    ],
+    auth: true
   ]
 
   @typedoc """
-  * `:method` HTTP method
+  * `:method` HTTP method to use
+  * `:route` Used to group requests pre buckets
   * `:path` URL path
-  * `:version` API version to use
+  * `:version` Discord REST API version to use
   * `:data` Request body
-  * `:headers` HTTP headers
-  * `:params` URL path params
+  * `:headers` HTTP headers to use
+  * `:params` URL path params to apply to the path
+  * `:auth` Whether to use the bot token
 
   Ignore other fields.
   """
@@ -59,7 +62,9 @@ defmodule Crux.Rest.Request do
           # HTTP headers
           headers: keyword(),
           # HTTP querystring parameter
-          params: [{String.t(), String.t()}] | nil
+          params: [{String.t(), String.t()}] | nil,
+          # Whether to use a token
+          auth: boolean()
         }
 
   @typedoc """
@@ -161,11 +166,11 @@ defmodule Crux.Rest.Request do
 
   @doc false
   @doc since: "0.2.0"
-  @spec get_route(t() | String.t()) :: String.t()
+  @spec get_route(String.t()) :: String.t()
   def get_route(path)
       when is_binary(path) do
     route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d{16,19}', path, "/:id")
-    # https://github.com/discordapp/discord-api-docs/issues/182
-    Regex.replace(~r'(?<=\/reactions\/)[^\/]+', route, ":reaction")
+    # Group all reaction endpoints together, as all of them share a bucket (and the limit is 1...)
+    Regex.replace(~r'(?<=\/reactions)\/.+', route, "")
   end
 end
