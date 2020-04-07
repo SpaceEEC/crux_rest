@@ -1,23 +1,32 @@
 defmodule Crux.Rest.RateLimiter.Default do
-  @moduledoc """
-  Default module for `Crux.Rest.RateLimiter`.
-  """
+  @moduledoc false
+  @moduledoc since: "0.3.0"
 
   @behaviour Crux.Rest.RateLimiter
 
-  @impl Crux.Rest.RateLimiter
-  def request(name, %Crux.Rest.Request{} = request, http) do
-    %{} = Crux.Rest.RateLimiter.Default.Handler.Supervisor.dispatch_request(name, request, http)
-  end
+  alias Crux.Rest.RateLimiter.Default.Supervisor, as: RateLimitSupervisor
+  alias Crux.Rest.RateLimiter.Default.Handler.Supervisor, as: HandlerSupervisor
 
   @impl Crux.Rest.RateLimiter
-  def start_link(arg) do
-    Crux.Rest.RateLimiter.Default.Supervisor.start_link(arg)
+  defdelegate child_spec(init_arg), to: RateLimitSupervisor
+
+  @impl Crux.Rest.RateLimiter
+  def request(name, request, http) do
+    {_, _} = HandlerSupervisor.dispatch(name, new(request, http))
   end
 
-  def get_rate_limit_values(headers, acc \\ %{})
-      when is_map(acc) do
-    Enum.reduce(headers, acc, fn
+  @doc false
+  # Exposed for tests
+  def new(request, http) do
+    %{
+      request: request,
+      http: http,
+      dispatch: &HandlerSupervisor.dispatch/2
+    }
+  end
+
+  def get_rate_limit_values(headers) do
+    Enum.reduce(headers, %{global: false}, fn
       {"x-ratelimit-global", value}, acc ->
         Map.put(acc, :global, value == "true")
 
@@ -49,10 +58,6 @@ defmodule Crux.Rest.RateLimiter.Default do
   end
 
   def to_info(rl_headers) do
-    %{
-      limit: rl_headers[:limit],
-      remaining: rl_headers[:remaining],
-      reset_after: rl_headers[:reset_after]
-    }
+    Map.take(rl_headers, ~w/limit remaining reset_after/a)
   end
 end

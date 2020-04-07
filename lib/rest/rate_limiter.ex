@@ -1,6 +1,6 @@
 defmodule Crux.Rest.RateLimiter do
   @moduledoc """
-
+  Behavior module handling rate limitting and preemptive throttling which the Discord API expects.
   """
   @moduledoc since: "0.3.0"
 
@@ -14,8 +14,8 @@ defmodule Crux.Rest.RateLimiter do
             ) :: {:ok, HTTP.response()} | {:error, term()}
 
   @doc """
-  Starts the rate limiter module linked to the current process, usually a supervisor.
+  Used to start the rate limiter module under a supervisor.
   """
   @doc since: "0.3.0"
-  @callback start_link(arg :: Crux.Rest.Opts.t()) :: Supervisor.on_start()
+  @callback child_spec(arg :: Crux.Rest.Opts.t()) :: Supervisor.child_spec()
 end

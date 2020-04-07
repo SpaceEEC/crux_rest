@@ -1,23 +1,33 @@
 defmodule Crux.Rest.RateLimiter.Default.Handler do
+  @moduledoc false
+  @moduledoc since: "0.3.0"
+
   use GenServer
 
+  alias Crux.Rest.Opts
   alias Crux.Rest.RateLimiter.Default, as: RateLimiter
   alias Crux.Rest.RateLimiter.Default.Global
-  alias Crux.Rest.RateLimiter.Default.Handler.Supervisor, as: HandlerSupervisor
-  alias Crux.Rest.Opts
 
   @bucket :bucket
+  def bucket(), do: @bucket
   @request :request
+  def request(), do: @request
 
-  @timeout 10_000
+  @timeout 10000
 
-  defstruct [:name, :type, :identifier, :rate_limit_info, :bucket_hash]
+  defstruct [
+    :name,
+    :type,
+    :identifier,
+    :bucket_hash,
+    rl_info: RateLimiter.to_info(%{})
+  ]
 
   ###
   # Client API
   ###
 
-  def child_spec({_type, _identifier} = tuple) do
+  def child_spec(tuple) do
     %{
       id: tuple,
       start: {__MODULE__, :start_link, [tuple]},
@@ -25,16 +35,16 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     }
   end
 
-  @spec start_link(Opts.t(), {any, any}) :: GenServer.on_start()
-  def start_link(%{name: name} = opts, {_type, _identifier} = tuple) do
+  @spec start_link(Opts.t(), term()) :: GenServer.on_start()
+  def start_link(%{name: name} = opts, tuple) do
     registry = Opts.registry(name)
 
     name = {:via, Registry, {registry, tuple}}
     GenServer.start_link(__MODULE__, {opts, tuple}, name: name)
   end
 
-  def dispatch(pid, request, http) do
-    GenServer.call(pid, {request, http}, :infinity)
+  def dispatch(pid, message) do
+    GenServer.call(pid, message, :infinity)
   end
 
   ###
@@ -65,160 +75,136 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   # Stops the genserver once it's inactive for @timeout ms.
   @impl GenServer
   def handle_info(:timeout, state) do
-    debug(
-      "Inactive. Stopping.",
-      state
-    )
+    debug("Idle. Stopping.", state)
 
     {:stop, :normal, state}
   end
 
   # Ensures that the genserver sleeps long enough once a rate limit limit was exhausted.
   @impl GenServer
-  def handle_continue(reset_after, state) do
-    debug(
-      "Exhausted request limit, waiting remaining #{reset_after}ms before handling further messages.",
-      state
-    )
+  def handle_continue(wait_time, state) do
+    debug("Exhausted request limit, sleeping for #{wait_time}ms.", state)
 
-    Process.sleep(reset_after)
+    Process.sleep(wait_time)
 
     {:noreply, state, @timeout}
   end
 
-  # No bucket_hash known, make request directly
+  # Request handler does not know its bucket hash, makes request itself.
   @impl GenServer
-  def handle_call(
-        {request, http},
-        _from,
-        %__MODULE__{type: @request, bucket_hash: nil} = state
-      ) do
-    debug("Got message, no bucket_hash, making request in-place.", state)
+  def handle_call(message, _from, %{type: @request, bucket_hash: nil} = state) do
+    debug("Bucket hash unknown, making request locally.", state)
 
-    {rl_headers, response} = do_request(request, http, state)
+    case do_request(message, state) do
+      {:error, _error} = tuple ->
+        {:reply, tuple, state, @timeout}
 
-    new_state = %{
-      state
-      | rate_limit_info: RateLimiter.to_info(rl_headers),
-        bucket_hash: rl_headers[:bucket]
-    }
+      {:ok, response, state} ->
+        # Set the timeout to at least the reset_after value
+        reset_after = Map.get(state.rl_info, :reset_after, 0)
+        timeout = max(reset_after, @timeout)
 
-    if new_state.bucket_hash do
-      debug("Got a bucket_hash: #{new_state.bucket_hash}", state)
+        {:reply, response, state, timeout}
+
+      {:ok, response, state, reset_after} ->
+        {:reply, response, state, {:continue, reset_after}}
     end
-
-    reply(new_state, response)
   end
 
-  # Bucket hash known, forward request and check for bucket change.
+  # Request handler does know its bucket hash, dispatches request to relevant bucket hash handler.
   def handle_call(
-        {request, http},
+        %{dispatch: dispatch} = message,
         _from,
-        %__MODULE__{type: @request, bucket_hash: bucket_hash, name: name} = state
+        %{name: name, type: @request, bucket_hash: bucket_hash} = state
       ) do
-    debug("Dispatching request to bucket #{bucket_hash}...", state)
+    debug("Bucket hash known, dispatching to bucket handler.", state)
 
-    {rl_headers, response} = HandlerSupervisor.dispatch_bucket(name, bucket_hash, request, http)
+    message = Map.put(message, :bucket_hash, bucket_hash)
 
-    new_state =
-      if rl_headers[:bucket] != bucket_hash do
-        %{state | bucket_hash: rl_headers[:bucket]}
-      else
-        state
-      end
+    {_, _} = response = dispatch.(name, message)
 
-    {:reply, response, new_state}
-  end
-
-  # Bucket handler, make request, handle rate limit, etc...
-  def handle_call({request, http}, _from, %__MODULE__{type: @bucket} = state) do
-    tuple = {rl_headers, _response} = do_request(request, http, state)
-
-    new_state = %{
-      state
-      | rate_limit_info: RateLimiter.to_info(rl_headers)
-    }
-
-    reply(new_state, tuple)
-  end
-
-  # Exhausted the bucket, wait before processing further requests.
-  defp reply(
-         %__MODULE__{rate_limit_info: %{remaining: 0, reset_after: reset_after}} = state,
-         response
-       ) do
-    {:reply, response, state, {:continue, reset_after}}
-  end
-
-  # Rate limit info available, set a timeout of the greater of @timeout or reset_after.
-  defp reply(
-         %__MODULE__{rate_limit_info: %{reset_after: reset_after}} = state,
-         response
-       ) do
-    {:reply, response, state, max(@timeout, reset_after)}
-  end
-
-  # No rate limit info available, set the regular timeout.
-  defp reply(%__MODULE__{rate_limit_info: nil} = state, response) do
     {:reply, response, state, @timeout}
   end
 
-  defp do_request(
-         request,
-         http,
-         %__MODULE__{name: name} = state
-       ) do
+  # Bucket handler always makes the request itself.
+  def handle_call(message, _from, %{type: @bucket} = state) do
+    debug("Bucket handler, making request.", state)
+
+    case do_request(message, state) do
+      {:error, _error} = tuple ->
+        {:reply, tuple, state, @timeout}
+
+      {:ok, response, state} ->
+        {:reply, response, state, @timeout}
+
+      {:ok, response, state, reset_after} ->
+        {:reply, response, state, {:continue, reset_after}}
+    end
+  end
+
+  defp do_request(%{http: http, request: request} = message, %{name: name} = state) do
+    # If globally rate limited, pause...
     wait_global(state)
 
-    debug("Making request.", state)
+    debug("Actually making request.", state)
 
     case http.request(name, request) do
-      {:error, _error} = tuple ->
+      {:error, error} = tuple ->
+        warn("An error occured: #{inspect(error)}", state)
+
         tuple
 
-      {:ok, response} ->
+      {:ok, response} = tuple ->
+        nil
         rl_headers = RateLimiter.get_rate_limit_values(response.headers)
 
         log_response(response, rl_headers, state)
 
-        wait_time = wait_429(response, rl_headers, state)
+        if response.status_code == 429 do
+          wait_time =
+            case rl_headers do
+              %{global: true, retry_after: retry_after} ->
+                warn("Globally rate limited! (#{retry_after}ms)", state)
 
-        if wait_time > 0 do
+                # Notify all other handlers that a global rate limite was encountered
+                Global.set_retry_after(name, retry_after)
+
+                retry_after
+
+              %{global: false, reset_after: reset_after} ->
+                warn("Locally rate limited! (#{reset_after}ms)", state)
+
+                reset_after
+            end
+
           Process.sleep(wait_time)
 
-          do_request(request, http, state)
+          # Try again
+          do_request(message, state)
         else
-          {rl_headers, response}
+          new_state = %{
+            state
+            | bucket_hash: rl_headers[:bucket],
+              rl_info: RateLimiter.to_info(rl_headers)
+          }
+
+          if rl_headers[:remaining] != 0 do
+            {:ok, tuple, new_state}
+          else
+            {:ok, tuple, new_state, rl_headers.reset_after}
+          end
         end
     end
   end
 
-  defp wait_429(%{status_code: 429}, %{global: true} = rl_headers, %{name: name} = state) do
-    warn("Received a global rate limit (#{rl_headers.retry_after}ms)", state)
-
-    Global.set_retry_after(name, rl_headers.retry_after)
-
-    rl_headers.retry_after
-  end
-
-  defp wait_429(%{status_code: 429}, %{global: false} = rl_headers, state) do
-    warn("Received a local rate limit (#{rl_headers.reset_after}ms)", state)
-
-    rl_headers.reset_after
-  end
-
-  defp wait_429(_response, _rl_headersl, _state) do
-    0
-  end
-
-  defp wait_global(%__MODULE__{name: name} = state) do
+  defp wait_global(%{name: name} = state) do
     case Global.get_retry_after(name) do
       retry_after when retry_after > 0 ->
-        debug("Globally rate limited, sleeping #{retry_after}ms...", state)
+        debug("Globally rate limited, sleeping #{retry_after}ms.", state)
 
         Process.sleep(retry_after)
 
-        # Recurse to check again
+        # Recurse to check again, only return if actually not rate limited anymore
         wait_global(state)
 
       _retry_after ->
