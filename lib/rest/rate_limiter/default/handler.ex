@@ -5,7 +5,6 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   use GenServer
 
   alias Crux.Rest.Opts
-  alias Crux.Rest.RateLimiter.Default, as: RateLimiter
   alias Crux.Rest.RateLimiter.Default.Global
 
   @bucket :bucket
@@ -20,7 +19,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     :type,
     :identifier,
     :bucket_hash,
-    rl_info: RateLimiter.to_info(%{})
+    rl_info: %{}
   ]
 
   ###
@@ -156,7 +155,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
       {:ok, response} = tuple ->
         nil
-        rl_headers = RateLimiter.get_rate_limit_values(response.headers)
+        rl_headers = get_rate_limit_values(response.headers)
 
         log_response(response, rl_headers, state)
 
@@ -185,7 +184,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
           new_state = %{
             state
             | bucket_hash: rl_headers[:bucket],
-              rl_info: RateLimiter.to_info(rl_headers)
+              rl_info: to_info(rl_headers)
           }
 
           if rl_headers[:remaining] != 0 do
@@ -210,6 +209,44 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
       _retry_after ->
         :ok
     end
+  end
+
+  # Gets all rate limited related headers
+  defp get_rate_limit_values(headers) do
+    Enum.reduce(headers, %{global: false}, fn
+      {"x-ratelimit-global", value}, acc ->
+        Map.put(acc, :global, value == "true")
+
+      {"x-ratelimit-limit", value}, acc ->
+        Map.put(acc, :limit, String.to_integer(value))
+
+      {"x-ratelimit-remaining", value}, acc ->
+        Map.put(acc, :remaining, String.to_integer(value))
+
+      {"x-ratelimit-reset", value}, acc ->
+        # s to ms
+        reset = trunc(String.to_float(value) * 1000)
+        Map.put(acc, :reset, reset)
+
+      {"x-ratelimit-reset-after", value}, acc ->
+        # s to ms
+        reset_after = trunc(String.to_float(value) * 1000)
+        Map.put(acc, :reset_after, reset_after)
+
+      {"x-ratelimit-bucket", value}, acc ->
+        Map.put(acc, :bucket, value)
+
+      {"retry-after", value}, acc ->
+        Map.put(acc, :retry_after, String.to_integer(value))
+
+      _tuple, acc ->
+        acc
+    end)
+  end
+
+  # Gets the throttling related headers
+  defp to_info(rl_headers) do
+    Map.take(rl_headers, ~w/limit remaining reset_after/a)
   end
 
   defp log_response(response, rl_headers, state) do

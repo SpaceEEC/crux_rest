@@ -24,40 +24,4 @@ defmodule Crux.Rest.RateLimiter.Default do
       dispatch: &HandlerSupervisor.dispatch/2
     }
   end
-
-  def get_rate_limit_values(headers) do
-    Enum.reduce(headers, %{global: false}, fn
-      {"x-ratelimit-global", value}, acc ->
-        Map.put(acc, :global, value == "true")
-
-      {"x-ratelimit-limit", value}, acc ->
-        Map.put(acc, :limit, String.to_integer(value))
-
-      {"x-ratelimit-remaining", value}, acc ->
-        Map.put(acc, :remaining, String.to_integer(value))
-
-      {"x-ratelimit-reset", value}, acc ->
-        # s to ms
-        reset = trunc(String.to_float(value) * 1000)
-        Map.put(acc, :reset, reset)
-
-      {"x-ratelimit-reset-after", value}, acc ->
-        # s to ms
-        reset_after = trunc(String.to_float(value) * 1000)
-        Map.put(acc, :reset_after, reset_after)
-
-      {"x-ratelimit-bucket", value}, acc ->
-        Map.put(acc, :bucket, value)
-
-      {"retry-after", value}, acc ->
-        Map.put(acc, :retry_after, String.to_integer(value))
-
-      _tuple, acc ->
-        acc
-    end)
-  end
-
-  def to_info(rl_headers) do
-    Map.take(rl_headers, ~w/limit remaining reset_after/a)
-  end
 end
