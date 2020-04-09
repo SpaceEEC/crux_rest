@@ -17,11 +17,11 @@ defmodule Crux.Rest.RateLimiter.Default do
 
   @doc false
   # Exposed for tests
-  def new(request, http) do
+  def new(request, http, dispatch \\ &HandlerSupervisor.dispatch/2) do
     %{
       request: request,
       http: http,
-      dispatch: &HandlerSupervisor.dispatch/2
+      dispatch: dispatch
     }
   end
 end

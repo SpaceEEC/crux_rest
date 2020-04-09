@@ -340,8 +340,7 @@ defmodule Crux.Rest.RateLimiterTest do
       assert response ==
                HandlerSupervisor.dispatch(
                  @name,
-                 RateLimiter.new(request, Crux.Rest.HTTPMock)
-                 |> Map.put(:dispatch, fn _, _ ->
+                 RateLimiter.new(request, Crux.Rest.HTTPMock, fn _, _ ->
                    raise "not to be called!"
                  end)
                )
@@ -364,8 +363,7 @@ defmodule Crux.Rest.RateLimiterTest do
       assert response_one ==
                HandlerSupervisor.dispatch(
                  @name,
-                 RateLimiter.new(request, Crux.Rest.HTTPMock)
-                 |> Map.put(:dispatch, fn _, _ ->
+                 RateLimiter.new(request, Crux.Rest.HTTPMock, fn _, _ ->
                    raise "not to be called!"
                  end)
                )
@@ -413,8 +411,7 @@ defmodule Crux.Rest.RateLimiterTest do
       assert response_one ==
                HandlerSupervisor.dispatch(
                  @name,
-                 RateLimiter.new(request_one, Crux.Rest.HTTPMock)
-                 |> Map.put(:dispatch, fn _, _ ->
+                 RateLimiter.new(request, Crux.Rest.HTTPMock, fn _, _ ->
                    raise "not to be called!"
                  end)
                )
@@ -422,11 +419,10 @@ defmodule Crux.Rest.RateLimiterTest do
       assert response_two ==
                HandlerSupervisor.dispatch(
                  @name,
-                 RateLimiter.new(request_two, Crux.Rest.HTTPMock)
-                 |> Map.put(:dispatch, fn _, _ ->
-                   raise "not to be called!"
-                 end)
-               )
+                 RateLimiter.new(request, Crux.Rest.HTTPMock, fn _, _ ->
+                  raise "not to be called!"
+                end)
+              )
 
       parent = self()
 
