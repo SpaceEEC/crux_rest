@@ -171,6 +171,6 @@ defmodule Crux.Rest.Request do
       when is_binary(path) do
     route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d{16,19}', path, "/:id")
     # Group all reaction endpoints together, as all of them share a bucket (and the limit is 1...)
-    Regex.replace(~r'(?<=\/reactions)\/.+', route, "")
+    Regex.replace(~r'(?<=\/reactions)\/.+', route, "/*")
   end
 end

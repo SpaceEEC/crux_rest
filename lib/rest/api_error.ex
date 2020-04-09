@@ -57,6 +57,8 @@ defmodule Crux.Rest.ApiError do
           Request.t(),
           HTTP.response()
         ) :: t()
+  def exception(request, response)
+
   def exception(%{method: method, path: path}, %{
         status_code: status_code,
         body: %{"message" => message} = body
@@ -113,9 +115,9 @@ defmodule Crux.Rest.ApiError do
   defp transform_value(_key, value) when is_bitstring(value), do: value
 
   defp transform_value(key, %{"_errors" => errors}),
-    do: "#{key}: #{Enum.map_join(errors, " ", &Map.get(&1, "message"))}"
+    do: "#{key}: #{Enum.map_join(errors, " ", &transform_value(key, &1))}"
 
-  defp transform_value(_key, %{"code" => code, "message" => message}), do: "#{code}: #{message}"
+  defp transform_value(_key, %{"code" => code, "message" => message}), do: "[#{code}] #{message}"
   defp transform_value(_key, %{"message" => message}), do: message
   defp transform_value(key, value), do: map_inner(value, key)
 end
