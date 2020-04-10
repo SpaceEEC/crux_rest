@@ -2275,5 +2275,6 @@ defmodule Crux.Rest do
                 })
 
     ### Gateway END
-  end # bangify end
+    # bangify end
+  end
 end
