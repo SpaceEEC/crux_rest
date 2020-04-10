@@ -14,8 +14,10 @@ defmodule Crux.Rest.RateLimiter do
             ) :: {:ok, HTTP.response()} | {:error, term()}
 
   @doc """
-  Used to start the rate limiter module under a supervisor.
+  Used to optionally start the rate limiter module under a supervisor.
   """
   @doc since: "0.3.0"
   @callback child_spec(arg :: Crux.Rest.Opts.t()) :: Supervisor.child_spec()
+
+  @optional_callbacks child_spec: 1
 end

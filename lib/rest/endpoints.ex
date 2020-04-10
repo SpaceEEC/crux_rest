@@ -1,7 +1,9 @@
 defmodule Crux.Rest.Endpoints do
   @moduledoc """
   Endpoints being used by the `Crux.Rest` module.
-  You usually do not need to worry about this.
+  All functions except `base_url/1` are automatically generated depending on the routes Discord documents.
+
+  You usually do not need to worry about this module.
   """
   @moduledoc since: "0.1.0"
 

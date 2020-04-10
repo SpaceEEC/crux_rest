@@ -13,7 +13,10 @@ defmodule Crux.Rest.HTTP do
   @type t :: module()
 
   @typedoc """
-  Normalized response object.
+  Normalized response object containing:
+  * `:status_code` the status code as an integer
+  * `:header` The headers as a keyword with **downcased** string keys and values
+  * `:body` The response JSON as a map or, if not json, the raw binary.
   """
   @typedoc since: "0.3.0"
   @type response :: %{
@@ -24,11 +27,6 @@ defmodule Crux.Rest.HTTP do
 
   @doc """
   Executes a `t:Crux.Rest.Request.t/0`.
-
-  The returned map contains
-  * `:status_code` the status code as an integer
-  * `:header` The headers as a keyword with **downcased** string keys and values
-  * `:body` The response JSON as a map or, if not json, the raw binary.
   """
   @doc since: "0.3.0"
   # TODO: specify name
@@ -43,7 +41,7 @@ defmodule Crux.Rest.HTTP do
               :ok | {:ok, term()} | {:error, ApiError.t()}
 
   @doc """
-  Used to start the HTTP module under a supervisor.
+  Used to optionally start the HTTP module under a supervisor.
   """
   @doc since: "0.3.0"
   @callback child_spec(arg :: Crux.Rest.Opts.t()) :: Supervisor.child_spec()

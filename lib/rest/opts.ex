@@ -1,4 +1,6 @@
 defmodule Crux.Rest.Opts do
+  @moduledoc false
+
   # TODO: Move this to somewhere where it makes sense to be
 
   @typedoc """

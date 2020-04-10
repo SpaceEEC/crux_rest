@@ -1,7 +1,6 @@
 defmodule Crux.Rest.HTTP.Default do
-  @moduledoc """
-  Default module for `Crux.Rest.HTTP` using `HTTPoison`.
-  """
+  @moduledoc false
+  @moduledoc since: "0.3.0"
 
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
