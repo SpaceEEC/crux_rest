@@ -52,7 +52,10 @@ defmodule Crux.Rest.CDN do
 
   ```
   """
-  @spec custom_emoji(Crux.Structs.Emoji.t() | %{id: Crux.Rest.snowflake()}) :: String.t()
+  @spec custom_emoji(
+          Crux.Structs.Emoji.t()
+          | %{id: Crux.Structs.Snowflake.t(), animated: boolean()}
+        ) :: String.t()
   @doc since: "0.1.5"
   def custom_emoji(emoji)
 
@@ -90,7 +93,7 @@ defmodule Crux.Rest.CDN do
   """
   @spec group_dm_icon(
           Crux.Structs.Channel.t()
-          | %{id: Crux.Rest.snowflake(), icon: String.t() | nil},
+          | %{id: Crux.Structs.Snowflake.t(), icon: String.t() | nil},
           format_options()
         ) :: String.t() | nil
   @doc since: "0.1.5"
@@ -135,7 +138,7 @@ defmodule Crux.Rest.CDN do
   ```
   """
   @spec guild_icon(
-          Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), icon: String.t() | nil},
+          Crux.Structs.Guild.t() | %{id: Crux.Structs.Snowflake.t(), icon: String.t() | nil},
           format_options()
         ) :: String.t() | nil
   @doc since: "0.1.5"
@@ -180,7 +183,7 @@ defmodule Crux.Rest.CDN do
   ```
   """
   @spec guild_splash(
-          Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), splash: String.t() | nil},
+          Crux.Structs.Guild.t() | %{id: Crux.Structs.Snowflake.t(), splash: String.t() | nil},
           format_options()
         ) :: String.t() | nil
   @doc since: "0.1.5"
@@ -225,7 +228,7 @@ defmodule Crux.Rest.CDN do
   ```
   """
   @spec guild_discovery_splash(
-          Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), splash: String.t() | nil},
+          Crux.Structs.Guild.t() | %{id: Crux.Structs.Snowflake.t(), splash: String.t() | nil},
           format_options()
         ) :: String.t() | nil
   @doc since: "0.3.0"
@@ -270,7 +273,7 @@ defmodule Crux.Rest.CDN do
   ```
   """
   @spec guild_banner(
-          Crux.Structs.Guild.t() | %{id: Crux.Rest.snowflake(), banner: String.t() | nil},
+          Crux.Structs.Guild.t() | %{id: Crux.Structs.Snowflake.t(), banner: String.t() | nil},
           format_options()
         ) :: String.t() | nil
   @doc since: "0.2.0"
@@ -341,7 +344,7 @@ defmodule Crux.Rest.CDN do
   """
   @spec user_avatar(
           Crux.Structs.User.t()
-          | %{id: Crux.Rest.snowflake(), discriminator: String.t(), avatar: String.t() | nil},
+          | %{id: Crux.Structs.Snowflake.t(), discriminator: String.t(), avatar: String.t() | nil},
           format_options()
         ) :: String.t()
   @doc since: "0.1.5"
