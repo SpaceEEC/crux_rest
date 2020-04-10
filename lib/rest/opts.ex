@@ -12,18 +12,22 @@ defmodule Crux.Rest.Opts do
           name: module()
         }
 
+  @spec global(atom) :: atom
   def global(name) do
     Module.concat([name, RateLimiter.Global])
   end
 
+  @spec registry(atom) :: atom
   def registry(name) do
     Module.concat([name, RateLimiter.Registry])
   end
 
+  @spec supervisor(atom) :: atom
   def supervisor(name) do
     Module.concat([name, RateLimiter.Supervisor])
   end
 
+  @spec handler_supervisor(atom) :: atom
   def handler_supervisor(name) do
     Module.concat([name, RateLimiter.Handler.Supervisor])
   end

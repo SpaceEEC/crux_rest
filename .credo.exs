@@ -4,7 +4,7 @@
       name: "default",
       files: %{
         included: ["lib/rest"],
-        excluded: ["lib/rest/gen"]
+        excluded: ["lib/rest/test.ex"]
       },
       requires: [],
       checks: [
@@ -23,7 +23,7 @@
         {Credo.Check.Design.TagFIXME},
         {Credo.Check.Design.TagTODO, exit_status: 0},
         # Readability
-        {Credo.Check.Readability.AliasAs},
+        {Credo.Check.Readability.AliasAs, false},
         {Credo.Check.Readability.AliasOrder},
         {Credo.Check.Readability.FunctionNames},
         {Credo.Check.Readability.LargeNumbers},
@@ -42,7 +42,7 @@
         {Credo.Check.Readability.SinglePipe},
         {Credo.Check.Readability.SpaceAfterCommas},
         {Credo.Check.Readability.Specs},
-        {Credo.Check.Readability.StrictModuleLayout, order: ~w/moduledoc alias use import require behaviour/a},
+        {Credo.Check.Readability.StrictModuleLayout, order: ~w/moduledoc behaviour alias use import require/a},
         {Credo.Check.Readability.StringSigils},
         {Credo.Check.Readability.TrailingBlankLine},
         {Credo.Check.Readability.TrailingWhiteSpace},
@@ -82,8 +82,8 @@
         {Credo.Check.Warning.OperationOnSameValues},
         {Credo.Check.Warning.OperationWithConstantResult},
         {Credo.Check.Warning.RaiseInsideRescue},
-        {Credo.Check.Warning.UnsafeExec, false},
-        {Credo.Check.Warning.UnsafeToAtom},
+        {Credo.Check.Warning.UnsafeExec},
+        {Credo.Check.Warning.UnsafeToAtom, false},
         {Credo.Check.Warning.UnusedEnumOperation},
         {Credo.Check.Warning.UnusedFileOperation},
         {Credo.Check.Warning.UnusedKeywordOperation},

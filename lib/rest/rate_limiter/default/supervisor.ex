@@ -2,12 +2,11 @@ defmodule Crux.Rest.RateLimiter.Default.Supervisor do
   @moduledoc false
   @moduledoc since: "0.3.0"
 
-  use Supervisor
-
+  alias Crux.Rest.Opts
   alias Crux.Rest.RateLimiter.Default.Global
   alias Crux.Rest.RateLimiter.Default.Handler.Supervisor, as: HandlerSupervisor
 
-  alias Crux.Rest.Opts
+  use Supervisor
 
   @doc """
   Starts the default rate limiter supervisor linked to the current process, usually a supervisor.

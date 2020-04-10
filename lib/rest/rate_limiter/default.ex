@@ -4,8 +4,9 @@ defmodule Crux.Rest.RateLimiter.Default do
 
   @behaviour Crux.Rest.RateLimiter
 
-  alias Crux.Rest.RateLimiter.Default.Supervisor, as: RateLimitSupervisor
+  alias Crux.Rest.{HTTP, Request}
   alias Crux.Rest.RateLimiter.Default.Handler.Supervisor, as: HandlerSupervisor
+  alias Crux.Rest.RateLimiter.Default.Supervisor, as: RateLimitSupervisor
 
   @impl Crux.Rest.RateLimiter
   defdelegate child_spec(init_arg), to: RateLimitSupervisor
@@ -17,6 +18,7 @@ defmodule Crux.Rest.RateLimiter.Default do
 
   @doc false
   # Exposed for tests
+  @spec new(Request.t(), HTTP.t(), term()) :: map()
   def new(request, http, dispatch \\ &HandlerSupervisor.dispatch/2) do
     %{
       request: request,

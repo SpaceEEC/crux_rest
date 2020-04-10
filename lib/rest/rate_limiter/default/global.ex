@@ -6,9 +6,9 @@ defmodule Crux.Rest.RateLimiter.Default.Global do
 
   @moduledoc since: "0.3.0"
 
-  use GenServer
-
   alias Crux.Rest.Opts
+
+  use GenServer
 
   @retry_after :retry_after
 

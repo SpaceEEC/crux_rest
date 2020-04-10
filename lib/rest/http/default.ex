@@ -2,6 +2,11 @@ defmodule Crux.Rest.HTTP.Default do
   @moduledoc false
   @moduledoc since: "0.3.0"
 
+  # Apparently conflicting, although they are not
+  # @behaviour Crux.Rest.HTTP
+
+  alias Crux.Rest.{Endpoints, Request}
+
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
 
@@ -24,7 +29,7 @@ defmodule Crux.Rest.HTTP.Default do
     end
   end
 
-  def request(_name, %Crux.Rest.Request{
+  def request(_name, %Request{
         method: method,
         path: path,
         version: version,
@@ -40,8 +45,8 @@ defmodule Crux.Rest.HTTP.Default do
     })
   end
 
-  @spec request(Crux.Rest.Request.t()) :: :ok | {:ok, term()} | {:error, term()}
-  def request(_name, %Crux.Rest.Request{
+  @spec request(Request.t()) :: :ok | {:ok, term()} | {:error, term()}
+  def request(_name, %Request{
         method: method,
         path: path,
         version: version,
@@ -63,6 +68,6 @@ defmodule Crux.Rest.HTTP.Default do
 
   # Prefix the api url to the given path.
   defp get_url(path, version) do
-    Crux.Rest.Endpoints.base_url(version) <> path
+    Endpoints.base_url(version) <> path
   end
 end

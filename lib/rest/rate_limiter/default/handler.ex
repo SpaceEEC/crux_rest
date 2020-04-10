@@ -2,17 +2,21 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   @moduledoc false
   @moduledoc since: "0.3.0"
 
-  use GenServer
-
   alias Crux.Rest.Opts
   alias Crux.Rest.RateLimiter.Default.Global
 
+  use GenServer
+
   @bucket :bucket
+
+  @spec bucket() :: :bucket
   def bucket(), do: @bucket
   @request :request
+
+  @spec request() :: :request
   def request(), do: @request
 
-  @timeout 10000
+  @timeout 10_000
 
   defstruct [
     :name,
@@ -26,6 +30,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   # Client API
   ###
 
+  @spec child_spec(term()) :: Supervisor.child_spec()
   def child_spec(tuple) do
     %{
       id: tuple,
@@ -42,6 +47,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     GenServer.start_link(__MODULE__, {opts, tuple}, name: name)
   end
 
+  @spec dispatch(pid(), map()) :: {:ok, Crux.Rest.HTTP.response()} | {:error, term()}
   def dispatch(pid, message) do
     GenServer.call(pid, message, :infinity)
   end
@@ -153,46 +159,64 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
         tuple
 
-      {:ok, response} = tuple ->
+      {:ok, response} ->
         nil
         rl_headers = get_rate_limit_values(response.headers)
 
         log_response(response, rl_headers, state)
 
-        if response.status_code == 429 do
-          wait_time =
-            case rl_headers do
-              %{global: true, retry_after: retry_after} ->
-                warn("Globally rate limited! (#{retry_after}ms)", state)
+        handle_response(message, response, rl_headers, state)
+    end
+  end
 
-                # Notify all other handlers that a global rate limite was encountered
-                Global.set_retry_after(name, retry_after)
+  # Retries if a rate limit was encountered, otherwise updates rate limit info and returns the response
+  defp handle_response(message, response, rl_headers, state)
 
-                retry_after
+  defp handle_response(
+         message,
+         %{status_code: 429},
+         %{global: true, retry_after: retry_after},
+         %{name: name} = state
+       ) do
+    warn("Globally rate limited! (#{retry_after}ms)", state)
 
-              %{global: false, reset_after: reset_after} ->
-                warn("Locally rate limited! (#{reset_after}ms)", state)
+    # Notify all other handlers that a global rate limite was encountered
+    Global.set_retry_after(name, retry_after)
 
-                reset_after
-            end
+    Process.sleep(retry_after)
+    # Try again
+    do_request(message, state)
+  end
 
-          Process.sleep(wait_time)
+  defp handle_response(
+         message,
+         %{status_code: 429},
+         %{global: false, reset_after: reset_after},
+         state
+       ) do
+    warn("Locally rate limited! (#{reset_after}ms)", state)
 
-          # Try again
-          do_request(message, state)
-        else
-          new_state = %{
-            state
-            | bucket_hash: rl_headers[:bucket],
-              rl_info: to_info(rl_headers)
-          }
+    Process.sleep(reset_after)
+    # Try again
+    do_request(message, state)
+  end
 
-          if rl_headers[:remaining] != 0 do
-            {:ok, tuple, new_state}
-          else
-            {:ok, tuple, new_state, rl_headers.reset_after}
-          end
-        end
+  defp handle_response(
+         _message,
+         response,
+         rl_headers,
+         state
+       ) do
+    new_state = %{
+      state
+      | bucket_hash: rl_headers[:bucket],
+        rl_info: to_info(rl_headers)
+    }
+
+    if rl_headers[:remaining] != 0 do
+      {:ok, {:ok, response}, new_state}
+    else
+      {:ok, {:ok, response}, new_state, rl_headers.reset_after}
     end
   end
 
@@ -213,35 +237,43 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
   # Gets all rate limited related headers
   defp get_rate_limit_values(headers) do
-    Enum.reduce(headers, %{global: false}, fn
-      {"x-ratelimit-global", value}, acc ->
-        Map.put(acc, :global, value == "true")
+    Enum.reduce(headers, %{global: false}, &reduce_rate_limit_header/2)
+  end
 
-      {"x-ratelimit-limit", value}, acc ->
-        Map.put(acc, :limit, String.to_integer(value))
+  defp reduce_rate_limit_header({"x-ratelimit-global", value}, acc) do
+    Map.put(acc, :global, value == "true")
+  end
 
-      {"x-ratelimit-remaining", value}, acc ->
-        Map.put(acc, :remaining, String.to_integer(value))
+  defp reduce_rate_limit_header({"x-ratelimit-limit", value}, acc) do
+    Map.put(acc, :limit, String.to_integer(value))
+  end
 
-      {"x-ratelimit-reset", value}, acc ->
-        # s to ms
-        reset = trunc(String.to_float(value) * 1000)
-        Map.put(acc, :reset, reset)
+  defp reduce_rate_limit_header({"x-ratelimit-remaining", value}, acc) do
+    Map.put(acc, :remaining, String.to_integer(value))
+  end
 
-      {"x-ratelimit-reset-after", value}, acc ->
-        # s to ms
-        reset_after = trunc(String.to_float(value) * 1000)
-        Map.put(acc, :reset_after, reset_after)
+  defp reduce_rate_limit_header({"x-ratelimit-reset", value}, acc) do
+    # s to ms
+    reset = trunc(String.to_float(value) * 1000)
+    Map.put(acc, :reset, reset)
+  end
 
-      {"x-ratelimit-bucket", value}, acc ->
-        Map.put(acc, :bucket, value)
+  defp reduce_rate_limit_header({"x-ratelimit-reset-after", value}, acc) do
+    # s to ms
+    reset_after = trunc(String.to_float(value) * 1000)
+    Map.put(acc, :reset_after, reset_after)
+  end
 
-      {"retry-after", value}, acc ->
-        Map.put(acc, :retry_after, String.to_integer(value))
+  defp reduce_rate_limit_header({"x-ratelimit-bucket", value}, acc) do
+    Map.put(acc, :bucket, value)
+  end
 
-      _tuple, acc ->
-        acc
-    end)
+  defp reduce_rate_limit_header({"retry-after", value}, acc) do
+    Map.put(acc, :retry_after, String.to_integer(value))
+  end
+
+  defp reduce_rate_limit_header(_tuple, acc) do
+    acc
   end
 
   # Gets the throttling related headers
