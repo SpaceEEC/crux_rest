@@ -1,7 +1,6 @@
 defmodule Crux.Rest.HTTP do
-  @moduledoc """
-  Behavior module executing requests and returning potentially normalized data.
-  """
+  @moduledoc false
+  # Behavior module executing requests and returning potentially normalized data.
   @moduledoc since: "0.3.0"
 
   alias Crux.Rest.{ApiError, Request}

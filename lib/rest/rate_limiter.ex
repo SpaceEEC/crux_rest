@@ -1,7 +1,6 @@
 defmodule Crux.Rest.RateLimiter do
-  @moduledoc """
-  Behavior module handling rate limitting and preemptive throttling which the Discord API expects.
-  """
+  @moduledoc false
+  # Behavior module handling rate limitting and preemptive throttling which the Discord API expects.
   @moduledoc since: "0.3.0"
 
   alias Crux.Rest.{HTTP, Request}

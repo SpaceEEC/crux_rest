@@ -33,7 +33,7 @@ defmodule Crux.Rest.Request do
   ]
 
   @typedoc """
-  * `:method` HTTP method to use
+  * `:method` HTTP verb to use
   * `:route` Used to group requests pre buckets
   * `:path` URL path
   * `:version` Discord REST API version to use
@@ -148,7 +148,7 @@ defmodule Crux.Rest.Request do
   end
 
   @doc """
-  Transforms the given data to the expected value for the given `t:#{__MODULE__}.t/0`.
+  Transforms the given data to the expected value for the given `t:t/0`.
   """
   @doc since: "0.2.0"
   @spec transform(t(), data :: term()) :: term()
