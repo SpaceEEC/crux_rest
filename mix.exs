@@ -35,7 +35,10 @@ defmodule Crux.Rest.MixProject do
   end
 
   def application do
-    [extra_applications: [:logger]]
+    [
+      mod: {Crux.Rest.Test, []},
+      extra_applications: [:logger]
+    ]
   end
 
   defp deps do
@@ -44,6 +47,7 @@ defmodule Crux.Rest.MixProject do
       {:crux_structs, path: "../crux_structs"},
       {:httpoison, "~> 1.6"},
       {:jason, "~> 1.1"},
+      # {:ex_doc, path: "../../ex_doc", only: :dev, runtime: false},
       {:ex_doc,
        git: "https://github.com/spaceeec/ex_doc", branch: "fork", only: :dev, runtime: false},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
@@ -72,7 +76,8 @@ defmodule Crux.Rest.MixProject do
         Integration: &(&1[:section] == :integration),
         Webhook: &(&1[:section] == :webhook),
         Voice: &(&1[:section] == :voice),
-        Gateway: &(&1[:section] == :gateway)
+        Gateway: &(&1[:section] == :gateway),
+        OAuth2: &(&1[:section] == :oauth2)
       ],
       markdown_processor_options: [breaks: true],
       formatter: "html"

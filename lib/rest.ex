@@ -147,12 +147,14 @@ defmodule Crux.Rest do
     @typedoc """
     Used to create or replace overwrites when creating or editing a channel or a single overwrite.
 
+    If you specify an `id` as `:id`, `:type` is required.
+
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#overwrite-object).
     """
     @typedoc since: "0.3.0"
     @type overwrite_options ::
             %{
-              optional(:id) => User.id_resolvable() | Role.id_resolvable(),
+              required(:id) => User.id_resolvable() | Role.id_resolvable(),
               optional(:allow) => Permissions.resolvable(),
               optional(:deny) => Permissions.resolvable(),
               optional(:type) => member_or_role :: String.t()
@@ -163,6 +165,7 @@ defmodule Crux.Rest do
                 | {:deny, Permissions.resolvable()}
                 | {:type, member_or_role :: String.t()}
               ]
+            | Overwrite.t()
 
     @typedoc """
     Used to create or edit a channel using respectively `c:create_channel/2` or `c:modify_channel/2`.
@@ -192,7 +195,7 @@ defmodule Crux.Rest do
               optional(:rate_limit_per_user) => 0..21_600,
               optional(:bitrate) => 8_000..96_000 | 8_000..128_000,
               optional(:user_limit) => 0..99,
-              optional(:permission_overwrites) => overwrite_options(),
+              optional(:permission_overwrites) => [overwrite_options()],
               optional(:parent_id) => Channel.id_resolvable(),
               optional(:reason) => String.t() | nil
             }
@@ -205,7 +208,7 @@ defmodule Crux.Rest do
                 | {:rate_limit_per_user, 0..21_600}
                 | {:bitrate, 8_000..96_000 | 8_000..128_000}
                 | {:user_limit, 0..99}
-                | {:permission_overwrites, overwrite_options()}
+                | {:permission_overwrites, [overwrite_options()]}
                 | {:parent_id, Channel.id_resolvable()}
                 | {:reason, String.t() | nil}
               ]
@@ -386,13 +389,13 @@ defmodule Crux.Rest do
     ## Examples
 
     Example for a simple text file:
-    `{<<104, 101, 108, 108, 111>>, "hello.txt"}`
+    `{<<104, 101, 108, 108, 111>>, "hello.txt"}` equivalent to `{"hello", "hello.txt"}`
 
     Example for an image file:
     `{File.read!("/path/to/image.png"), "image.png"}`
     """
     @typedoc since: "0.3.0"
-    @type file_options :: {filename :: String.t(), data :: binary()}
+    @type file_options :: {data :: binary(), filename :: String.t()}
 
     @typedoc """
     Used to post messages to a channel by using `c:create_message/2,3`.
@@ -475,9 +478,10 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     @doc """
-    Delete a user from a reaction, if it's last user, the reaction as whole.
+    Delete a user from a reaction, if its last user, the reaction as whole.
+    If deleting another user's reaction, this operation requires the `manage_messages` permissions.
 
-    To delete the reaction from the  current user use `"@me"` as user.
+    To delete the reaction from the current user use `"@me"` as user.
 
     For more information see the Discord Developer Documentation: [`"@me"`](https://discordapp.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discordapp.com/developers/docs/resources/channel#delete-user-reaction).
     """
@@ -491,9 +495,10 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     @doc """
-    Delete a user from a reaction, if it's last user, the reaction as whole.
+    Delete a user from a reaction, if its last user, the reaction as whole.
+    If deleting another user's reaction, this operation requires the `manage_messages` permissions.
 
-    To delete the reaction from the  current user use `"@me"` as user.
+    To delete the reaction from the current user use `"@me"` as user.
 
     For more information see the Discord Developer Documentation: [`"@me"`](https://discordapp.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discordapp.com/developers/docs/resources/channel#delete-user-reaction).
     """
@@ -601,6 +606,7 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :reaction
+    # Shortcut
     @callback delete_all_reactions_for_emoji(
                 message :: Message.t(),
                 emoji :: Emoji.identifier_resolvable()
@@ -617,7 +623,8 @@ defmodule Crux.Rest do
     @type modify_message_options :: %{
             optional(:content) => String.t(),
             optional(:embed) => Embed.t() | embed_options(),
-            optional(:flags) => integer()
+            optional(:flags) => integer(),
+            optional(:allowed_mentions) => allowed_mentions_options()
           }
 
     @doc """
@@ -771,7 +778,7 @@ defmodule Crux.Rest do
     @doc section: :channel
     @callback delete_channel_overwrite(
                 channel :: Channel.id_resolvable(),
-                target :: Overwrite.id_resolvable(),
+                overwrite :: User.id_resolvable() | Role.id_resolvable(),
                 reason :: String.t() | nil
               ) :: api_result()
 
@@ -917,6 +924,8 @@ defmodule Crux.Rest do
 
     Or a tuple of `{extension, data}`.
     Example: `{"jpeg", JPEG_IMAGE_BINARY}`
+
+    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/reference#image-data).
     """
     @typedoc since: "0.3.0"
     @type image_options :: String.t() | {extension :: String.t(), data :: binary()}
@@ -1726,7 +1735,8 @@ defmodule Crux.Rest do
     @typedoc since: "0.3.0"
     @type create_integration_options :: %{
             required(:type) => String.t(),
-            required(:id) => Snowflake.resolvable()
+            required(:id) => Snowflake.resolvable(),
+            optional(:reason) => String.t() | nil
           }
 
     @doc """
@@ -1751,7 +1761,8 @@ defmodule Crux.Rest do
     @type modify_integration_options :: %{
             optional(:expire_behavior) => 0..1,
             optional(:expire_grace_period) => integer(),
-            optional(:enable_emoticons) => boolean()
+            optional(:enable_emoticons) => boolean(),
+            optional(:reason) => String.t() | nil
           }
 
     @doc """
@@ -1765,7 +1776,7 @@ defmodule Crux.Rest do
     @callback modify_integration(
                 guild :: Guild.id_resolvable(),
                 integration :: Integration.id_resolvable(),
-                options :: modify_integration_options()
+                opts :: modify_integration_options()
               ) :: api_result()
 
     @doc """
@@ -1778,7 +1789,8 @@ defmodule Crux.Rest do
     @doc section: :integration
     @callback delete_integration(
                 guild :: Guild.id_resolvable(),
-                integration :: Integration.id_resolvable()
+                integration :: Integration.id_resolvable(),
+                reason :: String.t() | nil
               ) :: api_result()
 
     @doc """
@@ -1820,8 +1832,17 @@ defmodule Crux.Rest do
     @doc section: :guild
     @callback modify_guild_embed(
                 guild :: Guild.id_resolvable(),
-                data :: guild_embed(),
-                reason :: String.t() | nil
+                data ::
+                  %{
+                    optional(:reason) => String.t() | nil,
+                    enabled: boolean(),
+                    channel_id: Channel.id_resolvable() | nil
+                  }
+                  | [
+                      {:enabled, boolean()}
+                      | {:channel_id, Channel.id_resolvable() | nil}
+                      | {:reason, String.t() | nil}
+                    ]
               ) :: api_result(guild_embed())
 
     @doc """
@@ -1829,7 +1850,7 @@ defmodule Crux.Rest do
     This operation requires the `manage_guild` permission.
 
     ## Notes
-    - `:code` will be nil if no vanotiy invite is set.
+    - `:code` will be nil if no vanity invite is set.
     - `:code` is only the code, not the full url.
     - The operation will fail if the guild is not eligible to set a vanity invite.
 
@@ -2065,7 +2086,7 @@ defmodule Crux.Rest do
     """
     @doc since: "0.2.0"
     @doc section: :webhook
-    @callback get_webhooks(guild :: Guild.id_resolvable()) ::
+    @callback get_guild_webhooks(guild :: Guild.id_resolvable()) ::
                 api_result(snowflake_map(Webhook.t()))
 
     @doc """
@@ -2148,21 +2169,17 @@ defmodule Crux.Rest do
 
     @doc """
     Delete a webhook.
-    This operation requires the `manage_Webhooks` permission.
+    If not using a token, this operation requires the `manage_webhooks` permission.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#delete-webhook).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
-    @callback delete_webhook(webhook :: Webhook.id_resolvable()) :: api_result()
+    @callback delete_webhook(
+                webhook :: Webhook.id_resolvable(),
+                opts :: %{optional(:reason) => String.t() | nil} | [{:reason, String.t() | nil}]
+              ) :: api_result()
 
-    @doc """
-    Delete a webhook.
-
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#delete-webhook-with-token).
-    """
-    @doc since: "0.3.0"
-    @doc section: :webhook
     @callback delete_webhook(webhook :: Webhook.id_resolvable(), token :: String.t()) ::
                 api_result()
 
@@ -2208,7 +2225,7 @@ defmodule Crux.Rest do
               ]
 
     @doc """
-    Sends a message using a webhook.
+    Send a message using a webhook.
 
     Note that only a message sent using the `:discord` `:type` that was `:wait`ed for will return a `t:Message.t/0`.
 
@@ -2225,7 +2242,7 @@ defmodule Crux.Rest do
               ) :: api_result() | api_result(Message.t())
 
     @doc """
-    Sends a message using a webhook.
+    Send a message using a webhook.
 
     Note that only a message sent using the `:discord` `:type` that was `:wait`ed for will return a `t:Message.t/0`.
 
@@ -2248,18 +2265,18 @@ defmodule Crux.Rest do
     ### Gateway
 
     @doc """
-      Get the currently valid WSS URL.
+    Get the currently valid WSS URL.
 
-      For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
+    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
     """
     @doc since: "0.3.0"
     @doc section: :gateway
     @callback get_gateway() :: api_result(%{url: String.t()})
 
     @doc """
-      Get the currently valid WSS URL and additional metadata.
+    Get the currently valid WSS URL and additional metadata.
 
-      For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
+    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
     """
     @doc since: "0.3.0"
     @doc section: :gateway
@@ -2275,6 +2292,54 @@ defmodule Crux.Rest do
                 })
 
     ### Gateway END
+
+    ### OAuth2
+
+    @typedoc """
+    An oauth2 application object.
+
+    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information-response-structure).
+    """
+    @typedoc since: "0.3.0"
+    @type oauth2_application :: %{
+            optional(:rpc_origins) => [String.t()],
+            optional(:guild_id) => Snowflake.t() | nil,
+            optional(:primary_sku_id) => Snowflake.t() | nil,
+            optional(:slug) => String.t() | nil,
+            optional(:cover_image) => String.t() | nil,
+            id: Snowflake.t(),
+            name: String.t(),
+            icon: String.t() | nil,
+            description: String.t(),
+            bot_public: boolean(),
+            bot_require_code_grant: boolean(),
+            owner: User.t(),
+            summary: String.t(),
+            verify_key: String.t(),
+            team: %{
+              icon: String.t() | nil,
+              id: Snowflake.t(),
+              members:
+                snowflake_map(%{
+                  membership_state: integer(),
+                  permissions: [String.t()],
+                  team_id: Snowflake.t(),
+                  user: User.t()
+                }),
+              owner_user_id: Snowflake.t()
+            }
+          }
+
+    @doc """
+    Get the currently logged in user's oauth2 application info.
+
+    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information).
+    """
+    @doc since: "0.3.0"
+    @doc section: :oauth2
+    @callback get_current_application() :: api_result(oauth2_application())
+
+    ### OAuth2 END
     # bangify end
   end
 end
