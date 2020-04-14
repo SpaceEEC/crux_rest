@@ -35,10 +35,7 @@ defmodule Crux.Rest.MixProject do
   end
 
   def application do
-    [
-      mod: {Crux.Rest.Test, []},
-      extra_applications: [:logger]
-    ]
+    [extra_applications: [:logger]]
   end
 
   defp deps do
