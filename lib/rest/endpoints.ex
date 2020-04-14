@@ -44,11 +44,11 @@ defmodule Crux.Rest.Endpoints do
       end
     end
 
-    route("/permissions")
+    route("/permissions/:overwrite_id")
 
     route("/pins/:message_id")
 
-    route("/typings")
+    route("/typing")
     route("/webhooks")
   end
 
@@ -56,11 +56,11 @@ defmodule Crux.Rest.Endpoints do
 
   route "/guilds/:guild_id" do
     route("/audit-logs")
-    route("/bans")
+    route("/bans/:member_id")
     route("/channels")
     route("/embed")
-    route("/emojis")
-    route("/integrations")
+    route("/emojis/:emoji_id")
+    route("/integrations/:integration_id/sync")
     route("/invites")
 
     route "/members" do
@@ -72,11 +72,14 @@ defmodule Crux.Rest.Endpoints do
     route("/preview")
     route("/prune")
     route("/regions")
-    route("/roles")
+    route("/roles/:role_id")
+    route("/vanity-url")
     route("/webhooks")
   end
 
   route("/invites/:code")
+
+  route("/oauth2/applictions/@me")
 
   route "/users" do
     route "/@me" do
@@ -87,10 +90,10 @@ defmodule Crux.Rest.Endpoints do
     route("/:user_id")
   end
 
+  route("/voice/regions")
+
   route "/webhooks/:webhook_id/:token" do
     route("/github")
     route("/slack")
   end
-
-  route("/oauth2/applictions/@me")
 end
