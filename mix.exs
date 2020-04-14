@@ -91,9 +91,8 @@ defmodule Crux.Rest.MixProject do
 
     config = "var versionNodes = " <> config
 
-    __ENV__.file
+    __DIR__
     |> Path.split()
-    |> Enum.slice(0..-2)
     |> Kernel.++(["doc", "docs_config.js"])
     |> Enum.join("/")
     |> File.write!(config)
