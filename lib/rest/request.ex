@@ -79,7 +79,7 @@ defmodule Crux.Rest.Request do
   def new(method, path, data \\ "")
 
   def new(method, path, data)
-      when method in @methods do
+      when is_binary(path) and method in @methods do
     %__MODULE__{
       method: method,
       route: get_route(path),
@@ -145,6 +145,14 @@ defmodule Crux.Rest.Request do
       when is_nil(version)
       when is_integer(version) do
     %{t | version: version}
+  end
+
+  @doc false
+  @doc since: "0.3.0"
+  @spec put_auth(t(), boolean()) :: t()
+  def put_auth(%__MODULE__{} = t, auth)
+      when is_boolean(auth) do
+    %{t | auth: auth}
   end
 
   @doc """

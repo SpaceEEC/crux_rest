@@ -58,6 +58,12 @@ defmodule Crux.Rest.RequestTests do
         Request.new(:path, "/gateway")
       end
     end
+
+    test "fails with invalid path" do
+      assert_raise FunctionClauseError, fn ->
+        Request.new(:get, :path)
+      end
+    end
   end
 
   describe "put_headers/2" do
@@ -85,7 +91,7 @@ defmodule Crux.Rest.RequestTests do
     end
   end
 
-  describe "put_params2" do
+  describe "put_params/2" do
     test "works", %{request: request} do
       assert nil == request.params
 
@@ -201,6 +207,30 @@ defmodule Crux.Rest.RequestTests do
     test "invalid values fail", %{request: request} do
       assert_raise FunctionClauseError, fn ->
         Request.put_version(request, %{})
+      end
+    end
+  end
+
+  describe "put_auth/2" do
+    test "false", %{request: request} do
+      assert request.auth == true
+
+      %{auth: auth} = Request.put_auth(request, false)
+
+      assert auth == false
+    end
+
+    test "true", %{request: request} do
+      assert request.auth == true
+
+      %{auth: auth} = Request.put_auth(request, true)
+
+      assert auth == true
+    end
+
+    test "invalid values fail", %{request: request} do
+      assert_raise FunctionClauseError, fn ->
+        Request.put_auth(request, 1)
       end
     end
   end
