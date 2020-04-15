@@ -10,7 +10,7 @@ defmodule Crux.Rest.CDN do
   Specifies the file type / extension and size of the resource url to generate.
 
   Notes:
-  * `:size` has to be any power of two between 16 and 2048
+  * `:size` has to be any power of two between 16 and 4096
   * `:extension` has to be one of "jpg", "jpeg", "png", "webp", "gif"
   * `:animated` whether to keep "gif" if the resource is animated regardless of `:extension`
   * See the docs of each function for information what sizes / extensions are valid there.
