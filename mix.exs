@@ -40,13 +40,11 @@ defmodule Crux.Rest.MixProject do
 
   defp deps do
     [
-      # {:crux_structs, "~> 0.2"},
-      {:crux_structs, path: "../crux_structs"},
+      {:crux_structs, "~> 0.2"},
       {:httpoison, "~> 1.6"},
       {:jason, "~> 1.1"},
       # {:ex_doc, path: "../../ex_doc", only: :dev, runtime: false},
-      {:ex_doc,
-       git: "https://github.com/spaceeec/ex_doc", branch: "fork", only: :dev, runtime: false},
+      {:ex_doc, github: "spaceeec/ex_doc", branch: "fork", only: :dev, runtime: false},
       {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
       {:mox, "~> 0.5", only: :test}
     ]
