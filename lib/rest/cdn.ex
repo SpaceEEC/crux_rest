@@ -313,7 +313,7 @@ defmodule Crux.Rest.CDN do
   end
 
   @doc """
-  Generates a url to a user.
+  Generates a url to a user avatar.
 
   If the user has no custom avatar, this will return a default one with the extension "png".
 
@@ -355,6 +355,80 @@ defmodule Crux.Rest.CDN do
   def user_avatar(%{id: id, avatar: avatar}, options) do
     extension = get_extension(avatar, options[:animated], options[:extension])
     url = "#{@base_url}/avatars/#{id}/#{avatar}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  @doc """
+  Generates a url to an application icon.
+
+  ```elixir
+  # A map with an icon
+  iex> %{id: 560524012627820547, icon: "cb861044ce722df3e5a9547a2a012a04"}
+  ...> |> Crux.Rest.CDN.application_icon()
+  "#{@base_url}/app-icons/560524012627820547/cb861044ce722df3e5a9547a2a012a04.webp"
+
+  # With format options
+  iex> %{id: 560524012627820547, icon: "cb861044ce722df3e5a9547a2a012a04"}
+  ...> |> Crux.Rest.CDN.application_icon(extension: "png", size: 2048)
+  "#{@base_url}/app-icons/560524012627820547/cb861044ce722df3e5a9547a2a012a04.png?size=2048"
+
+  # A map without an icon
+  iex> %{id: 560524012627820547, icon: nil}
+  ...> |> Crux.Rest.CDN.application_icon()
+  nil
+
+  ```
+  """
+  @spec application_icon(
+          application :: %{icon: String.t() | nil, id: Snowflake.t()},
+          format_options
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def application_icon(application, options \\ [])
+
+  def application_icon(%{icon: nil}, _options), do: nil
+
+  def application_icon(%{id: id, icon: icon}, options) do
+    extension = get_extension(icon, options[:animated], options[:extension])
+    url = "#{@base_url}/app-icons/#{id}/#{icon}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  @doc """
+  Generates a url to a team icon.
+
+  ```elixir
+  # A map with an icon
+  iex> %{id: 701002408041512991, icon: "cb861044ce722df3e5a9547a2a012a04"}
+  ...> |> Crux.Rest.CDN.team_icon()
+  "#{@base_url}/team-icons/701002408041512991/cb861044ce722df3e5a9547a2a012a04.webp"
+
+  # With format options
+  iex> %{id: 701002408041512991, icon: "cb861044ce722df3e5a9547a2a012a04"}
+  ...> |> Crux.Rest.CDN.team_icon(extension: "png", size: 2048)
+  "#{@base_url}/team-icons/701002408041512991/cb861044ce722df3e5a9547a2a012a04.png?size=2048"
+
+  # A map without an icon
+  iex> %{id: 701002408041512991, icon: nil}
+  ...> |> Crux.Rest.CDN.team_icon()
+  nil
+
+  ```
+  """
+  @spec team_icon(
+          team :: %{icon: String.t() | nil, id: Snowflake.t()},
+          format_options
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def team_icon(team, options \\ [])
+
+  def team_icon(%{icon: nil}, _options), do: nil
+
+  def team_icon(%{id: id, icon: icon}, options) do
+    extension = get_extension(icon, options[:animated], options[:extension])
+    url = "#{@base_url}/team-icons/#{id}/#{icon}.#{extension}"
 
     append_size(url, options[:size])
   end
