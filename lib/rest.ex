@@ -238,8 +238,10 @@ defmodule Crux.Rest do
     """
     @doc since: "0.2.0"
     @doc section: :channel
-    @callback delete_channel(channel :: Channel.id_resolvable(), reason: String.t()) ::
-                api_result(Channel.t())
+    @callback delete_channel(
+                channel :: Channel.id_resolvable(),
+                reason :: String.t()
+              ) :: api_result(Channel.t())
 
     @typedoc """
     Used to filter or limit messages obtained by using `c:get_messages/2`.
@@ -962,7 +964,7 @@ defmodule Crux.Rest do
               ) :: api_result(Emoji.t())
 
     @typedoc """
-    Used to edit an emoji using `t:modify_emoji/3`.
+    Used to edit an emoji using `c:modify_emoji/3`.
     """
     @typedoc since: "0.3.0"
     @type modify_emoji_options ::
@@ -1235,7 +1237,7 @@ defmodule Crux.Rest do
               ) :: api_result(snowflake_map(Member.t()))
 
     @typedoc """
-    Used to add a member to a guild using `c:add_member/3`.
+    Used to add a member to a guild using `c:create_member/3`.
 
     ## Notes
     - `:access_token` must have been granted the `guilds.join` scope.
@@ -1276,7 +1278,7 @@ defmodule Crux.Rest do
 
     ## Notes
     - `:nick` if provided, requires the `manage_nicknames` permission.
-    **Do not use this for the current user**, use `c:modify_current_user_nick/2` instead.
+    **Do not use this for the current user**, use `c:modify_current_user_nick/3` instead.
     No, this is not a joke.
     - `:roles` if provided, requires the `manage_roles` permission.
     - `:mute` if provided, requires the `mute_members` permission.
@@ -1753,7 +1755,7 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     @typedoc """
-    Used to edit an integration used by `c:modify_integration/2`.
+    Used to edit an integration used by `c:modify_integration/3`.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-integration-json-params).
     """
@@ -1910,7 +1912,7 @@ defmodule Crux.Rest do
     @doc """
     Get the currently logged in user.
 
-    Note that the oauth2 part of this endpoint's documentation does not apply to bots.
+    Note that the OAuth2 part of this endpoint's documentation does not apply to bots.
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-current-user).
     """
     @doc since: "0.2.1"
@@ -1980,7 +1982,7 @@ defmodule Crux.Rest do
     - `:owner`
     - `:permissions` - permissions of the currently logged in user
 
-    Note that the oauth2 part of this endpoint's documentation does not apply to bots.
+    Note that the OAuth2 part of this endpoint's documentation does not apply to bots.
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-current-user-guilds).
     """
     @doc since: "0.2.0"
@@ -2296,7 +2298,7 @@ defmodule Crux.Rest do
     ### OAuth2
 
     @typedoc """
-    An oauth2 application object.
+    An OAuth2 application object.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information-response-structure).
     """
@@ -2331,7 +2333,7 @@ defmodule Crux.Rest do
           }
 
     @doc """
-    Get the currently logged in user's oauth2 application info.
+    Get the currently logged in user's OAuth2 application info.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information).
     """
