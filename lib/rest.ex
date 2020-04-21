@@ -2190,6 +2190,7 @@ defmodule Crux.Rest do
 
     ## Notes
     - `:type` what kind of flavor to use, defaults to `:discord`
+    - `:event` only applies to the type `:github`
     - `:wait` whether to wait for the server to confirm that the message was sent, defaults to `true`
     - `:files` has a maximum of 10
     - `:embeds` has a maximum of 10
@@ -2205,6 +2206,7 @@ defmodule Crux.Rest do
     @type create_webhook_message_options ::
             %{
               optional(:type) => :discord | :slack | :github | String.t(),
+              optional(:event) => String.t(),
               optional(:wait) => boolean(),
               optional(:content) => String.t(),
               optional(:username) => String.t(),
@@ -2216,6 +2218,7 @@ defmodule Crux.Rest do
             }
             | [
                 {:type, :discord | :slack | :github | String.t()}
+                | {:event, String.t()}
                 | {:wait, boolean()}
                 | {:content, String.t()}
                 | {:username, String.t()}
