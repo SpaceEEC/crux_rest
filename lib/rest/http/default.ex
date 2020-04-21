@@ -29,7 +29,7 @@ defmodule Crux.Rest.HTTP.Default do
     end
   end
 
-  def request(_name, %Request{
+  def request(_opts, %Request{
         method: method,
         path: path,
         version: version,
@@ -46,7 +46,7 @@ defmodule Crux.Rest.HTTP.Default do
   end
 
   @spec request(Request.t()) :: :ok | {:ok, term()} | {:error, term()}
-  def request(_name, %Request{
+  def request(_opts, %Request{
         method: method,
         path: path,
         version: version,

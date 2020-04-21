@@ -20,6 +20,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
   defstruct [
     :name,
+    :opts,
     :type,
     :identifier,
     :bucket_hash,
@@ -60,6 +61,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   def init({opts, {type, identifier}}) do
     state = %__MODULE__{
       name: opts.name,
+      opts: opts,
       type: type,
       identifier: identifier
     }
@@ -147,13 +149,13 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     end
   end
 
-  defp do_request(%{http: http, request: request} = message, %{name: name} = state) do
+  defp do_request(%{http: http, request: request} = message, state) do
     # If globally rate limited, pause...
     wait_global(state)
 
     debug("Actually making request.", state)
 
-    case http.request(name, request) do
+    case http.request(state.opts, request) do
       {:error, error} = tuple ->
         warn("An error occured: #{inspect(error)}", state)
 

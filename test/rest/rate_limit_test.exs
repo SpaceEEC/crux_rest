@@ -12,7 +12,8 @@ defmodule Crux.Rest.RateLimiterTest do
   @name RateLimiterTest
 
   @opts %{
-    name: @name
+    name: @name,
+    token: "some_cool_token"
   }
 
   # To make mox global
@@ -102,7 +103,7 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -115,7 +116,7 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, 2, fn @name, _request ->
+      |> expect(:request, 2, fn @opts, _request ->
         success_response
       end)
 
@@ -130,10 +131,10 @@ defmodule Crux.Rest.RateLimiterTest do
       response_two = response(limit: 10, remaining: 8, reset: 4800)
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_one
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_two
       end)
 
@@ -150,10 +151,10 @@ defmodule Crux.Rest.RateLimiterTest do
       exhaust_response = response(remaining: 0, limit: 1, reset: 250)
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         exhaust_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -175,10 +176,10 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response(status: 429, limit: 1, remaining: 0, reset: 250)
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -196,10 +197,10 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response(global: true, status: 429, limit: 1, remaining: 0, reset: 250)
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -232,13 +233,13 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response(limit: 3, remaining: 2, reset: 450, bucket_hash: bucket_hash)
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         init_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         exhaust_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -264,13 +265,13 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         init_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response(status: 429, limit: 1, remaining: 0, reset: 250)
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -293,13 +294,13 @@ defmodule Crux.Rest.RateLimiterTest do
       success_response = response()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         init_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response(global: true, status: 429, limit: 1, remaining: 0, reset: 250)
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         success_response
       end)
 
@@ -333,7 +334,7 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response
       end)
 
@@ -353,10 +354,10 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_one
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_two
       end)
 
@@ -395,16 +396,16 @@ defmodule Crux.Rest.RateLimiterTest do
       request_two = request_two()
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_one
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_two
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_three
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         response_four
       end)
 
@@ -459,7 +460,7 @@ defmodule Crux.Rest.RateLimiterTest do
   describe "error handling" do
     test "request handler passes error back to as-is" do
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         {:error, :real_badarg}
       end)
 
@@ -472,10 +473,10 @@ defmodule Crux.Rest.RateLimiterTest do
       init_response = response(bucket_hash: bucket_hash)
 
       Crux.Rest.HTTPMock
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         init_response
       end)
-      |> expect(:request, fn @name, _request ->
+      |> expect(:request, fn @opts, _request ->
         {:error, :real_badarg}
       end)
 

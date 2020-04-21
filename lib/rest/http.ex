@@ -3,7 +3,7 @@ defmodule Crux.Rest.HTTP do
   # Behavior module executing requests and returning potentially normalized data.
   @moduledoc since: "0.3.0"
 
-  alias Crux.Rest.{ApiError, Request}
+  alias Crux.Rest.{ApiError, Opts, Request}
 
   @typedoc """
   A module implementing this behaviour, for example `Crux.Rest.HTTP.Default`.
@@ -28,8 +28,7 @@ defmodule Crux.Rest.HTTP do
   Executes a `t:Crux.Rest.Request.t/0`.
   """
   @doc since: "0.3.0"
-  # TODO: specify name
-  @callback request(name :: atom(), Request.t()) :: {:ok, response()} | {:error, term()}
+  @callback request(opts :: Opts.t(), Request.t()) :: {:ok, response()} | {:error, term()}
 
   @doc """
   Transforms a response map to the expected data.
