@@ -1542,7 +1542,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-roles).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     @callback get_roles(guild :: Guild.id_resolvable()) :: api_result(snowflake_map(Role.t()))
 
     @typedoc """
@@ -1576,7 +1576,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-role).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     @callback create_role(
                 guild :: Guild.id_resolvable(),
                 data :: role_options()
@@ -1605,7 +1605,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     @callback modify_role_positions(
                 guild :: Guild.id_resolvable(),
                 data :: modify_role_positions_options()
@@ -1618,7 +1618,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     @callback modify_role(
                 guild :: Guild.id_resolvable(),
                 role :: Role.id_resolvable(),
@@ -1632,7 +1632,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     # Shortcut
     @callback modify_role(
                 role :: Role.t(),
@@ -1646,7 +1646,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-role).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     @callback delete_role(
                 guild :: Guild.id_resolvable(),
                 role :: Role.id_resolvable(),
@@ -1660,7 +1660,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-role).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :role
     # Shortcut
     @callback delete_role(role :: Role.t(), reason :: String.t() | nil) :: api_result()
 

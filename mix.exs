@@ -65,6 +65,7 @@ defmodule Crux.Rest.MixProject do
         Reaction: &(&1[:section] == :reaction),
         Guild: &(&1[:section] == :guild),
         Member: &(&1[:section] == :member),
+        Role: &(&1[:section] == :role),
         Ban: &(&1[:section] == :ban),
         Invite: &(&1[:section] == :invite),
         Emoji: &(&1[:section] == :emoji),
