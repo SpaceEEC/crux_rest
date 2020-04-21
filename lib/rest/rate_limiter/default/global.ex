@@ -1,9 +1,6 @@
 defmodule Crux.Rest.RateLimiter.Default.Global do
   @moduledoc false
-  @moduledoc since: "0.3.0"
-
   # Module handling the global rate limit's retry after value.
-
   @moduledoc since: "0.3.0"
 
   alias Crux.Rest.Opts

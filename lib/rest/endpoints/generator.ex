@@ -1,30 +1,30 @@
 defmodule Crux.Rest.Endpoints.Generator do
   @moduledoc false
+  @moduledoc since: "0.3.0"
 
-  _moduledocp = """
-    Module used to generate endpoint functions via (nested) macros.
+  # Module used to generate endpoint functions via (nested) macros.
 
-    Example
+  # Example
 
-    defmodule Test do
-      use Crux.Rest.Endpoints.Generator
+  # defmodule Test do
+  #   use Crux.Rest.Endpoints.Generator
 
-      route "/foo/:foo_id"
+  #   route "/foo/:foo_id"
 
-      route "/bar" do
-        route "foo/:foo_id"
-      end
-    end
+  #   route "/bar" do
+  #     route "foo/:foo_id"
+  #   end
+  # end
 
 
-    Usage then
+  # Usage then
 
-    Test.foo() # "/foo"
-    Test.foo(123) # "/foo/123"
-    Test.bar() # "/bar"
-    Test.bar_foo() # "/bar/foo"
-    Test.bar_foo(123) # "/bar/foo/123"
-  """
+  # Test.foo() # "/foo"
+  # Test.foo(123) # "/foo/123"
+  # Test.bar() # "/bar"
+  # Test.bar_foo() # "/bar/foo"
+  # Test.bar_foo(123) # "/bar/foo/123"
+
 
   # Import this module, add relevant attributes, and define a before compile callback.
   defmacro __using__([]) do
