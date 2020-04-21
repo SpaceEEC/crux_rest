@@ -162,7 +162,6 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
         tuple
 
       {:ok, response} ->
-        nil
         rl_headers = get_rate_limit_values(response.headers)
 
         log_response(response, rl_headers, state)
