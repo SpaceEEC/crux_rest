@@ -99,7 +99,7 @@ defmodule Crux.Rest.Impl.Injector do
   ###
 
   @doc false
-  # There must be a better way to achieve this.any(
+  # There must be a better way to achieve this.
   # This is done instead of using :erlang.apply/3 to get compiler warnings if something is wrong.
   # Returns AST calling Crux.Rest.Impl.{{function}}({{...arguments}})
   defmacro call_impl(function, arguments)
