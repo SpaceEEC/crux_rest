@@ -74,12 +74,7 @@ defmodule Crux.Rest.Opts do
   Applies options to the request
   """
   @spec apply_options(request :: Request.t(), opts :: Opts.t()) :: Request.t()
-  def apply_options(
-        request,
-        %{
-          version: version
-        } = opts
-      ) do
+  def apply_options(request, %{version: version} = opts) do
     request
     |> apply_raw(opts)
     |> apply_auth(opts)
@@ -94,11 +89,11 @@ defmodule Crux.Rest.Opts do
     request
   end
 
-  defp apply_auth(request, %{token: token, auth: true}) do
+  defp apply_auth(%{auth: true} = request, %{token: token}) do
     Request.put_token(request, token)
   end
 
-  defp apply_auth(request, _opts) do
+  defp apply_auth(request, %{token: _token} = _opts) do
     request
   end
 

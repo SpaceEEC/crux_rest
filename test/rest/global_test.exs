@@ -3,7 +3,7 @@ defmodule Crux.Rest.RateLimiter.Default.GlobalTest do
 
   alias Crux.Rest.RateLimiter.Default.Global
 
-  @name GlobalTest
+  @name __MODULE__
 
   @opts %{
     name: @name
