@@ -7,7 +7,8 @@ defmodule Crux.Rest.HTTP.Default do
   alias Crux.Rest.{HTTP, Opts, Request}
   alias HTTP.Default.Impl
 
-  @spec request(opts :: Opts.t(), request :: Request.t()) :: {:ok, HTTP.response()} | {:error, term()}
+  @spec request(opts :: Opts.t(), request :: Request.t()) ::
+          {:ok, HTTP.response()} | {:error, term()}
   def request(%{} = opts, %Request{} = request) do
     request
     |> Opts.apply_options(opts)

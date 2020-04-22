@@ -226,8 +226,8 @@ defmodule Crux.Rest.Impl.Resolver do
         {name, attachment, disposition, headers}
       end)
 
+    # If opts contains more than files, prepend payload_json
     form_data =
-      # If opts contains more than files, prepend payload_json
       if map_size(opts) > 1 do
         payload_json =
           opts

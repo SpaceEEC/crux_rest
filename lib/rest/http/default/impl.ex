@@ -11,7 +11,7 @@ defmodule Crux.Rest.HTTP.Default.Impl do
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
 
-def process_request_body(""), do: ""
+  def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
   def process_request_body(body), do: Jason.encode!(body)
 
@@ -30,13 +30,13 @@ def process_request_body(""), do: ""
   end
 
   def do_request(%Request{
-         method: method,
-         path: path,
-         version: version,
-         data: data,
-         headers: headers,
-         params: nil
-       }) do
+        method: method,
+        path: path,
+        version: version,
+        data: data,
+        headers: headers,
+        params: nil
+      }) do
     request(%HTTPoison.Request{
       method: method,
       url: get_url(path, version),
@@ -46,13 +46,13 @@ def process_request_body(""), do: ""
   end
 
   def do_request(%Request{
-         method: method,
-         path: path,
-         version: version,
-         data: data,
-         headers: headers,
-         params: params
-       }) do
+        method: method,
+        path: path,
+        version: version,
+        data: data,
+        headers: headers,
+        params: params
+      }) do
     request(%HTTPoison.Request{
       method: method,
       url: get_url(path, version),
