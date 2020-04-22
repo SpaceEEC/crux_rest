@@ -19,12 +19,14 @@ defmodule Crux.Rest.Opts do
           version: integer() | nil
         }
 
+  # The dialyzer REALLY dislikes Opts.t() as the return value here for whatever reason...
+  # credo:disable-for-next-line Credo.Check.Readability.Specs
   def transform(%{} = data) do
     opts = struct(__MODULE__, data)
 
     :ok = validate(opts)
 
-    %__MODULE__{} = opts
+    opts
   end
 
   # Validates the given options, raises an argument error if invalid.
@@ -72,26 +74,32 @@ defmodule Crux.Rest.Opts do
   Applies options to the request
   """
   @spec apply_options(request :: Request.t(), opts :: Opts.t()) :: Request.t()
-  def apply_options(%{auth: auth} = request, %{
-        raw: raw,
-        version: version,
-        token: token
-      }) do
-    request =
-      if raw do
-        Request.put_transform(request, nil)
-      else
-        request
-      end
+  def apply_options(
+        request,
+        %{
+          version: version
+        } = opts
+      ) do
+    request
+    |> apply_raw(opts)
+    |> apply_auth(opts)
+    |> Request.put_version(version)
+  end
 
-    request =
-      if auth do
-        Request.put_token(request, token)
-      else
-        request
-      end
+  defp apply_raw(request, %{raw: true}) do
+    Request.put_transform(request, nil)
+  end
 
-    Request.put_version(request, version)
+  defp apply_raw(request, _opts) do
+    request
+  end
+
+  defp apply_auth(request, %{token: token, auth: true}) do
+    Request.put_token(request, token)
+  end
+
+  defp apply_auth(request, _opts) do
+    request
   end
 
   @spec global(atom) :: atom

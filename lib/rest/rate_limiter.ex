@@ -6,7 +6,6 @@ defmodule Crux.Rest.RateLimiter do
   alias Crux.Rest.{HTTP, Request}
 
   @callback request(
-              # TODO: specify this
               name :: atom(),
               request :: Request.t(),
               http :: HTTP.t()

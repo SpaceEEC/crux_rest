@@ -1,3 +1,4 @@
+# credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule Crux.Rest.HTTP.Default.Impl do
   @moduledoc false
   @moduledoc since: "0.3.0"
@@ -10,8 +11,7 @@ defmodule Crux.Rest.HTTP.Default.Impl do
   # https://github.com/edgurgel/httpoison
   use HTTPoison.Base
 
-  # credo:disable-for-lines:40 Credo.Check.Readability.Specs
-  def process_request_body(""), do: ""
+def process_request_body(""), do: ""
   def process_request_body({:multipart, _} = body), do: body
   def process_request_body(body), do: Jason.encode!(body)
 

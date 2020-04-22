@@ -1303,9 +1303,7 @@ defmodule Crux.Rest.Impl do
 
   def create_webhook_message(webhook, token, opts)
       when not is_map(opts) do
-    opts = opts |> Map.new()
-
-    create_webhook_message(webhook, token, opts)
+    create_webhook_message(webhook, token, Map.new(opts))
   end
 
   def create_webhook_message(webhook, token, opts)
@@ -1322,19 +1320,9 @@ defmodule Crux.Rest.Impl do
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
       |> Resolver.resolve_files()
 
-    path =
-      case type do
-        :github ->
-          Endpoints.webhooks_github(webhook_id, token)
+    path = webhook_path_from_type(type, webhook_id, token)
 
-        :slack ->
-          Endpoints.webhooks_slack(webhook_id, token)
-
-        thing when thing in [nil, :discord] ->
-          Endpoints.webhooks(webhook_id, token)
-      end
-
-    headers =
+    headers2 =
       if type == :github and event do
         [{"x-github-event", event} | headers]
       else
@@ -1344,7 +1332,20 @@ defmodule Crux.Rest.Impl do
     :post
     |> Request.new(path, data)
     |> Request.put_params(wait: wait)
-    |> Request.put_headers(headers)
+    |> Request.put_headers(headers2)
+  end
+
+  defp webhook_path_from_type(:github, webhook_id, token) do
+    Endpoints.webhooks_github(webhook_id, token)
+  end
+
+  defp webhook_path_from_type(:slack, webhook_id, token) do
+    Endpoints.webhooks_slack(webhook_id, token)
+  end
+
+  defp webhook_path_from_type(discord, webhook_id, token)
+       when discord in [nil, :discord] do
+    Endpoints.webhooks(webhook_id, token)
   end
 
   def get_gateway() do
@@ -1364,6 +1365,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  # credo:disable-for-lines:35
   @spec get_current_application :: Crux.Rest.Request.t()
   def get_current_application() do
     path = Endpoints.oauth2_applictions_me()

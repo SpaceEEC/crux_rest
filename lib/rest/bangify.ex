@@ -27,7 +27,6 @@ defmodule Crux.Rest.Bangify do
   # Updates, removes, or simply passes the content of an annotation through.
   defp update_annotation_inner({:doc, meta, [doc]})
        when is_binary(doc) do
-    # TODO: Maybe add a note here.
     {:doc, meta, [doc]}
   end
 
