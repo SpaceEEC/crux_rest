@@ -22,7 +22,13 @@ defmodule Crux.Rest do
   """
   @moduledoc since: "0.1.0"
 
+  defmacro __using__([]) do
+    Crux.Rest.Impl.Injector.inject(__CALLER__)
+  end
+
   require Crux.Rest.Bangify
+
+  alias Crux.Rest.Request
 
   alias Crux.Structs.{
     AuditLog,
@@ -99,6 +105,11 @@ defmodule Crux.Rest do
 
   # Automatically generate corresponding bangified callbacks using bangified return types.
   Crux.Rest.Bangify.bangify do
+    @doc """
+    Executes the given request.
+    """
+    @doc since: "0.3.0"
+    @callback request(request :: Request.t()) :: api_result() | api_result(term)
 
     ###
     # Audit Log START
