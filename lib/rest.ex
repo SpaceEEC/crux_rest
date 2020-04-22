@@ -43,7 +43,9 @@ defmodule Crux.Rest do
     Webhook
   }
 
-  ### Conventions START
+  ###
+  # Conventions START
+  ###
 
   # Callbacks are ordered in the same way as they appear in the upstream documentation.
 
@@ -57,7 +59,9 @@ defmodule Crux.Rest do
   # Other params an options enumerable. (With exceptions)
   # # Options are always suffixed with "_options".
 
-  ### Conventions END
+  ###
+  # Conventions END
+  ###
 
   @typedoc """
   An api results that does not return any data.
@@ -95,7 +99,10 @@ defmodule Crux.Rest do
 
   # Automatically generate corresponding bangified callbacks using bangified return types.
   Crux.Rest.Bangify.bangify do
-    ### Audit Log START
+
+    ###
+    # Audit Log START
+    ###
 
     @typedoc """
     Used to filter or limit audit log entries obtained using `c:get_audit_log/2`.
@@ -131,9 +138,13 @@ defmodule Crux.Rest do
                 opts :: audit_log_options()
               ) :: api_result(AuditLog.t())
 
-    ### Audit Log END
+    ###
+    # Audit Log END
+    ###
 
-    ### Channel START
+    ###
+    # Channel START
+    ###
 
     @doc """
     Get a channel by id.
@@ -873,9 +884,13 @@ defmodule Crux.Rest do
 
     # No delete_group_dm_recipient
 
-    ### Channel END
+    ###
+    # Channel END
+    ###
 
-    ### Emoji START
+    ###
+    # Emoji START
+    ###
 
     @doc """
     Get all emoji in a guild.
@@ -1020,9 +1035,13 @@ defmodule Crux.Rest do
     # Shortcut
     # @callback delete_emoji(emoji :: Emoji.t(), reason :: String.t() | nil) :: api_result()
 
-    ### Emoji END
+    ###
+    # Emoji END
+    ###
 
-    ### Guild START
+    ###
+    # Guild START
+    ###
 
     @typedoc """
     Used to create a guild by using `c:create_guild/1`.
@@ -1866,9 +1885,13 @@ defmodule Crux.Rest do
     # No get guild widget (or embed) image, because it does not return JSON but just the plain image.
     # Also does not require authorization.
 
-    ### Guild END
+    ###
+    # Guild END
+    ###
 
-    ### Invite START
+    ###
+    # Invite START
+    ###
 
     @typedoc """
     Used to get member counts when getting an invite using `c:get_invite/2`.
@@ -1905,9 +1928,13 @@ defmodule Crux.Rest do
                 reason :: String.t() | nil
               ) :: api_result(Invite.t())
 
-    ### Invite END
+    ###
+    # Invite END
+    ###
 
-    ### User START
+    ###
+    # User START
+    ###
 
     @doc """
     Get the currently logged in user.
@@ -2018,9 +2045,13 @@ defmodule Crux.Rest do
     @doc section: :user
     @callback create_dm(user :: User.id_resolvable()) :: api_result(Channel.t())
 
-    ### User END
+    ###
+    # User END
+    ###
 
-    ### Voice START
+    ###
+    # Voice START
+    ###
 
     @doc """
     Get a list of voice regions that can be used when creating a guild.
@@ -2034,9 +2065,13 @@ defmodule Crux.Rest do
     @callback get_voice_regions() ::
                 api_result(%{required(name :: String.t()) => VoiceRegion.t()})
 
-    ### Voice END
+    ###
+    # Voice END
+    ###
 
-    ### Webhook START
+    ###
+    # Webhook START
+    ###
 
     @typedoc """
     Used to create a webhook using `c:create_webhook/2`.
@@ -2265,9 +2300,13 @@ defmodule Crux.Rest do
               ) ::
                 api_result() | api_result(Message.t())
 
-    ### Webhook END
+    ###
+    # Webhook END
+    ###
 
-    ### Gateway
+    ###
+    # Gateway
+    ###
 
     @doc """
     Get the currently valid WSS URL.
@@ -2296,9 +2335,13 @@ defmodule Crux.Rest do
                   }
                 })
 
-    ### Gateway END
+    ###
+    # Gateway END
+    ###
 
-    ### OAuth2
+    ###
+    # OAuth2
+    ###
 
     @typedoc """
     An OAuth2 application object.
@@ -2344,7 +2387,9 @@ defmodule Crux.Rest do
     @doc section: :oauth2
     @callback get_current_application() :: api_result(oauth2_application())
 
-    ### OAuth2 END
+    ###
+    # OAuth2 END
+    ###
     # bangify end
   end
 end
