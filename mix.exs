@@ -10,7 +10,7 @@ defmodule Crux.Rest.MixProject do
       package: package(),
       app: @name,
       version: @vsn,
-      elixir: "~> 1.7",
+      elixir: "~> 1.10",
       description: "Package providing rest functions and rate limiting for the Discord API",
       source_url: "https://github.com/SpaceEEC/#{@name}/",
       homepage_url: "https://github.com/SpaceEEC/#{@name}/",

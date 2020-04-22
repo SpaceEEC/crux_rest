@@ -9,32 +9,13 @@ on:
 
 jobs:
   # Redundant but can't be helped AFAIK
-  test-elixir-min-version:
-    name: Elixir 1.6 - Only Tests
-
-    runs-on: ubuntu-latest
-
-    container:
-      image: spaceeec/elixir:1.6-slim
-    
-    steps:
-    - uses: actions/checkout@v1
-    - name: Install dependencies
-      run: |
-        mix local.rebar --force
-        mix local.hex --force
-        mix deps.get
-
-    - name: Run tests
-      run: mix test
-
   test-elixir-latest:
-    name: Elixir 1.9 - Full
+    name: Elixir 1.10 - Full
 
     runs-on: ubuntu-latest
 
     container:
-      image: spaceeec/elixir:1.9-slim
+      image: spaceeec/elixir:1.10.2-slim
 
     steps:
     - uses: actions/checkout@v1
@@ -56,12 +37,12 @@ jobs:
   release:
     name: Publish
 
-    needs: [test-elixir-latest, test-elixir-min-version]
+    needs: [test-elixir-latest]
 
     runs-on: ubuntu-latest
 
     container:
-      image: spaceeec/elixir:1.9-slim
+      image: spaceeec/elixir:1.10.2-slim
 
     steps:
       - uses: actions/checkout@v1
