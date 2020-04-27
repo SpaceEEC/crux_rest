@@ -19,11 +19,14 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container:
-      image: spaceeec/elixir:1.10.2-slim
-
     steps:
     - uses: actions/checkout@v1
+
+    - uses: actions/setup-elixir@v1
+      with:
+        otp-version: 22.x
+        elixir-version: 1.10.x
+
     - name: Install dependencies
       run: |
         mix local.rebar --force
@@ -37,4 +40,4 @@ jobs:
       run: mix credo --strict
   
     - name: Test code
-      run: mix test
+      run: mix test --cover
