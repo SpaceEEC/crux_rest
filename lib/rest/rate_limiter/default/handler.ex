@@ -203,14 +203,14 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   end
 
   defp handle_response(
-         _message,
+         %{request: %{major: major}},
          response,
          rl_headers,
          state
        ) do
     new_state = %{
       state
-      | bucket_hash: rl_headers[:bucket],
+      | bucket_hash: get_bucket_hash(rl_headers, major),
         rl_info: to_info(rl_headers)
     }
 
@@ -280,6 +280,25 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   # Gets the throttling related headers
   defp to_info(rl_headers) do
     Map.take(rl_headers, ~w/limit remaining reset_after/a)
+  end
+
+  # No bucket hash provided, keep using the route
+  defp get_bucket_hash(%{bucket: nil}, _major) do
+    nil
+  end
+
+  # This route does not use a major parameter, use the bucket hash alone
+  defp get_bucket_hash(%{bucket: bucket}, nil) do
+    bucket
+  end
+
+  # Bucket hash and major parameter known, combine both
+  defp get_bucket_hash(%{bucket: bucket}, major) do
+    "#{major}:#{bucket}"
+  end
+
+  defp get_bucket_hash(_rl_headers, _major) do
+    nil
   end
 
   defp log_response(response, rl_headers, state) do

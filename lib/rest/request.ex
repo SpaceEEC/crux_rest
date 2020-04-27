@@ -22,6 +22,7 @@ defmodule Crux.Rest.Request do
     :version,
     :transform,
     :params,
+    :major,
     data: "",
     headers: [
       accept: "application/json",
@@ -35,6 +36,7 @@ defmodule Crux.Rest.Request do
   @typedoc """
   * `:method` HTTP verb to use
   * `:route` Used to group requests pre buckets
+  * `:major` Used to rate limit using bucket hashes
   * `:path` URL path
   * `:version` Discord REST API version to use
   * `:data` Request body
@@ -51,6 +53,8 @@ defmodule Crux.Rest.Request do
           method: method(),
           # Route for rate limit bucket
           route: String.t(),
+          # Used in combination with a bucket hash
+          major: String.t() | nil,
           # Path for HTTP
           path: String.t(),
           # REST API version to use
@@ -83,6 +87,7 @@ defmodule Crux.Rest.Request do
     %__MODULE__{
       method: method,
       route: get_route(path),
+      major: get_major(path),
       path: path,
       data: data
     }
@@ -173,11 +178,21 @@ defmodule Crux.Rest.Request do
   end
 
   @doc false
+  @doc since: "0.3.0"
+  @spec get_major(String.t()) :: String.t() | nil
+  def get_major(path) do
+    case Regex.run(~r'(?:channels|guilds|webhooks)\/(\d+)', path) do
+      nil -> nil
+      [_path, major] -> major
+    end
+  end
+
+  @doc false
   @doc since: "0.2.0"
   @spec get_route(String.t()) :: String.t()
   def get_route(path)
       when is_binary(path) do
-    route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d{16,19}', path, "/:id")
+    route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d+', path, "/:id")
     # Group all reaction endpoints together, as all of them share a bucket (and the limit is 1...)
     Regex.replace(~r'(?<=\/reactions)\/.+', route, "/*")
   end

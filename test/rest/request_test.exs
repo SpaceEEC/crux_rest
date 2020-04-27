@@ -34,6 +34,22 @@ defmodule Crux.Rest.RequestTests do
     end
   end
 
+  describe "get_major/1" do
+    test "handles path with major parameter" do
+      assert "559412396586696706" ==
+               Request.get_major(Endpoints.channels_messages(559_412_396_586_696_706))
+
+      assert "550715604512931840" ==
+               Request.get_major(Endpoints.webhooks(550_715_604_512_931_840, "some token"))
+
+      assert "516569101267894284" == Request.get_major(Endpoints.guilds(516_569_101_267_894_284))
+    end
+
+    test "handles route without major parameter" do
+      assert nil === Request.get_major(Endpoints.gateway_bot())
+    end
+  end
+
   describe "new/3" do
     test "adds route" do
       endpoint =
@@ -48,6 +64,7 @@ defmodule Crux.Rest.RequestTests do
       assert %Request{
                method: :get,
                path: endpoint,
+               major: Request.get_major(endpoint),
                route: Request.get_route(endpoint),
                data: ""
              } == request

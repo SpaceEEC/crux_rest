@@ -371,10 +371,12 @@ defmodule Crux.Rest.RateLimiterTest do
 
       parent = self()
 
+      bucket_hash_with_major = "#{request.major}:#{bucket_hash}"
+
       patched_request =
         RateLimiter.new(request, Crux.Rest.HTTPMock)
         |> Map.update!(:dispatch, fn orig_dispatch ->
-          fn @name = name, %{bucket_hash: ^bucket_hash} = message ->
+          fn @name = name, %{bucket_hash: ^bucket_hash_with_major} = message ->
             send(parent, :called)
 
             orig_dispatch.(name, message)
@@ -386,14 +388,14 @@ defmodule Crux.Rest.RateLimiterTest do
       assert_received :called
     end
 
-    test "different routes using the same bucket handler works" do
+    test "different routes, same bucket hash, same major -> same handlers" do
       bucket_hash = "cool_bucket_hash"
       response_one = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: bucket_hash)
       response_two = response(limit: 10, remaining: 8, reset: 4800, bucket_hash: bucket_hash)
       response_three = response(limit: 10, remaining: 7, reset: 4600, bucket_hash: bucket_hash)
       response_four = response(limit: 10, remaining: 6, reset: 4400, bucket_hash: bucket_hash)
-      request_one = request_one()
-      request_two = request_two()
+      request_one = Request.new(:get, Endpoints.gateway_bot())
+      request_two = Request.new(:get, Endpoints.gateway())
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
@@ -445,6 +447,80 @@ defmodule Crux.Rest.RateLimiterTest do
         RateLimiter.new(request_two, Crux.Rest.HTTPMock)
         |> Map.update!(:dispatch, fn orig_dispatch ->
           fn @name = name, %{bucket_hash: ^bucket_hash} = message ->
+            send(parent, :called2)
+
+            orig_dispatch.(name, message)
+          end
+        end)
+
+      assert response_four == HandlerSupervisor.dispatch(@name, patched_request)
+
+      assert_received :called2
+    end
+
+    test "different routes, same bucket hash, different major -> different handlers" do
+      bucket_hash = "cool_bucket_hash"
+      response_one = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: bucket_hash)
+      response_two = response(limit: 10, remaining: 8, reset: 4800, bucket_hash: bucket_hash)
+      response_three = response(limit: 10, remaining: 7, reset: 4600, bucket_hash: bucket_hash)
+      response_four = response(limit: 10, remaining: 6, reset: 4400, bucket_hash: bucket_hash)
+      request_one = request_one()
+      request_two = request_two()
+
+      Crux.Rest.HTTPMock
+      |> expect(:request, fn @opts, _request ->
+        response_one
+      end)
+      |> expect(:request, fn @opts, _request ->
+        response_two
+      end)
+      |> expect(:request, fn @opts, _request ->
+        response_three
+      end)
+      |> expect(:request, fn @opts, _request ->
+        response_four
+      end)
+
+      assert response_one ==
+               HandlerSupervisor.dispatch(
+                 @name,
+                 RateLimiter.new(request_one, Crux.Rest.HTTPMock, fn _, _ ->
+                   raise "not to be called!"
+                 end)
+               )
+
+      assert response_two ==
+               HandlerSupervisor.dispatch(
+                 @name,
+                 RateLimiter.new(request_two, Crux.Rest.HTTPMock, fn _, _ ->
+                   raise "not to be called!"
+                 end)
+               )
+
+      parent = self()
+
+      bucket_hash_one = "#{request_one.major}:#{bucket_hash}"
+
+      patched_request =
+        RateLimiter.new(request_one, Crux.Rest.HTTPMock)
+        |> Map.update!(:dispatch, fn orig_dispatch ->
+          fn @name = name, %{bucket_hash: ^bucket_hash_one} = message ->
+            send(parent, :called)
+
+            orig_dispatch.(name, message)
+          end
+        end)
+
+      assert response_three == HandlerSupervisor.dispatch(@name, patched_request)
+
+      assert_received :called
+
+      bucket_hash_two = "#{request_two.major}:#{bucket_hash}"
+
+      patched_request =
+        RateLimiter.new(request_two, Crux.Rest.HTTPMock)
+        |> Map.update!(:dispatch, fn orig_dispatch ->
+          fn @name = name, %{bucket_hash: ^bucket_hash_two} = message ->
             send(parent, :called2)
 
             orig_dispatch.(name, message)
