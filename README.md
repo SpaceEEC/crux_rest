@@ -4,9 +4,9 @@ Library providing rest functions and rate limiting for the [Discord API](https:/
 
 ## Useful links
 
- - [Documentation](https://hexdocs.pm/crux_rest/0.2.1/)
+ - [Documentation](https://hexdocs.pm/crux_rest/0.2.2/)
  - [Github](https://github.com/SpaceEEC/crux_rest/)
- - [Changelog](https://github.com/SpaceEEC/crux_rest/releases/tag/0.2.1/)
+ - [Changelog](https://github.com/SpaceEEC/crux_rest/releases/tag/0.2.2/)
  - [Umbrella Development Documentation](https://crux.randomly.space/)
 
 ## Installation
@@ -16,7 +16,7 @@ The library can be installed by adding `crux_rest` to your list of dependencies 
 ```elixir
 def deps do
   [
-    {:crux_rest, "~> 0.2.1"}
+    {:crux_rest, "~> 0.2.2"}
   ]
 end
 ```
