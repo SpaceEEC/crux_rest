@@ -8,7 +8,7 @@ defmodule Crux.Rest.Endpoints do
 
   Version.modulesince("0.1.0")
 
-  @base_url "https://discordapp.com/api/v7"
+  @base_url "https://discord.com/api/v7"
 
   @doc """
     Base API address.

@@ -123,9 +123,8 @@ defmodule Crux.Rest.Functions do
       message,
       &Endpoints.channel_messages/2
     )
-    # Separate route as this is an exception
-    # See the first info box here:
-    # https://discordapp.com/developers/docs/topics/rate-limits#rate-limits
+    # Separate route as this is an exception.
+    # This used to be documented, but is not anymore.
     |> Map.update!(:route, &Kernel.<>(&1, "/delete"))
   end
 
