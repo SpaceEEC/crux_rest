@@ -22,7 +22,7 @@ defmodule Crux.Rest.ApiError do
   | Property      | Description                                                                                                                    | Example(s)          |
   | ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
   | `status_code` | HTTP status code                                                                                                               | `400`, `404`, `403` |
-  | `code`        | See Discord's [JSON Error Codes](https://discordapp.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes) | `10006`, `90001`    |
+  | `code`        | See Discord's [JSON Error Codes](https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes) | `10006`, `90001`    |
   | `message`     | Message describing the error                                                                                                   | `Unknown Invite`    |
   | `path`        | Path of the request                                                                                                            | `/invites/broken`   |
   | `method`      | HTTP verb                                                                                                                      | :get, :post, :patch |

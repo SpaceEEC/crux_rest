@@ -8,7 +8,7 @@ defmodule Crux.Rest.HTTP do
 
   alias Crux.Rest.Endpoints
 
-  # See: https://discordapp.com/developers/docs/reference#user-agent
+  # See: https://discord.com/developers/docs/reference#user-agent
   url = Project.config()[:source_url]
   version = Project.config()[:version]
   @user_agent "DiscordBot (#{url}, v#{version})"

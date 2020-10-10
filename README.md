@@ -1,6 +1,6 @@
 # Crux.Rest
 
-Library providing rest functions and rate limiting for the [Discord API](https://discordapp.com/developers).
+Library providing rest functions and rate limiting for the [Discord API](https://discord.com/developers/docs/).
 
 ## Useful links
 
