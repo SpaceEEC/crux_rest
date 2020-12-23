@@ -136,10 +136,10 @@ defmodule Crux.Rest.Request do
 
   @doc false
   @doc since: "0.3.0"
-  @spec put_token(t(), token :: String.t()) :: t()
-  def put_token(%__MODULE__{headers: headers} = t, token)
+  @spec put_token(t(), token :: String.t(), token_type :: String.t()) :: t()
+  def put_token(%__MODULE__{headers: headers} = t, token, token_type \\ "Bot")
       when is_binary(token) do
-    %{t | headers: Keyword.put(headers, :authorization, "Bot " <> token)}
+    %{t | headers: Keyword.put(headers, :authorization, "#{token_type} #{token}")}
   end
 
   @doc false

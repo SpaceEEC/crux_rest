@@ -14,6 +14,7 @@ defmodule Crux.Rest.Opts do
   @typedoc since: "0.3.0"
   @type t :: %{
           token: String.t(),
+          token_type: String.t(),
           raw: boolean(),
           name: module(),
           version: integer() | nil
@@ -31,6 +32,7 @@ defmodule Crux.Rest.Opts do
 
   # Validates the given options, raises an argument error if invalid.
   defp validate(%Opts{token: token})
+       when token == ""
        when not is_binary(token) do
     raise ArgumentError, """
     Expected :token to be a binary.
@@ -66,6 +68,16 @@ defmodule Crux.Rest.Opts do
     """
   end
 
+  defp validate(%Opts{token_type: token_type})
+       when token_type == ""
+       when not is_binary(token_type) do
+    raise ArgumentError, """
+    Expected :token_type to be a string.
+
+    Received #{inspect(token_type)}
+    """
+  end
+
   defp validate(%Opts{}) do
     :ok
   end
@@ -89,11 +101,11 @@ defmodule Crux.Rest.Opts do
     request
   end
 
-  defp apply_auth(%{auth: true} = request, %{token: token}) do
-    Request.put_token(request, token)
+  defp apply_auth(%{auth: true} = request, %{token: token, token_type: token_type}) do
+    Request.put_token(request, token, token_type)
   end
 
-  defp apply_auth(request, %{token: _token} = _opts) do
+  defp apply_auth(request, %{token: _token, token_type: _token_type} = _opts) do
     request
   end
 
