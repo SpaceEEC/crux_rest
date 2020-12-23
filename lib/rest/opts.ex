@@ -8,7 +8,7 @@ defmodule Crux.Rest.Opts do
     token: nil,
     raw: false,
     name: nil,
-    version: 7
+    version: 8
   )
 
   @typedoc since: "0.3.0"

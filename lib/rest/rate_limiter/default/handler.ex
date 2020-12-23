@@ -270,7 +270,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   end
 
   defp reduce_rate_limit_header({"retry-after", value}, acc) do
-    Map.put(acc, :retry_after, String.to_integer(value))
+    Map.put(acc, :retry_after, String.to_integer(value) * 1000)
   end
 
   defp reduce_rate_limit_header(_tuple, acc) do

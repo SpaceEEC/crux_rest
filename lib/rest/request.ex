@@ -27,7 +27,6 @@ defmodule Crux.Rest.Request do
     headers: [
       accept: "application/json",
       "content-type": "application/json",
-      "x-ratelimit-precision": "millisecond",
       "user-agent": @user_agent
     ],
     auth: true
