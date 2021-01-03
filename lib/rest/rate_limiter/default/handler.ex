@@ -16,7 +16,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   @spec request() :: :request
   def request(), do: @request
 
-  @timeout 10_000
+  @timeout 60_000
 
   defstruct [
     :name,
