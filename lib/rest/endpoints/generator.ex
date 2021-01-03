@@ -184,7 +184,7 @@ defmodule Crux.Rest.Endpoints.Generator do
     segments
     |> Enum.map_join("_", fn
       "@" <> rest -> rest
-      segment -> String.replace(segment, "-", "_")
+      segment -> String.replace(segment, ["-", "."], "_")
     end)
     |> String.to_atom()
   end
