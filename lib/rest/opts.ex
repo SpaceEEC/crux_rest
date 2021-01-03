@@ -6,6 +6,7 @@ defmodule Crux.Rest.Opts do
 
   defstruct(
     token: nil,
+    token_type: "Bot",
     raw: false,
     name: nil,
     version: 8
@@ -41,6 +42,16 @@ defmodule Crux.Rest.Opts do
     """
   end
 
+  defp validate(%Opts{token_type: token_type})
+       when token_type == ""
+       when not is_binary(token_type) do
+    raise ArgumentError, """
+    Expected :token_type to be a string.
+
+    Received #{inspect(token_type)}
+    """
+  end
+
   defp validate(%Opts{raw: raw})
        when not is_boolean(raw) do
     raise ArgumentError, """
@@ -65,16 +76,6 @@ defmodule Crux.Rest.Opts do
     Expected :name to be a module name.
 
     Received #{inspect(name)}
-    """
-  end
-
-  defp validate(%Opts{token_type: token_type})
-       when token_type == ""
-       when not is_binary(token_type) do
-    raise ArgumentError, """
-    Expected :token_type to be a string.
-
-    Received #{inspect(token_type)}
     """
   end
 
