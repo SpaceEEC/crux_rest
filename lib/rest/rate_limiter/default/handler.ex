@@ -74,7 +74,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
       identifier: identifier
     )
 
-    debug("Started handler.", state)
+    debug("Started #{type}-handler. (#{inspect(self())})", state)
 
     {:ok, state, @timeout}
   end
@@ -108,7 +108,9 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
       {:ok, response, state} ->
         # Set the timeout to at least the reset_after value
-        reset_after = Map.get(state.rl_info, :reset_after, 0)
+        reset_after =
+          Map.get(state.rl_info, :reset_after, Map.get(state.rl_info, :retry_after, 0))
+
         timeout = max(reset_after, @timeout)
 
         {:reply, response, state, timeout}
@@ -192,12 +194,14 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   defp handle_response(
          message,
          %{status_code: 429},
-         %{global: false, reset_after: reset_after},
+         %{global: false} = rl_headers,
          state
        ) do
-    warn("Locally rate limited! (#{reset_after}ms)", state)
+    timeout = rl_headers[:reset_after] || rl_headers.retry_after
 
-    Process.sleep(reset_after)
+    warn("Locally rate limited! (#{timeout}ms)", state)
+
+    Process.sleep(timeout)
     # Try again
     do_request(message, state)
   end
@@ -217,7 +221,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
     if rl_headers[:remaining] != 0 do
       {:ok, {:ok, response}, new_state}
     else
-      {:ok, {:ok, response}, new_state, rl_headers.reset_after}
+      {:ok, {:ok, response}, new_state, rl_headers[:reset_after] || rl_headers.retry_after}
     end
   end
 
@@ -270,7 +274,9 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
   end
 
   defp reduce_rate_limit_header({"retry-after", value}, acc) do
-    Map.put(acc, :retry_after, String.to_integer(value) * 1000)
+    # s to ms
+    retry_after = trunc(String.to_integer(value) * 1000)
+    Map.put(acc, :retry_after, retry_after)
   end
 
   defp reduce_rate_limit_header(_tuple, acc) do
@@ -279,7 +285,7 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
   # Gets the throttling related headers
   defp to_info(rl_headers) do
-    Map.take(rl_headers, ~w/limit remaining reset_after/a)
+    Map.take(rl_headers, ~w/limit remaining reset_after retry_after/a)
   end
 
   # No bucket hash provided, keep using the route

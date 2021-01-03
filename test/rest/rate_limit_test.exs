@@ -46,15 +46,13 @@ defmodule Crux.Rest.RateLimiterTest do
           Map.put(acc, "x-ratelimit-remaining", to_string(remaining))
 
         {:reset, reset_after}, acc ->
-          reset_after_s = reset_after / 1000
-
           acc
           |> Map.put(
             "x-ratelimit-reset",
-            to_string(:os.system_time(:millisecond) + reset_after_s)
+            to_string(:os.system_time(:second) + reset_after)
           )
-          |> Map.put("x-ratelimit-reset-after", to_string(reset_after_s))
-          |> Map.put("retry-after", to_string(reset_after))
+          |> Map.put("x-ratelimit-reset-after", to_string(reset_after))
+          |> Map.put("retry-after", to_string(ceil(reset_after)))
 
         {:global, true}, acc ->
           Map.put(acc, "x-ratelimit-global", "true")
@@ -127,8 +125,8 @@ defmodule Crux.Rest.RateLimiterTest do
     end
 
     test "headers - twice works" do
-      response_one = response(limit: 10, remaining: 9, reset: 5000)
-      response_two = response(limit: 10, remaining: 8, reset: 4800)
+      response_one = response(limit: 10, remaining: 9, reset: 5.000)
+      response_two = response(limit: 10, remaining: 8, reset: 4.800)
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
@@ -148,7 +146,7 @@ defmodule Crux.Rest.RateLimiterTest do
   describe "rate limits - local" do
     test "preemptive throttling" do
       success_response = response()
-      exhaust_response = response(remaining: 0, limit: 1, reset: 250)
+      exhaust_response = response(remaining: 0, limit: 1, reset: 0.250)
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
@@ -161,7 +159,7 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       # Make initial request exhausting the bucket
-      assert exhaust_response = RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      assert exhaust_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
 
       # Make another request, but it is being delayed by the specified 250ms
       response =
@@ -177,7 +175,7 @@ defmodule Crux.Rest.RateLimiterTest do
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
-        response(status: 429, limit: 1, remaining: 0, reset: 250)
+        response(status: 429, limit: 1, remaining: 0, reset: 0.250)
       end)
       |> expect(:request, fn @opts, _request ->
         success_response
@@ -198,7 +196,7 @@ defmodule Crux.Rest.RateLimiterTest do
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
-        response(global: true, status: 429, limit: 1, remaining: 0, reset: 250)
+        response(global: true, status: 429, limit: 1, remaining: 0, reset: 0.250)
       end)
       |> expect(:request, fn @opts, _request ->
         success_response
@@ -223,14 +221,49 @@ defmodule Crux.Rest.RateLimiterTest do
 
       assert success_response == response
     end
+
+    test "missing reset-after header falls back to retry-after" do
+      success_response = response()
+      {:ok, exhaust_response} = response(remaining: 0, limit: 1, reset: 0.250)
+
+      exhaust_response =
+        Map.update!(exhaust_response, :headers, fn headers ->
+          Enum.reject(headers, fn {name, _value} ->
+            name in ["x-ratelimit-reset", "x-ratelimit-reset-after"]
+          end)
+        end)
+
+      exhaust_response = {:ok, exhaust_response}
+
+      Crux.Rest.HTTPMock
+      |> expect(:request, fn @opts, _request ->
+        exhaust_response
+      end)
+      |> expect(:request, fn @opts, _request ->
+        success_response
+      end)
+
+      request = request_one()
+
+      # Make initial request exhausting the bucket
+      assert exhaust_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+
+      # Make another request, but it is being delayed by the specified 250ms
+      response =
+        assert_throttled(200, fn ->
+          RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+        end)
+
+      assert success_response == response
+    end
   end
 
   describe "rate limits - bucket" do
     test "preemptive throttling" do
       bucket_hash = "some_bucket_hash"
-      init_response = response(limit: 3, remaining: 1, reset: 450, bucket_hash: bucket_hash)
-      exhaust_response = response(limit: 3, remaining: 0, reset: 250, bucket_hash: bucket_hash)
-      success_response = response(limit: 3, remaining: 2, reset: 450, bucket_hash: bucket_hash)
+      init_response = response(limit: 3, remaining: 1, reset: 0.450, bucket_hash: bucket_hash)
+      exhaust_response = response(limit: 3, remaining: 0, reset: 0.250, bucket_hash: bucket_hash)
+      success_response = response(limit: 3, remaining: 2, reset: 0.450, bucket_hash: bucket_hash)
 
       Crux.Rest.HTTPMock
       |> expect(:request, fn @opts, _request ->
@@ -246,9 +279,9 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       # Make initial request specifying the bucket
-      assert init_response = RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      assert init_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
       # Make second request exhausting the bucket
-      assert exhaust_response = RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      assert exhaust_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
 
       # Make another request, but it is being delayed by the specified 250ms
       response =
@@ -261,7 +294,7 @@ defmodule Crux.Rest.RateLimiterTest do
 
     test "simple - local rate limit " do
       bucket_hash = "some_bucket_hash"
-      init_response = response(limit: 3, remaining: 1, reset: 450, bucket_hash: bucket_hash)
+      init_response = response(limit: 3, remaining: 1, reset: 0.450, bucket_hash: bucket_hash)
       success_response = response()
 
       Crux.Rest.HTTPMock
@@ -269,7 +302,7 @@ defmodule Crux.Rest.RateLimiterTest do
         init_response
       end)
       |> expect(:request, fn @opts, _request ->
-        response(status: 429, limit: 1, remaining: 0, reset: 250)
+        response(status: 429, limit: 1, remaining: 0, reset: 0.250)
       end)
       |> expect(:request, fn @opts, _request ->
         success_response
@@ -278,7 +311,7 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       # Make initial request specifying the bucket
-      assert init_response = RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      assert init_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
 
       response =
         assert_throttled(200, fn ->
@@ -290,7 +323,7 @@ defmodule Crux.Rest.RateLimiterTest do
 
     test "simple - global rate limit " do
       bucket_hash = "some_bucket_hash"
-      init_response = response(limit: 3, remaining: 1, reset: 450, bucket_hash: bucket_hash)
+      init_response = response(limit: 3, remaining: 1, reset: 0.450, bucket_hash: bucket_hash)
       success_response = response()
 
       Crux.Rest.HTTPMock
@@ -298,7 +331,7 @@ defmodule Crux.Rest.RateLimiterTest do
         init_response
       end)
       |> expect(:request, fn @opts, _request ->
-        response(global: true, status: 429, limit: 1, remaining: 0, reset: 250)
+        response(global: true, status: 429, limit: 1, remaining: 0, reset: 0.250)
       end)
       |> expect(:request, fn @opts, _request ->
         success_response
@@ -307,7 +340,7 @@ defmodule Crux.Rest.RateLimiterTest do
       request = request_one()
 
       # Make initial request specifying the bucket
-      assert init_response = RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      assert init_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
 
       task =
         Task.async(fn ->
@@ -326,11 +359,56 @@ defmodule Crux.Rest.RateLimiterTest do
 
       assert success_response == response
     end
+
+    test "missing reset-after header falls back to retry-after" do
+      bucket_hash = "some_bucket_hash"
+      init_response = response(limit: 3, remaining: 1, reset: 0.450, bucket_hash: bucket_hash)
+
+      {:ok, exhaust_response} =
+        response(limit: 3, remaining: 0, reset: 0.250, bucket_hash: bucket_hash)
+
+      success_response = response(limit: 3, remaining: 2, reset: 0.450, bucket_hash: bucket_hash)
+
+      exhaust_response =
+        Map.update!(exhaust_response, :headers, fn headers ->
+          Enum.reject(headers, fn {name, _value} ->
+            name in ["x-ratelimit-reset", "x-ratelimit-reset-after"]
+          end)
+        end)
+
+      exhaust_response = {:ok, exhaust_response}
+
+      Crux.Rest.HTTPMock
+      |> expect(:request, fn @opts, _request ->
+        init_response
+      end)
+      |> expect(:request, fn @opts, _request ->
+        exhaust_response
+      end)
+      |> expect(:request, fn @opts, _request ->
+        success_response
+      end)
+
+      request = request_one()
+
+      # Make initial request specifying the bucket
+      assert init_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+      # Make second request exhausting the bucket
+      assert exhaust_response == RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+
+      # Make another request, but it is being delayed by the specified 250ms
+      response =
+        assert_throttled(200, fn ->
+          RateLimiter.request(@name, request, Crux.Rest.HTTPMock)
+        end)
+
+      assert success_response == response
+    end
   end
 
   describe "lifecycle" do
     test "first request does not start a bucket handler" do
-      response = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: "cool_bucket_hash")
+      response = response(limit: 10, remaining: 9, reset: 5.000, bucket_hash: "cool_bucket_hash")
       request = request_one()
 
       Crux.Rest.HTTPMock
@@ -349,8 +427,8 @@ defmodule Crux.Rest.RateLimiterTest do
 
     test "second request does start a bucket handler" do
       bucket_hash = "cool_bucket_hash"
-      response_one = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: bucket_hash)
-      response_two = response(limit: 10, remaining: 8, reset: 4800, bucket_hash: bucket_hash)
+      response_one = response(limit: 10, remaining: 9, reset: 5.000, bucket_hash: bucket_hash)
+      response_two = response(limit: 10, remaining: 8, reset: 4.800, bucket_hash: bucket_hash)
       request = request_one()
 
       Crux.Rest.HTTPMock
@@ -390,10 +468,10 @@ defmodule Crux.Rest.RateLimiterTest do
 
     test "different routes, same bucket hash, same major -> same handlers" do
       bucket_hash = "cool_bucket_hash"
-      response_one = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: bucket_hash)
-      response_two = response(limit: 10, remaining: 8, reset: 4800, bucket_hash: bucket_hash)
-      response_three = response(limit: 10, remaining: 7, reset: 4600, bucket_hash: bucket_hash)
-      response_four = response(limit: 10, remaining: 6, reset: 4400, bucket_hash: bucket_hash)
+      response_one = response(limit: 10, remaining: 9, reset: 5.000, bucket_hash: bucket_hash)
+      response_two = response(limit: 10, remaining: 8, reset: 4.800, bucket_hash: bucket_hash)
+      response_three = response(limit: 10, remaining: 7, reset: 4.600, bucket_hash: bucket_hash)
+      response_four = response(limit: 10, remaining: 6, reset: 4.400, bucket_hash: bucket_hash)
       request_one = Request.new(:get, Endpoints.gateway_bot())
       request_two = Request.new(:get, Endpoints.gateway())
 
@@ -460,10 +538,10 @@ defmodule Crux.Rest.RateLimiterTest do
 
     test "different routes, same bucket hash, different major -> different handlers" do
       bucket_hash = "cool_bucket_hash"
-      response_one = response(limit: 10, remaining: 9, reset: 5000, bucket_hash: bucket_hash)
-      response_two = response(limit: 10, remaining: 8, reset: 4800, bucket_hash: bucket_hash)
-      response_three = response(limit: 10, remaining: 7, reset: 4600, bucket_hash: bucket_hash)
-      response_four = response(limit: 10, remaining: 6, reset: 4400, bucket_hash: bucket_hash)
+      response_one = response(limit: 10, remaining: 9, reset: 5.000, bucket_hash: bucket_hash)
+      response_two = response(limit: 10, remaining: 8, reset: 4.800, bucket_hash: bucket_hash)
+      response_three = response(limit: 10, remaining: 7, reset: 4.600, bucket_hash: bucket_hash)
+      response_four = response(limit: 10, remaining: 6, reset: 4.400, bucket_hash: bucket_hash)
       request_one = request_one()
       request_two = request_two()
 
