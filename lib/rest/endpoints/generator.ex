@@ -144,7 +144,7 @@ defmodule Crux.Rest.Endpoints.Generator do
 
     quote do
       @doc """
-      This functions handles the route:
+      This function handles the route:
       `#{unquote(route)}`.
       """
       # credo:disable-for-next-line Credo.Check.Readability.Specs
