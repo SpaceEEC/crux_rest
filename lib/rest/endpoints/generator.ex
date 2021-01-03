@@ -35,6 +35,7 @@ defmodule Crux.Rest.Endpoints.Generator do
 
   This will generate functions to access it or part of it.
   Additionally if there are variable sements, those can be passed as arguments to it.
+  Passing `nil` as an argument, causes that variable segment to be excluded from the result.
 
   For example:
   `route "/users/:user_id"`
@@ -206,11 +207,22 @@ defmodule Crux.Rest.Endpoints.Generator do
   end
 
   defp _to_return([], variable) do
-    Enum.map(variable, &["/", to_string_variable(&1)])
+    Enum.map(variable, &_maybe_to_string/1)
   end
 
   defp _to_return([h_fix | t_fix], [h_var | t_var]) do
-    ["/", h_fix, "/", to_string_variable(h_var) | _to_return(t_fix, t_var)]
+    ["/", h_fix, _maybe_to_string(h_var) | _to_return(t_fix, t_var)]
+  end
+
+  # If name belongs to a nil variable, empty data will be returned, otherwise its string value prefixed with a /.
+  defp _maybe_to_string(name) do
+    quote bind_quoted: [name: to_variable(name)] do
+      if name do
+        ["/", to_string(name)]
+      else
+        []
+      end
+    end
   end
 
   ### Helpers
