@@ -9,9 +9,12 @@ defmodule Crux.Rest.Impl.Injector do
   @http Crux.Rest.HTTP.Default
 
   def inject(%{module: name}) do
-    quoted_impl = get_quoted_impl()
+    # request/1 and request!/1
     quoted_request = get_quoted_request(name)
+    # start_link/1 and child_spec/1
     quoted_start = get_quoted_start(name)
+    # All other behaviour functions of Crux.Rest
+    quoted_impl = get_quoted_impl()
 
     quote do
       @behaviour Crux.Rest
