@@ -16,24 +16,35 @@ defmodule Crux.Rest.OptsTest do
       assert %Opts{
                name: @name,
                token: "token",
+               token_type: "Bot",
                raw: true,
                version: 8
              } ===
                Opts.transform(%{
                  name: @name,
                  token: "token",
+                 token_type: "Bot",
                  raw: true,
                  version: 8
                })
     end
 
     test "non-binary token raises" do
-      assert_raise ArgumentError, ~r/:token/, fn ->
+      assert_raise ArgumentError, ~r/:token\b/, fn ->
         @opts
         |> Map.put(:token, :error)
         |> Opts.transform()
       end
     end
+
+    test "non-binary token_type raises" do
+      assert_raise ArgumentError, ~r/:token_type/, fn ->
+        @opts
+        |> Map.put(:token_type, :error)
+        |> Opts.transform()
+      end
+    end
+
 
     test "non-boolean raw raises" do
       assert_raise ArgumentError, ~r/:raw/, fn ->
