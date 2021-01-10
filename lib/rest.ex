@@ -689,7 +689,7 @@ defmodule Crux.Rest do
     If editing another user's message only `flags` may be used.
 
     ## Notes
-    - `:content` must be [1, 2000] characters in length.
+    - `:content` must be [0, 2000] characters in length.
     """
     @typedoc since: "0.3.0"
     @type modify_message_options :: %{
@@ -721,6 +721,7 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :message
+    # Shortcut
     @callback modify_message(
                 message :: Message.t(),
                 data :: modify_message_options()
@@ -1300,6 +1301,7 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :member
+    # Shortcut
     @callback get_member(member :: Member.t()) :: api_result(Member.t())
 
     @typedoc """
@@ -1320,6 +1322,7 @@ defmodule Crux.Rest do
 
     @doc """
     Get members of a guild.
+    This operation requires the current user's application to have the `guild_members` intent enabled. (Regardless of whether any connected gateways specify it)
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-member).
     """
@@ -1847,7 +1850,7 @@ defmodule Crux.Rest do
                 api_result(%{required(code :: String.t()) => Invite.t()})
 
     @doc """
-    Get all integration of a guild.
+    Get all integrations of a guild.
     This operation requires the `manage_guild` permission.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-integrations).
@@ -2211,6 +2214,8 @@ defmodule Crux.Rest do
     @typedoc """
     Used to edit the currently logged in user using `c:modify_current_user/1`.
 
+    There are some limitations around usernames, see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#usernames-and-nicknames).
+
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#modify-current-user-json-params).
     """
     @typedoc since: "0.3.0"
@@ -2226,6 +2231,8 @@ defmodule Crux.Rest do
 
     @doc """
     Edit the currently logged in user.
+
+    Note that verified bots may not change their avatar through this function and have to go through support instead.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#modify-current-user).
     """
@@ -2296,6 +2303,10 @@ defmodule Crux.Rest do
     @doc since: "0.2.0"
     @doc section: :user
     @callback create_dm(user :: User.id_resolvable()) :: api_result(Channel.t())
+
+    # No create group dm
+
+    # No get user connections
 
     ###
     # User END
