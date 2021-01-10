@@ -2250,8 +2250,8 @@ defmodule Crux.Rest do
     Get a webhook.
 
     ## Notes
-    - If a `t:Webhookt.t/0` is being used, the resulting webhook does not include a `:user`.
-    - If an `t:Webhook.id_resolvable/0` is being used, this operation requires the `manage_webhooks` permission.
+    - If a `t:Webhook.t/0` is being used, the resulting webhook does not include a `:user`.
+    - If a `t:Webhook.id_resolvable/0` is being used, this operation requires the `manage_webhooks` permission.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#get-guild-webhooks).
     """
@@ -2277,7 +2277,7 @@ defmodule Crux.Rest do
     Used to edit a webhook using `c:modify_webhook/2,3`.
 
     ## Notes
-    - If using `c:modify_webhook/3` or `c:modify_webhook/2` with a `t:Crux.Structs.Webhook.t/0`, `:channel_id` and `:reason` are not a valid options and silently ignored.
+    - If using `c:modify_webhook/3` or `c:modify_webhook/2` with a `t:Crux.Structs.Webhook.t/0`, `:channel_id` and `:reason` are not a valid options and will be silently ignored.
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#modify-webhook-json-params).
     """
@@ -2300,14 +2300,12 @@ defmodule Crux.Rest do
     @callback modify_webhook(
                 webhook :: Webhook.id_resolvable(),
                 opts :: modify_webhook_options()
-              ) ::
-                api_result(Webhook.t())
+              ) :: api_result(Webhook.t())
 
     @callback modify_webhook(
                 webhook :: Webhook.t(),
                 partial_opts :: modify_webhook_options()
-              ) ::
-                api_result(Webhook.t())
+              ) :: api_result(Webhook.t())
 
     @doc """
     Edit a webhook.
@@ -2419,6 +2417,51 @@ defmodule Crux.Rest do
                 opts :: create_webhook_message_options()
               ) ::
                 api_result() | api_result(Message.t())
+
+    @typedoc """
+    Used to edit a message sent by a webhook using `c:modify_webhook_message/4`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#edit-webhook-message-jsonform-params).
+    """
+    @typedoc since: "0.3.0"
+    @type modify_webhook_message_options ::
+            %{
+              optional(:content) => String.t() | nil,
+              optional(:embeds) => [Embed.t() | embed_options()] | nil,
+              optional(:allowed_mentions) => allowed_mentions_options() | nil
+            }
+            | [
+                {:content, String.t() | nil}
+                | {:embeds, [Embed.t() | embed_options()] | nil}
+                | {:allowed_mentions, allowed_mentions_options() | nil}
+              ]
+
+    @doc """
+    Edit a message sent by a webhook.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#edit-webhook-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :webhook
+    @callback modify_webhook_message(
+                webhook :: Webhook.id_resolvable(),
+                token :: String.t(),
+                message :: Message.id_resolvable(),
+                opts :: modify_webhook_message_options()
+              ) :: api_result(Message.t())
+
+    @doc """
+    Delete a message sent by a webhook.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#delete-webhook-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :webhook
+    @callback delete_webhook_message(
+                webhook :: Webhook.id_resolvable(),
+                token :: String.t(),
+                message :: Message.id_resolvable()
+              ) :: api_result()
 
     ###
     # Webhook END

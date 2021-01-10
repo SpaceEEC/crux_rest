@@ -1403,6 +1403,32 @@ defmodule Crux.Rest.Impl do
     Endpoints.webhooks(webhook_id, token)
   end
 
+  def modify_webhook_message(webhook, token, message, opts) do
+    webhook_id = Resolver.resolve!(webhook, Webhook)
+    message_id = Resolver.resolve!(message, Message)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+
+    path = Endpoints.webhooks_messages(webhook_id, token, message_id)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_transform(Message)
+  end
+
+  def delete_webhook_message(webhook, token, message) do
+    webhook_id = Resolver.resolve!(webhook, Webhook)
+    message_id = Resolver.resolve!(message, Message)
+
+    path = Endpoints.webhooks_messages(webhook_id, token, message_id)
+
+    :delete
+    |> Request.new(path)
+  end
+
   def get_gateway() do
     path = Endpoints.gateway()
 
