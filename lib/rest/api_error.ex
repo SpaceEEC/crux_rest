@@ -6,7 +6,7 @@ defmodule Crux.Rest.ApiError do
   """
   @moduledoc since: "0.1.0"
 
-  alias Crux.Rest.{HTTP, Request}
+  alias Crux.Rest.Request
 
   defexception(
     status_code: nil,
@@ -55,7 +55,8 @@ defmodule Crux.Rest.ApiError do
   @doc since: "0.1.0"
   @spec exception(
           Request.t(),
-          HTTP.response()
+          # Crux.Rest.HTTP.response()
+          http_response :: term()
         ) :: t()
   def exception(request, response)
 
