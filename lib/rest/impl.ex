@@ -1075,10 +1075,10 @@ defmodule Crux.Rest.Impl do
     Request.new(:post, path)
   end
 
-  def get_guild_embed(guild) do
+  def get_guild_widget_settings(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
-    path = Endpoints.guilds_embed(guild_id)
+    path = Endpoints.guilds_widget(guild_id)
 
     :get
     |> Request.new(path)
@@ -1089,7 +1089,7 @@ defmodule Crux.Rest.Impl do
     end)
   end
 
-  def modify_guild_embed(guild, opts \\ %{}) do
+  def modify_guild_widget_settings(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
     {reason, data} =
@@ -1098,7 +1098,7 @@ defmodule Crux.Rest.Impl do
       |> Resolver.resolve_option(:channel_id, Channel)
       |> Map.pop(:reason)
 
-    path = Endpoints.guilds_embed(guild_id)
+    path = Endpoints.guilds_widget(guild_id)
 
     :patch
     |> Request.new(path, data)
@@ -1108,6 +1108,15 @@ defmodule Crux.Rest.Impl do
       |> Util.atomify()
       |> Resolver.resolve_option(:channel_id, Channel)
     end)
+  end
+
+  def get_guild_widget(guild) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.guilds_widget_json(guild_id)
+
+    :get
+    |> Request.new(path)
   end
 
   def get_vanity_url(guild) do

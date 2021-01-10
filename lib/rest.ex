@@ -1936,20 +1936,23 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     @typedoc """
-    A guild embed.
+    Guild widget settings.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#guild-widget-object).
     """
     @typedoc since: "0.3.0"
-    @type guild_embed :: %{enabled: boolean(), channel_id: Snowflake.t() | nil}
+    @type guild_widget_settings :: %{enabled: boolean(), channel_id: Snowflake.t() | nil}
 
     @doc """
-    Get a guild embed.
+    Get the guild widget settings.
     This operation requires the `manage_guild` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-embed).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-widget-settings).
     """
-    @doc since: "0.2.0"
+    @doc since: "0.3.0"
     @doc section: :guild
-    @callback get_guild_embed(guild :: Guild.id_resolvable()) :: api_result(guild_embed())
+    @callback get_guild_widget_settings(guild :: Guild.id_resolvable()) ::
+                api_result(guild_widget_settings())
 
     @doc """
     Edit a guild embed.
@@ -1957,9 +1960,9 @@ defmodule Crux.Rest do
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-embed).
     """
-    @doc since: "0.2.0"
+    @doc since: "0.3.0"
     @doc section: :guild
-    @callback modify_guild_embed(
+    @callback modify_guild_widget_settings(
                 guild :: Guild.id_resolvable(),
                 data ::
                   %{
@@ -1972,7 +1975,16 @@ defmodule Crux.Rest do
                       | {:channel_id, Channel.id_resolvable() | nil}
                       | {:reason, String.t() | nil}
                     ]
-              ) :: api_result(guild_embed())
+              ) :: api_result(guild_widget_settings())
+
+    @doc """
+    Get a guild's widget json.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-widget).
+    """
+    @doc since: "0.3.0"
+    @doc section: :guild
+    @callback get_guild_widget(guild :: Guild.id_resolvable()) :: api_result(map())
 
     @doc """
     Get a partial invote for the vanity invite of a guild.
@@ -1990,7 +2002,7 @@ defmodule Crux.Rest do
     @callback get_vanity_url(guild :: Guild.id_resolvable()) ::
                 api_result(%{code: String.t() | nil, uses: non_neg_integer()})
 
-    # No get guild widget (or embed) image, because it does not return JSON but just the plain image.
+    # No get guild widget image, because it does not return JSON but just the plain image.
     # Also does not require authorization.
 
     ###
