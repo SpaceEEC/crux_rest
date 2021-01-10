@@ -45,7 +45,6 @@ defmodule Crux.Rest.OptsTest do
       end
     end
 
-
     test "non-boolean raw raises" do
       assert_raise ArgumentError, ~r/:raw/, fn ->
         @opts
