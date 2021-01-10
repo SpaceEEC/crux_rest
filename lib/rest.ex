@@ -812,6 +812,8 @@ defmodule Crux.Rest do
               optional(:max_uses) => 0..100,
               optional(:temporary) => boolean(),
               optional(:unique) => boolean(),
+              optional(:target_user) => User.id_resolvable(),
+              optional(:target_user_type) => integer(),
               optional(:reason) => String.t() | nil
             }
             | [
@@ -819,6 +821,8 @@ defmodule Crux.Rest do
                 | {:max_uses, 0..100}
                 | {:temporary, boolean()}
                 | {:unique, boolean()}
+                | {:target_user, User.id_resolvable()}
+                | {:target_user_type, integer()}
                 | {:reason, String.t() | nil}
               ]
 

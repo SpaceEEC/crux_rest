@@ -344,6 +344,7 @@ defmodule Crux.Rest.Impl do
     {reason, data} =
       opts
       |> Map.new()
+      |> Resolver.resolve_option(:target_user, User)
       |> Map.pop(:reason)
 
     path = Endpoints.channels_invites(channel_id)
