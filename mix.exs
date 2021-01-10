@@ -44,8 +44,8 @@ defmodule Crux.Rest.MixProject do
       {:crux_structs, github: "spaceeec/crux_structs"},
       {:httpoison, "~> 1.6"},
       {:jason, "~> 1.1"},
-      # {:ex_doc, path: "../../ex_doc", only: :dev, runtime: false},
-      {:ex_doc, github: "spaceeec/ex_doc", branch: "fork", only: :dev, runtime: false},
+      {:ex_doc,
+       github: "spaceeec/ex_doc", branch: "feat/groups_for_callbacks", only: :dev, runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mox, "~> 0.5", only: :test}
     ]
@@ -69,6 +69,7 @@ defmodule Crux.Rest.MixProject do
         Role: &(&1[:section] == :role),
         Ban: &(&1[:section] == :ban),
         Invite: &(&1[:section] == :invite),
+        Template: &(&1[:section] == :template),
         Emoji: &(&1[:section] == :emoji),
         Integration: &(&1[:section] == :integration),
         Webhook: &(&1[:section] == :webhook),
