@@ -159,24 +159,29 @@ defmodule Crux.Rest.Endpoints.Generator do
   # - A list of variable ASTs out of the variable segments
   # - A return AST to return a formatted binary
   defp transform_route(route) do
-    {fix, variable} = split_route(route)
+    {segments, fix, variable} = split_route(route)
 
     function_name = to_name(fix)
     function_arguments = to_arguments(variable)
-    function_return = to_return(fix, variable)
+    function_return = to_return(segments)
 
     {function_name, function_arguments, function_return}
   end
 
   # Splits the route into its variable and fix segments.
-  @spec split_route(route :: String.t()) :: {fix :: [String.t()], variable :: [String.t()]}
+  @spec split_route(route :: String.t()) ::
+          {segments :: [String.t()], fix :: [String.t()], variable :: [String.t()]}
   defp split_route("/" <> route) do
-    route
-    |> String.split("/")
-    |> Enum.split_with(fn
-      ":" <> _segment -> false
-      _segment -> true
-    end)
+    segments = String.split(route, "/")
+
+    {fix, variable} =
+      segments
+      |> Enum.split_with(fn
+        ":" <> _segment -> false
+        _segment -> true
+      end)
+
+    {segments, fix, variable}
   end
 
   # Joins the fix segments to a function name atom.
@@ -184,7 +189,7 @@ defmodule Crux.Rest.Endpoints.Generator do
   defp to_name(segments) do
     segments
     |> Enum.map_join("_", fn
-      "@" <> rest -> rest
+      "@" <> rest -> String.replace(rest, ["-", "."], "_")
       segment -> String.replace(segment, ["-", "."], "_")
     end)
     |> String.to_atom()
@@ -196,22 +201,17 @@ defmodule Crux.Rest.Endpoints.Generator do
   end
 
   # Converts the given fix and evaluated variable segments into a binary joining them by "/".
-  defp to_return(fix, variable) do
+  defp to_return(segments) do
     quote do
-      IO.iodata_to_binary(unquote(_to_return(fix, variable)))
+      IO.iodata_to_binary(unquote(_to_return(segments)))
     end
   end
 
-  defp _to_return(fix, []) do
-    Enum.map(fix, &["/", &1])
-  end
-
-  defp _to_return([], variable) do
-    Enum.map(variable, &_maybe_to_string/1)
-  end
-
-  defp _to_return([h_fix | t_fix], [h_var | t_var]) do
-    ["/", h_fix, _maybe_to_string(h_var) | _to_return(t_fix, t_var)]
+  defp _to_return(segments) do
+    Enum.map(segments, fn
+      ":" <> _rest = variable -> _maybe_to_string(variable)
+      fix -> ["/", fix]
+    end)
   end
 
   # If name belongs to a nil variable, empty data will be returned, otherwise its string value prefixed with a /.
