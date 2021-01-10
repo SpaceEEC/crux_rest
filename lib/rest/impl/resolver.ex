@@ -216,6 +216,18 @@ defmodule Crux.Rest.Impl.Resolver do
     |> resolve_custom(:users, &Enum.map(&1, fn user -> resolve!(user, User) end))
   end
 
+  @spec resolve_message_reference(nil | map()) :: nil | map()
+  def resolve_message_reference(nil) do
+    nil
+  end
+
+  def resolve_message_reference(message_reference) do
+    message_reference
+    |> resolve_option(:message_id, Message)
+    |> resolve_option(:channel_id, Channel)
+    |> resolve_option(:guild_id, Guild)
+  end
+
   @spec resolve_files(map()) :: {body :: term(), headers :: keyword()}
   def resolve_files(%{files: files} = opts) do
     multipart_files =

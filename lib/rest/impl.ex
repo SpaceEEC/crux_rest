@@ -142,6 +142,7 @@ defmodule Crux.Rest.Impl do
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_custom(:message_reference, &Resolver.resolve_message_reference/1)
       |> Resolver.resolve_files()
 
     path = Endpoints.channels_messages(channel_id)

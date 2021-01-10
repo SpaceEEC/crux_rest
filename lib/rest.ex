@@ -399,12 +399,14 @@ defmodule Crux.Rest do
             %{
               optional(:parse) => [:roles | :users | :everyone | String.t()],
               optional(:roles) => [Role.id_resolvable()],
-              optional(:users) => [User.id_resolvable()]
+              optional(:users) => [User.id_resolvable()],
+              optional(:replied_user) => boolean()
             }
             | [
                 {:parse, [:roles | :users | :everyone | String.t()]}
                 | {:roles, [Role.id_resolvable()]}
                 | {:users, [User.id_resolvable()]}
+                | {:replied_user, boolean()}
               ]
 
     @typedoc """
@@ -422,6 +424,24 @@ defmodule Crux.Rest do
     @type file_options :: {data :: binary(), filename :: String.t()}
 
     @typedoc """
+    Used to reply to a previously send message using `c:create_message/2`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#message-object-message-reference-structure).
+    """
+    @typedoc since: "0.3.0"
+    @type message_reference ::
+            %{
+              optional(:message_id) => Message.id_resolvable(),
+              optional(:channel_id) => Channel.id_resolvable(),
+              optional(:guild_id) => Guild.id_resolvable()
+            }
+            | [
+                {:message_id, Message.id_resolvable()}
+                | {:channel_id, Message.id_resolvable()}
+                | {:guild_id, Message.id_resolvable()}
+              ]
+
+    @typedoc """
     Used to post messages to a channel by using `c:create_message/2,3`.
 
     The maximum request size when sending a message is 8MB.
@@ -433,6 +453,7 @@ defmodule Crux.Rest do
     - `attach_files` if using `:files`
     - `mention_everyone` if intending to mention `@everyone`, `@here`, or roles that are not marked as mentionable (silently fails if no permission)
     - `use_external_emojis` if using external emoji in the message content (silently fails if no permission)
+    - `view_message_history` if replying to a message using `:message_reference`
 
     For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-message-params).
     """
@@ -444,7 +465,8 @@ defmodule Crux.Rest do
               optional(:tts) => boolean(),
               optional(:files) => [file_options()],
               optional(:embed) => Embed.t() | embed_options(),
-              optional(:allowed_mentions) => allowed_mentions_options()
+              optional(:allowed_mentions) => allowed_mentions_options(),
+              optional(:message_reference) => message_reference()
             }
             | [
                 {:content, String.t()}
@@ -453,6 +475,7 @@ defmodule Crux.Rest do
                 | {:files, [file_options()]}
                 | {:embed, Embed.t() | embed_options()}
                 | {:allowed_mentions, allowed_mentions_options()}
+                | {:message_reference, message_reference()}
               ]
 
     @doc """
