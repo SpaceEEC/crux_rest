@@ -23,8 +23,8 @@ defmodule Crux.Rest.Endpoints.GeneratorTest do
     defmodule name do
       use Crux.Rest.Endpoints.Generator
 
-      route "/foo/@bar"
-      route "/foo/@bar.json"
+      route("/foo/@bar")
+      route("/foo/@bar.json")
     end
 
     assert name.foo_bar() == "/foo/@bar"
@@ -51,7 +51,7 @@ defmodule Crux.Rest.Endpoints.GeneratorTest do
     defmodule name do
       use Crux.Rest.Endpoints.Generator
 
-      route "/foo/:foo/:bar/baz"
+      route("/foo/:foo/:bar/baz")
     end
 
     assert name.foo() == "/foo"
