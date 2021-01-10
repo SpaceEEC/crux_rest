@@ -28,6 +28,7 @@ defmodule Crux.Rest.Impl do
     Permissions,
     Role,
     Snowflake,
+    Template,
     User,
     Util,
     VoiceRegion,
@@ -1147,6 +1148,91 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
     |> Request.put_reason(reason)
     |> Request.put_transform(Invite)
+  end
+
+  def get_template(template) do
+    code = Template.resolve_code(template)
+
+    path = Endpoints.guilds_templates(nil, code)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(Template)
+  end
+
+  def create_guild_from_template(template, opts) do
+    code = Template.resolve_code(template)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:icon, &Resolver.resolve_image/1)
+
+    path = Endpoints.guilds_templates(nil, code)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_transform(Template)
+  end
+
+  def get_templates(guild) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.guilds_templates(guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(to_map(Template, :code))
+  end
+
+  def create_template(guild, opts) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:icon, &Resolver.resolve_image/1)
+
+    path = Endpoints.guilds_templates(guild_id)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_transform(Template)
+  end
+
+  def sync_template(guild, template) do
+    guild_id = Resolver.resolve!(guild, Guild)
+    code = Template.resolve_code(template)
+
+    path = Endpoints.guilds_templates(guild_id, code)
+
+    :put
+    |> Request.new(path)
+    |> Request.put_transform(Template)
+  end
+
+  def modify_template(guild, template, opts) do
+    guild_id = Resolver.resolve!(guild, Guild)
+    code = Template.resolve_code(template)
+
+    data = Map.new(opts)
+
+    path = Endpoints.guilds_templates(guild_id, code)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_transform(Template)
+  end
+
+  def delete_template(guild, template) do
+    guild_id = Resolver.resolve!(guild, Guild)
+    code = Template.resolve_code(template)
+
+    path = Endpoints.guilds_templates(guild_id, code)
+
+    :delete
+    |> Request.new(path)
+    |> Request.put_transform(Template)
   end
 
   def get_current_user() do

@@ -44,6 +44,7 @@ defmodule Crux.Rest do
     Permissions,
     Role,
     Snowflake,
+    Template,
     User,
     VoiceRegion,
     Webhook
@@ -2050,6 +2051,137 @@ defmodule Crux.Rest do
 
     ###
     # Invite END
+    ###
+
+    ###
+    # Template START
+    ###
+
+    @doc """
+    Get a guild template.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#get-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback get_template(template :: Template.code_resolvable()) :: api_result(Template.t())
+
+    @typedoc """
+    Used to create a guild from a template using `c:create_guild_from_template/2`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#create-guild-from-template-json-params).
+    """
+    @typedoc since: "0.3.0"
+    @type create_guild_from_template_options ::
+            %{
+              required(:name) => String.t(),
+              optional(:icon) => image_options()
+            }
+            | [{:name, String.t()} | {:icon, image_options()}]
+
+    @doc """
+    Create a guild from a template object.
+
+    > This operation can not be used by bots that are in more than 9 guilds.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#create-guild-from-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback create_guild_from_template(
+                template :: Template.code_resolvable(),
+                opts :: create_guild_from_template_options
+              ) :: api_result(Guild.t())
+
+    @doc """
+    Get guild templates.
+    This operation requires `manage_guild` permission.
+
+    Guilds currently can only have one template.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#get-guild-templates).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback get_templates(guild :: Guild.id_resolvable()) ::
+                api_result(snowflake_map(Template.t()))
+
+    @typedoc """
+    Used to create or modify a guild template using `c:create_template/2` or `c:modify_template/3`.
+
+    ## Notes
+    - When creating a template, `:name` is required.
+    - `:name` must be [1, 100] characters long.
+    - `:description` must be [0, 120] characters long.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#create-guild-template-json-params).
+    """
+    @typedoc since: "0.3.0"
+    @type template_options ::
+            %{
+              optional(:name) => String.t(),
+              optional(:description) => String.t() | nil
+            }
+            | [
+                {:name, String.t()}
+                | {:description, String.t() | nil}
+              ]
+    @doc """
+    Create a template for a guild.
+    This operation requires the `manage_guild` permission.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#create-guild-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback create_template(
+                guild :: Guild.id_resolvable(),
+                opts :: template_options()
+              ) :: api_result(Template.t())
+
+    @doc """
+    Sync a guild template.
+    This operation requires the `manage_guild` permission.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#sync-guild-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    # Ignore naming here
+    @callback sync_template(
+                guild :: Guild.id_resolvable(),
+                template :: Template.code_resolvable()
+              ) :: api_result(Template.t())
+
+    @doc """
+    Modify a guild template's metadata.
+    This operation requires the `manage_guild` permission.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#modify-guild-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback modify_template(
+                guild :: Guild.id_resolvable(),
+                template :: Template.code_resolvable(),
+                opts :: template_options()
+              ) :: api_result(Template.t())
+
+    @doc """
+    Delete a guild template.
+    This operation requires the `manage_guild` permission.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/template#delete-guild-template).
+    """
+    @doc since: "0.3.0"
+    @doc section: :template
+    @callback delete_template(
+                guild :: Guild.id_resolvable(),
+                template :: Template.code_resolvable()
+              ) :: api_result(Template.t())
+
+    ###
+    # Template END
     ###
 
     ###
