@@ -46,7 +46,7 @@ defmodule Crux.Rest.MixProject do
       {:jason, "~> 1.1"},
       # {:ex_doc, path: "../../ex_doc", only: :dev, runtime: false},
       {:ex_doc, github: "spaceeec/ex_doc", branch: "fork", only: :dev, runtime: false},
-      {:credo, "~> 1.3", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mox, "~> 0.5", only: :test}
     ]
   end
