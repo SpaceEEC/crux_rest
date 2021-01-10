@@ -493,6 +493,30 @@ defmodule Crux.Rest do
               ) :: api_result(Message.t())
 
     @doc """
+    Crosspost a message sent in a news channel to all following channels.
+    This operation required `send_messages` permission if the message was sent by the current user, otherwise it _also_ requires `manage_messages`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#crosspost-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :message
+    @callback create_message_crosspost(
+                channel :: Channel.id_resolvable(),
+                message :: Message.id_resolvable()
+              ) :: api_result(Message.t())
+
+    @doc """
+    Crosspost a message sent in a news channel to all following channels.
+    This operation required `send_messages` permission if the message was sent by the current user, otherwise it _also_ requires `manage_messages`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#crosspost-message).
+    """
+    # Shortcut
+    @doc since: "0.3.0"
+    @doc section: :message
+    @callback create_message_crosspost(message :: Message.t()) :: api_result(Message.t())
+
+    @doc """
     Adds the current user to a reaction of a message, or create a reaction of a message.
     If a guild channel, this operation requires the `view_channel`, `read_message_history` permissions.
     Additionally, if nobody else has reacted to the message already `add_reactions` is also required.
@@ -827,6 +851,19 @@ defmodule Crux.Rest do
                 channel :: Channel.id_resolvable(),
                 overwrite :: User.id_resolvable() | Role.id_resolvable(),
                 reason :: String.t() | nil
+              ) :: api_result()
+
+    @doc """
+    Creates webhook that sends crossposted messages from the news channel to the target channel.
+    This operation requires the `manage_webhooks` permission in the target channel.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#follow-news-channel).
+    """
+    @doc since: "0.3.0"
+    @doc section: :channel
+    @callback create_news_channel_webhook(
+                news_channel :: Channel.id_resolvable(),
+                webhook_channel :: Channel.id_resolvable()
               ) :: api_result()
 
     @doc """

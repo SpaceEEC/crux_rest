@@ -153,6 +153,21 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  def create_message_crosspost(channel, message) do
+    channel_id = Resolver.resolve!(channel, Channel)
+    message_id = Resolver.resolve!(message, Message)
+
+    path = Endpoints.channels_messages_crosspost(channel_id, message_id)
+
+    :post
+    |> Request.new(path)
+    |> Request.put_transform(Message)
+  end
+
+  def create_message_crosspost(%{channel_id: channel_id, id: message_id}) do
+    create_message_crosspost(channel_id, message_id)
+  end
+
   def create_reaction(%{channel_id: channel_id, id: message_id}, emoji) do
     create_reaction(channel_id, message_id, emoji)
   end
@@ -355,6 +370,18 @@ defmodule Crux.Rest.Impl do
     :delete
     |> Request.new(path)
     |> Request.put_reason(reason)
+  end
+
+  def create_news_channel_webhook(news_channel, webhook_channel) do
+    news_channel_id = Resolver.resolve!(news_channel, Channel)
+    webhook_channel_id = Resolver.resolve!(webhook_channel, Channel)
+
+    data = %{webhook_channel_id: webhook_channel_id}
+
+    path = Endpoints.channels_followers(news_channel_id)
+
+    :post
+    |> Request.new(path, data)
   end
 
   def create_typing_indicator(channel) do
