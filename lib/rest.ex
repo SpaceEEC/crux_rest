@@ -1576,6 +1576,22 @@ defmodule Crux.Rest do
     # Shortcut
     @callback get_ban(member :: Member.t()) :: api_result(guild_ban)
 
+    @typedoc """
+    Used to ban a member from a guild using `c:create_ban`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-ban-json-params).
+    """
+    @typedoc since: "0.3.0"
+    @type create_ban_options ::
+            %{
+              optional(:delete_message_days) => 0..7,
+              optional(:reason) => String.t()
+            }
+            | [
+                {:delete_message_days, 0..7}
+                | {:reason, String.t()}
+              ]
+
     @doc """
     Ban a member from a guild.
     This operation requires the `ban_members` permission.
@@ -1587,7 +1603,7 @@ defmodule Crux.Rest do
     @callback create_ban(
                 guild :: Guild.id_resolvable(),
                 user :: User.id_resolvable(),
-                reason :: String.t() | nil
+                opts :: create_ban_options()
               ) :: api_result()
 
     @doc """
@@ -1601,7 +1617,7 @@ defmodule Crux.Rest do
     # Shortcut
     @callback create_ban(
                 member :: Member.t(),
-                reason :: String.t() | nil
+                opts :: create_ban_options()
               ) :: api_result()
 
     @doc """

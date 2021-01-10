@@ -820,22 +820,27 @@ defmodule Crux.Rest.Impl do
 
   def create_ban(
         guild_or_member,
-        user_or_reason \\ nil,
-        reason_or_ignore \\ nil
+        user_or_opts \\ nil,
+        opts_or_ignore \\ nil
       )
 
-  def create_ban(%{guild_id: guild_id, id: user_id}, reason, nil) do
-    create_ban(guild_id, user_id, reason)
+  def create_ban(%{guild_id: guild_id, id: user_id}, opts, nil) do
+    create_ban(guild_id, user_id, opts)
   end
 
-  def create_ban(guild, user, reason) do
+  def create_ban(guild, user, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
     user_id = Resolver.resolve!(user, User)
+
+    {reason, data} =
+      opts
+      |> Map.new()
+      |> Map.pop(:reason)
 
     path = Endpoints.guilds_bans(guild_id, user_id)
 
     :put
-    |> Request.new(path)
+    |> Request.new(path, data)
     |> Request.put_reason(reason)
   end
 
