@@ -9,7 +9,7 @@ defmodule Crux.Rest.Endpoints do
 
   use Crux.Rest.Endpoints.Generator
 
-  @base_url "https://discordapp.com/api"
+  @base_url "https://discord.com/api"
 
   @doc """
   Base API url, with or without a version.

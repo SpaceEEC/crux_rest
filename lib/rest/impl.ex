@@ -304,7 +304,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
     # Separate route as this is an exception
     # See the first info box here:
-    # https://discordapp.com/developers/docs/topics/rate-limits#rate-limits
+    # https://discord.com/developers/docs/topics/rate-limits#rate-limits
     |> Map.update!(:route, &("DELETE:" <> &1))
   end
 

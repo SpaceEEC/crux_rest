@@ -2,7 +2,7 @@ defmodule Crux.Rest.CDN do
   @moduledoc """
   Functions to generate CDN urls pointing to avatars, icons, etc.
 
-  Relevant upstream documentation: [Discord Developer Documentation](https://discordapp.com/developers/docs/reference#image-formatting-cdn-endpoints)
+  Relevant upstream documentation: [Discord Developer Documentation](https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints)
   """
   @moduledoc since: "0.1.5"
 

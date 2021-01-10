@@ -18,7 +18,7 @@ defmodule Crux.Rest do
   to disallow certain behavior at any point.
   There is not much that can be done about this, semver or not.
 
-  Relevant upstream documentation: [Discord Developer Documentation](https://discordapp.com/developers/docs/intro)
+  Relevant upstream documentation: [Discord Developer Documentation](https://discord.com/developers/docs/intro)
   """
   @moduledoc since: "0.1.0"
 
@@ -120,7 +120,7 @@ defmodule Crux.Rest do
     Used to filter or limit audit log entries obtained using `c:get_audit_log/2`.
     Note that the `:user_id` refers to the `executor` and **not** the `target`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/audit-log#get-guild-audit-log-query-string-parameters).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log-query-string-parameters).
     """
     @typedoc since: "0.1.7"
     @type audit_log_options ::
@@ -141,7 +141,7 @@ defmodule Crux.Rest do
     Get the audit log for the guild.
     This operation requires `view_audit_log` permissions.
 
-    For more informations see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/audit-log#get-guild-audit-log).
+    For more informations see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -161,7 +161,7 @@ defmodule Crux.Rest do
     @doc """
     Get a channel by id.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel).
     """
     @doc since: "0.2.0"
     @doc section: :channel
@@ -172,7 +172,7 @@ defmodule Crux.Rest do
 
     If you specify an `id` as `:id`, `:type` is required.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#overwrite-object).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#overwrite-object).
     """
     @typedoc since: "0.3.0"
     @type overwrite_options ::
@@ -205,7 +205,7 @@ defmodule Crux.Rest do
       Amount of users that can connect to a voice channel at the same time.
       Users with the permission `move_members` are unaffacted.
 
-    For more information see the Discord Developer Documentation: [create](https://discordapp.com/developers/docs/resources/guild#create-guild-channel-json-params) or [edit](https://discordapp.com/developers/docs/resources/channel#modify-channel-json-params).
+    For more information see the Discord Developer Documentation: [create](https://discord.com/developers/docs/resources/guild#create-guild-channel-json-params) or [edit](https://discord.com/developers/docs/resources/channel#modify-channel-json-params).
     """
     @typedoc since: "0.3.0"
     @type channel_options ::
@@ -241,7 +241,7 @@ defmodule Crux.Rest do
     This operation requires the `manage_channels` permissions.
     Additionally editing permission overwrites requires the `manage_roles` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#modify-channel).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#modify-channel).
     """
     @doc since: "0.2.0"
     @doc section: :channel
@@ -257,7 +257,7 @@ defmodule Crux.Rest do
     ## Notes
     - You may not delete a public guild's `rules_channel` and `public_updates_channel`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#deleteclose-channel).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#deleteclose-channel).
     """
     @doc since: "0.2.0"
     @doc section: :channel
@@ -273,7 +273,7 @@ defmodule Crux.Rest do
     ## Notes
     - `:limit` is defaulting to `50` and is capped at `100`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel-messages-query-string-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel-messages-query-string-params).
     """
     @typedoc since: "0.3.0"
     @type get_messages_options ::
@@ -294,7 +294,7 @@ defmodule Crux.Rest do
     Get messages from a channel.
     If a guild channel, this operation requires the `view_channel` and `read_message_history` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel-messages).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel-messages).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -307,7 +307,7 @@ defmodule Crux.Rest do
     Get a message from a channel.
     If a guild channel, this operation requires the `view_channel` and `read_message_history` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -320,7 +320,7 @@ defmodule Crux.Rest do
     Get a message from a channel.
     If a guild channel, this operation requires the `view_channel` and `read_message_history` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel-message).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -341,15 +341,15 @@ defmodule Crux.Rest do
     - `footer.text` 2048 characters
     - `author.name` 256 characters
     - All fields with a character limitation combined may not exceed 6000 characters  in total
-    For more information about embed limits, see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#embed-limits).
+    For more information about embed limits, see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#embed-limits).
 
     ## Files
     It's possible to use images attached to a message in embeds using the attachment scheme:
     `attachment://#{filename}.#{fileextension}`
     Note that "fileextension" must be a proper image extension.
-    For more information about attachments within embeds, see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-message-using-attachments-within-embeds).
+    For more information about attachments within embeds, see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-message-using-attachments-within-embeds).
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#embed-object).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#embed-object).
     """
     @typedoc since: "0.3.0"
     @type embed_options :: %{
@@ -391,9 +391,9 @@ defmodule Crux.Rest do
     - `:allowed_mentions` acts as a mere whitelist, allowed mentions not included in the content will simply be ignored.
     - Mentions included in the content but not in the whitelist will render as regular mentions, but not notify users.
 
-    You can find a few examples in the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference).
+    You can find a few examples in the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#allowed-mentions-object-allowed-mentions-reference).
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#allowed-mentions-object).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#allowed-mentions-object).
     """
     @typedoc since: "0.3.0"
     @type allowed_mentions_options ::
@@ -456,7 +456,7 @@ defmodule Crux.Rest do
     - `use_external_emojis` if using external emoji in the message content (silently fails if no permission)
     - `view_message_history` if replying to a message using `:message_reference`
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-message-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-message-params).
     """
     @typedoc since: "0.3.0"
     @type create_message_options ::
@@ -484,7 +484,7 @@ defmodule Crux.Rest do
     If a guild channel, this operation requires the `view_channel` and `send_messages` permissions
     and additional permissions depending on the options.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -523,7 +523,7 @@ defmodule Crux.Rest do
     Additionally, if nobody else has reacted to the message already `add_reactions` is also required.
     If the to be added emoji is from a different guild, also the `use_external_emojis` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-reaction).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-reaction).
     """
     @doc since: "0.2.0"
     @doc section: :reaction
@@ -539,7 +539,7 @@ defmodule Crux.Rest do
     Additionally, if nobody else has reacted to the message already `add_reactions` is also required.
     If the to be added emoji is from a different guild, also the `use_external_emojis` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-reaction).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-reaction).
     """
     @doc since: "0.2.0"
     @doc section: :reaction
@@ -555,7 +555,7 @@ defmodule Crux.Rest do
 
     To delete the reaction from the current user use `"@me"` as user.
 
-    For more information see the Discord Developer Documentation: [`"@me"`](https://discordapp.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discordapp.com/developers/docs/resources/channel#delete-user-reaction).
+    For more information see the Discord Developer Documentation: [`"@me"`](https://discord.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discord.com/developers/docs/resources/channel#delete-user-reaction).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -572,7 +572,7 @@ defmodule Crux.Rest do
 
     To delete the reaction from the current user use `"@me"` as user.
 
-    For more information see the Discord Developer Documentation: [`"@me"`](https://discordapp.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discordapp.com/developers/docs/resources/channel#delete-user-reaction).
+    For more information see the Discord Developer Documentation: [`"@me"`](https://discord.com/developers/docs/resources/channel#delete-own-reaction) and [user](https://discord.com/developers/docs/resources/channel#delete-user-reaction).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -589,7 +589,7 @@ defmodule Crux.Rest do
     ## Notes
     - `:limit` is defaulting to `25` and is capped at `100`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-reactions-query-string-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-reactions-query-string-params).
     """
     @typedoc since: "0.3.0"
     @type get_reactions_options ::
@@ -607,7 +607,7 @@ defmodule Crux.Rest do
     @doc """
     Get users that reacted with an emoji.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-reactions)
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-reactions)
     """
     @doc since: "0.2.0"
     @doc section: :reaction
@@ -621,7 +621,7 @@ defmodule Crux.Rest do
     @doc """
     Get users that reacted with an emoji.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-reactions)
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-reactions)
     """
     @doc since: "0.2.0"
     @doc section: :reaction
@@ -636,7 +636,7 @@ defmodule Crux.Rest do
     Delete all reaction on a message.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-all-reactions).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -649,7 +649,7 @@ defmodule Crux.Rest do
     Delete all reactions on a message.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-all-reactions).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -660,7 +660,7 @@ defmodule Crux.Rest do
     Delete all reactions for a given emoji on a message.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions-for-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -674,7 +674,7 @@ defmodule Crux.Rest do
     Delete all reactions for a given emoji on a message.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-all-reactions-for-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :reaction
@@ -703,7 +703,7 @@ defmodule Crux.Rest do
     Edit a previously sent message.
     If editing another user's message, this operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#edit-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#edit-message).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -717,7 +717,7 @@ defmodule Crux.Rest do
     Edit a previously sent message.
     If editing another user's message, this operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#edit-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#edit-message).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -731,7 +731,7 @@ defmodule Crux.Rest do
     Delete a message.
     If deleting a message of another user, this operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -744,7 +744,7 @@ defmodule Crux.Rest do
     Delete a message.
     If deleting a message of another user, this operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -760,7 +760,7 @@ defmodule Crux.Rest do
     - There must not be any duplicated messages.
     - There must not be any messages older than 14 days.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#bulk-delete-messages).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#bulk-delete-messages).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -777,7 +777,7 @@ defmodule Crux.Rest do
     - To replace all existing overwrites use `c:modify_channel/2` instead.
     - To delete an overwrite completely use `c:delete_channel_overwrite/3` instead.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#edit-channel-permissions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#edit-channel-permissions).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -791,7 +791,7 @@ defmodule Crux.Rest do
     Get all invites of a channel.
     This operation requires the `manage_channels` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-channel-invites).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-channel-invites).
     """
     @doc since: "0.2.0"
     @doc section: :invite
@@ -805,7 +805,7 @@ defmodule Crux.Rest do
     - `:max_age` is in seconds, 0 refers for no max age.
     - `:max_uses` 0 for unlimited uses.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-channel-invite-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-channel-invite-json-params).
     """
     @typedoc since: "0.3.0"
     @type create_invite_options ::
@@ -832,7 +832,7 @@ defmodule Crux.Rest do
     Create an invite for a channel.
     This operation requires the `create_instant_invite` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#create-channel-invite).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#create-channel-invite).
     """
     @doc since: "0.3.0"
     @doc section: :invite
@@ -849,7 +849,7 @@ defmodule Crux.Rest do
     - To replace all existing overwrites use `c:modify_channel/2` instead.
     - To create or edit overwrites use `c:modify_channel_overwrite/3` instead.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-channel-permission).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-channel-permission).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -880,7 +880,7 @@ defmodule Crux.Rest do
 
     This operation requires the same permissions as sending a message.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#trigger-typing-indicator).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#trigger-typing-indicator).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -890,7 +890,7 @@ defmodule Crux.Rest do
     Get all pinned messages in a channel.
     This operation requires the `view_channel` and `read_message_history` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#get-pinned-messages).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#get-pinned-messages).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -903,7 +903,7 @@ defmodule Crux.Rest do
 
     The maxmimum amount of pinned messages per channel is 50.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#add-pinned-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#add-pinned-channel-message).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -919,7 +919,7 @@ defmodule Crux.Rest do
 
     The maxmimum amount of pinned messages per channel is 50.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#add-pinned-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#add-pinned-channel-message).
     """
     @doc since: "0.3.0"
     @doc section: :message
@@ -933,7 +933,7 @@ defmodule Crux.Rest do
     Unpin a message in a channel.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-pinned-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-pinned-channel-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -947,7 +947,7 @@ defmodule Crux.Rest do
     Unpin a message in a channel.
     This operation requires the `manage_messages` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/channel#delete-pinned-channel-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#delete-pinned-channel-message).
     """
     @doc since: "0.2.0"
     @doc section: :message
@@ -972,7 +972,7 @@ defmodule Crux.Rest do
     @doc """
     Get all emoji in a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/emoji#list-guild-emojis).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/emoji#list-guild-emojis).
     """
     @doc since: "0.3.0"
     @doc section: :emoji
@@ -985,7 +985,7 @@ defmodule Crux.Rest do
     ## Notes
     - `:user` is only present if the `manage_emojis` permission is set for the current user.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/emoji#get-guild-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/emoji#get-guild-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :emoji
@@ -1019,7 +1019,7 @@ defmodule Crux.Rest do
     Or a tuple of `{extension, data}`.
     Example: `{"jpeg", JPEG_IMAGE_BINARY}`
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/reference#image-data).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/reference#image-data).
     """
     @typedoc since: "0.3.0"
     @type image_options :: String.t() | {extension :: String.t(), data :: binary()}
@@ -1046,7 +1046,7 @@ defmodule Crux.Rest do
     Create an emoji in a guild.
     This operation requires the `manage_emojis` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/emoji#create-guild-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/emoji#create-guild-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :emoji
@@ -1075,7 +1075,7 @@ defmodule Crux.Rest do
     Edit an emoji.
     This operation requires the `manage_emojis` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/emoji#modify-guild-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/emoji#modify-guild-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :emoji
@@ -1097,7 +1097,7 @@ defmodule Crux.Rest do
     Delete an emoji.
     This operation requires the `manage_emojis` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/emoji#delete-guild-emoji).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/emoji#delete-guild-emoji).
     """
     @doc since: "0.3.0"
     @doc section: :emoji
@@ -1125,7 +1125,7 @@ defmodule Crux.Rest do
 
     **These are converted to a map, json encoded, and passed to Discord as-is.**
 
-    Please refer to the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild) for options and how they work.
+    Please refer to the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild) for options and how they work.
     """
     # That link is correct, there is a relevant warning above the parameters table for whatever reason. ^
     @typedoc since: "0.3.0"
@@ -1135,7 +1135,7 @@ defmodule Crux.Rest do
     Create a guild.
     This operation may only be used by bots in less than 10 guilds. (Ownership is irrelevant.)
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild).
     """
     @doc since: "0.2.0"
     @doc section: :guild
@@ -1144,7 +1144,7 @@ defmodule Crux.Rest do
     @doc """
     Get a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild).
     """
     @doc since: "0.2.0"
     @doc section: :guild
@@ -1154,7 +1154,7 @@ defmodule Crux.Rest do
     Get a guild preview.
     This operation is only available for public guilds.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-preview).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-preview).
     """
     @doc sinc: "0.3.0"
     @doc section: :guild
@@ -1169,7 +1169,7 @@ defmodule Crux.Rest do
     - `:afk_timeout` is in seconds and must be one of (60, 300, 900, 1800, 3600).
     - `:preferred_locale` must be one of ("cs", "vi", "tr", "ko", "pl", "nl", "de", "ru", "ro", "en-GB", "es-ES", "hu", "uk", "zh-CN", "zh-TW", "el", "ja", "th", "pt-BR", "no", "fi", "lt", "hr", "fr", "da", "bg", "en-US", "sv-SE", "it").
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_guild_options ::
@@ -1214,7 +1214,7 @@ defmodule Crux.Rest do
     Edit a guild.
     This operation requires the `manage_guild` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild).
     """
     @doc since: "0.2.0"
     @doc section: :guild
@@ -1227,7 +1227,7 @@ defmodule Crux.Rest do
     Delete a guild.
     This operation may only be executed by the owner of the guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild).
     """
     @doc since: "0.2.0"
     @doc section: :guild
@@ -1236,7 +1236,7 @@ defmodule Crux.Rest do
     @doc """
     Get all channels within a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-channels).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-channels).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -1247,7 +1247,7 @@ defmodule Crux.Rest do
     Create a channel within a guild.
     This operation requires the `manage_channels` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-channel).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-channel).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -1259,7 +1259,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to edit the position of channels using `c:modify_channel_positions/2`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel-positions-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions-json-params).
     """
     @typedoc since: "0.3.0"
     @type channel_positions_options ::
@@ -1273,7 +1273,7 @@ defmodule Crux.Rest do
     Edit the positions of channels within a guild.
     This operation requires the `manage_channels` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-channel-positions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions).
     """
     @doc since: "0.3.0"
     @doc section: :channel
@@ -1285,7 +1285,7 @@ defmodule Crux.Rest do
     @doc """
     Get a member of a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1297,7 +1297,7 @@ defmodule Crux.Rest do
     @doc """
     Get a member of a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1310,7 +1310,7 @@ defmodule Crux.Rest do
     ## Notes
     - `:limit` defaults to 1
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#list-guild-members-query-string-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#list-guild-members-query-string-params).
     """
     @typedoc since: "0.3.0"
     @type get_members_options ::
@@ -1324,7 +1324,7 @@ defmodule Crux.Rest do
     Get members of a guild.
     This operation requires the current user's application to have the `guild_members` intent enabled. (Regardless of whether any connected gateways specify it)
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1344,7 +1344,7 @@ defmodule Crux.Rest do
     - `:mute` if provided, requires the `mute_members` permission.
     - `:deaf` if provided, requires the `deafen_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#add-guild-member-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#add-guild-member-json-params).
     """
     @typedoc since: "0.3.0"
     @type create_member_options :: %{
@@ -1361,7 +1361,7 @@ defmodule Crux.Rest do
 
     Returns no result if the member is already in the guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#add-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#add-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1387,7 +1387,7 @@ defmodule Crux.Rest do
     Use `nil` to disconnect the user.
     If provided and the parameter is not `nil`, fails if the member is not connected to any voice channel in the guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-member-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_member_options ::
@@ -1411,7 +1411,7 @@ defmodule Crux.Rest do
     @doc """
     Edit a member in a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1424,7 +1424,7 @@ defmodule Crux.Rest do
     @doc """
     Edit a member in a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1439,7 +1439,7 @@ defmodule Crux.Rest do
 
     Yes, this endpoint actually exists.
 
-    For more information, but not an answer to the question why, see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-current-user-nick).
+    For more information, but not an answer to the question why, see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-current-user-nick).
     """
     @doc since: "0.2.0"
     @doc section: :member
@@ -1453,7 +1453,7 @@ defmodule Crux.Rest do
     Add a role to a member.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#add-guild-member-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#add-guild-member-role).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1468,7 +1468,7 @@ defmodule Crux.Rest do
     Add a role to a member.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#add-guild-member-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#add-guild-member-role).
     """
     # Shortcut
     @doc since: "0.3.0"
@@ -1483,7 +1483,7 @@ defmodule Crux.Rest do
     Remove a role from a member.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-member-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-member-role).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1498,7 +1498,7 @@ defmodule Crux.Rest do
     Remove a role from a member.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-member-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-member-role).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1513,7 +1513,7 @@ defmodule Crux.Rest do
     Kick a member from a guild.
     This operation requires the `kick_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1527,7 +1527,7 @@ defmodule Crux.Rest do
     Kick a member from a guild.
     This operation requires the `kick_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-member).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1540,7 +1540,7 @@ defmodule Crux.Rest do
     @typedoc """
     A ban in a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#ban-object)
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#ban-object)
     """
     @typedoc since: "0.3.0"
     @type guild_ban :: %{user: User.t(), reason: String.t() | nil}
@@ -1549,7 +1549,7 @@ defmodule Crux.Rest do
     Get all bans in a guild.
     This operation requires the `ban_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-bans).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-bans).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1560,7 +1560,7 @@ defmodule Crux.Rest do
     Get all single ban in a guild, fails if no the given user is not banned.
     This operation requires the `ban_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-bans).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-bans).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1573,7 +1573,7 @@ defmodule Crux.Rest do
     Get all single ban in a guild, fails if no the given user is not banned.
     This operation requires the `ban_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-ban).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-ban).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1600,7 +1600,7 @@ defmodule Crux.Rest do
     Ban a member from a guild.
     This operation requires the `ban_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-ban).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-ban).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1614,7 +1614,7 @@ defmodule Crux.Rest do
     Ban a member from a guild.
     This operation requires the `ban_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-ban).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-ban).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1628,7 +1628,7 @@ defmodule Crux.Rest do
     Unban a member from a guild.
     This operation requires the `ban_members` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-ban).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-ban).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1642,7 +1642,7 @@ defmodule Crux.Rest do
     Unban a member from a guild.
     This operation requires the `ban_members` permissions.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#remove-guild-ban).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#remove-guild-ban).
     """
     @doc since: "0.3.0"
     @doc section: :ban
@@ -1655,7 +1655,7 @@ defmodule Crux.Rest do
     @doc """
     Get all roles in a guild.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-roles).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-roles).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1664,7 +1664,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to create or edit a role using respectively `c:create_role/2` or `c:modify_role/2`.
 
-    For more information see the Discord Developer Documentation: [create](https://discordapp.com/developers/docs/resources/guild#create-guild-role-json-params) or [edit](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-json-params).
+    For more information see the Discord Developer Documentation: [create](https://discord.com/developers/docs/resources/guild#create-guild-role-json-params) or [edit](https://discord.com/developers/docs/resources/guild#modify-guild-role-json-params).
     """
     @typedoc since: "0.3.0"
     @type role_options ::
@@ -1689,7 +1689,7 @@ defmodule Crux.Rest do
     Create a role in a guild.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-role).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1701,7 +1701,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to edit the position of a role using `c:modify_role_positions/2`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role-positions-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_role_positions_options ::
@@ -1718,7 +1718,7 @@ defmodule Crux.Rest do
     Edit the position of roles.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role-positions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role-positions).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1731,7 +1731,7 @@ defmodule Crux.Rest do
     Edit a role.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1745,7 +1745,7 @@ defmodule Crux.Rest do
     Edit a role.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1759,7 +1759,7 @@ defmodule Crux.Rest do
     Delete a role.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild-role).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1773,7 +1773,7 @@ defmodule Crux.Rest do
     Delete a role.
     This operation requires the `manage_roles` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-role).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild-role).
     """
     @doc since: "0.3.0"
     @doc section: :role
@@ -1819,7 +1819,7 @@ defmodule Crux.Rest do
 
     For large guilds it's recommend to set `compute_prune_count` to `false`, making `pruned` return `nil`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#begin-guild-prune).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#begin-guild-prune).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -1831,7 +1831,7 @@ defmodule Crux.Rest do
     @doc """
     Get all voice regions a guild can use, this includes `VIP servers` if the guild is eligible.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-voice-regions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-voice-regions).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -1842,7 +1842,7 @@ defmodule Crux.Rest do
     Get all invites of a guild.
     This operation requires the `manage_guild` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-invites).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-invites).
     """
     @doc since: "0.2.0"
     @doc section: :invite
@@ -1853,7 +1853,7 @@ defmodule Crux.Rest do
     Get all integrations of a guild.
     This operation requires the `manage_guild` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-integrations).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-integrations).
     """
     @doc since: "0.3.0"
     @doc section: :integration
@@ -1863,7 +1863,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to create an integration used by `c:create_integration/2`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-integration-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration-json-params).
     """
     @typedoc since: "0.3.0"
     @type create_integration_options :: %{
@@ -1876,7 +1876,7 @@ defmodule Crux.Rest do
     Create an integration.
     This operation requires the `manage_guild` operation.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-integration).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration).
     """
     @doc since: "0.3.0"
     @doc section: :integration
@@ -1888,7 +1888,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to edit an integration used by `c:modify_integration/3`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#create-guild-integration-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_integration_options :: %{
@@ -1902,7 +1902,7 @@ defmodule Crux.Rest do
     Edit an integration.
     This operation requires the `manage_guild` operation.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-integration).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-integration).
     """
     @doc since: "0.3.0"
     @doc section: :integration
@@ -1916,7 +1916,7 @@ defmodule Crux.Rest do
     Delete an integration.
     This operation requires the `manage_guild` operation.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-integration).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild-integration).
     """
     @doc since: "0.3.0"
     @doc section: :integration
@@ -1930,7 +1930,7 @@ defmodule Crux.Rest do
     Sync an integration.
     This operation requires the `manage_guild` operation.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#delete-guild-integration).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild-integration).
     """
     @doc since: "0.3.0"
     @doc section: :integration
@@ -1962,7 +1962,7 @@ defmodule Crux.Rest do
     Edit a guild embed.
     This operation requires the `manage_guild` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#modify-guild-embed).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-embed).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -1999,7 +1999,7 @@ defmodule Crux.Rest do
     - `:code` is only the code, not the full url.
     - The operation will fail if the guild is not eligible to set a vanity invite.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-vanity-url).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-vanity-url).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -2020,7 +2020,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to get member counts when getting an invite using `c:get_invite/2`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/invite#get-invite-get-invite-url-parameters).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/invite#get-invite-get-invite-url-parameters).
     """
     @typedoc since: "0.3.0"
     @type get_invite_options ::
@@ -2032,7 +2032,7 @@ defmodule Crux.Rest do
     @doc """
     Get an invite.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/invite#get-invite).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/invite#get-invite).
     """
     @doc since: "0.2.0"
     @doc section: :invite
@@ -2043,7 +2043,7 @@ defmodule Crux.Rest do
     Delete an invite.
     This operation requires either the `manage_guild` permission or the `manage_channels` permission on the channel of the invite.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/invite#delete-invite).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/invite#delete-invite).
     """
     @doc since: "0.2.0"
     @doc section: :invite
@@ -2195,7 +2195,7 @@ defmodule Crux.Rest do
     Get the currently logged in user.
 
     Note that the OAuth2 part of this endpoint's documentation does not apply to bots.
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-current-user).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#get-current-user).
     """
     @doc since: "0.2.1"
     @doc section: :user
@@ -2205,7 +2205,7 @@ defmodule Crux.Rest do
     @doc """
     Get a user.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-user).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#get-user).
     """
     @doc since: "0.2.0"
     @doc section: :user
@@ -2216,7 +2216,7 @@ defmodule Crux.Rest do
 
     There are some limitations around usernames, see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#usernames-and-nicknames).
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#modify-current-user-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#modify-current-user-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_current_user_options ::
@@ -2234,7 +2234,7 @@ defmodule Crux.Rest do
 
     Note that verified bots may not change their avatar through this function and have to go through support instead.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#modify-current-user).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#modify-current-user).
     """
     @doc since: "0.2.0"
     @doc section: :user
@@ -2243,7 +2243,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to obtain guilds the currently logged in user is a member of using `c:get_current_user_guilds/1`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-current-user-guilds-query-string-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#get-current-user-guilds-query-string-params).
     """
     @typedoc since: "0.3.0"
     @type get_current_user_guilds_options ::
@@ -2269,7 +2269,7 @@ defmodule Crux.Rest do
     - `:permissions` - permissions of the currently logged in user
 
     Note that the OAuth2 part of this endpoint's documentation does not apply to bots.
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#get-current-user-guilds).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#get-current-user-guilds).
     """
     @doc since: "0.2.0"
     @doc section: :user
@@ -2280,7 +2280,7 @@ defmodule Crux.Rest do
     Leave a guild.
     Fails if the currently logged in user owns it.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#leave-guild).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#leave-guild).
     """
     @doc since: "0.3.0"
     @doc section: :guild
@@ -2298,7 +2298,7 @@ defmodule Crux.Rest do
     - Opening a DM to an existing user always works, if the target is not the logged in user.
     - Sending a DM to bots however _always_ will fail.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/user#create-dm).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#create-dm).
     """
     @doc since: "0.2.0"
     @doc section: :user
@@ -2321,7 +2321,7 @@ defmodule Crux.Rest do
 
     To get a list of voice regions you can use for a specific guild use `c:get_voice_regions/1` instead.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/voice#list-voice-regions).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/voice#list-voice-regions).
     """
     @doc since: "0.3.0"
     @doc section: :voice
@@ -2339,7 +2339,7 @@ defmodule Crux.Rest do
     @typedoc """
     Used to create a webhook using `c:create_webhook/2`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#create-webhook-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#create-webhook-json-params).
     """
     @typedoc since: "0.3.0"
     @type create_webhook_options ::
@@ -2358,7 +2358,7 @@ defmodule Crux.Rest do
     Create a new webhook.
     This operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#create-webhook).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#create-webhook).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2371,7 +2371,7 @@ defmodule Crux.Rest do
     Get all webhooks in a channel.
     This operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#get-channel-webhooks).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#get-channel-webhooks).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2382,7 +2382,7 @@ defmodule Crux.Rest do
     Get all webhooks in a guild.
     This operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#get-guild-webhooks).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#get-guild-webhooks).
     """
     @doc since: "0.2.0"
     @doc section: :webhook
@@ -2396,7 +2396,7 @@ defmodule Crux.Rest do
     - If a `t:Webhook.t/0` is being used, the resulting webhook does not include a `:user`.
     - If a `t:Webhook.id_resolvable/0` is being used, this operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#get-guild-webhooks).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#get-guild-webhooks).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2409,7 +2409,7 @@ defmodule Crux.Rest do
     ## Notes
     - The resulting webhook does not include a `:user`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#get-webhook-with-token).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#get-webhook-with-token).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2422,7 +2422,7 @@ defmodule Crux.Rest do
     ## Notes
     - If using `c:modify_webhook/3` or `c:modify_webhook/2` with a `t:Crux.Structs.Webhook.t/0`, `:channel_id` and `:reason` are not a valid options and will be silently ignored.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#modify-webhook-json-params).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#modify-webhook-json-params).
     """
     @typedoc since: "0.3.0"
     @type modify_webhook_options :: %{
@@ -2436,7 +2436,7 @@ defmodule Crux.Rest do
     Edit a webhook.
     If a `t:Crux.Structs.Webhook.id_resolvable/0` is being used, this operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#modify-webhook).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#modify-webhook).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2455,7 +2455,7 @@ defmodule Crux.Rest do
 
     The resulting webhook does not include a `:user`.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#modify-webhook-with-token).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#modify-webhook-with-token).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2469,7 +2469,7 @@ defmodule Crux.Rest do
     Delete a webhook.
     If not using a token, this operation requires the `manage_webhooks` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/webhook#delete-webhook).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/webhook#delete-webhook).
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2494,7 +2494,7 @@ defmodule Crux.Rest do
     Note that the documented types are only for Discord, for Slack and GitHub refer to their documentations linked below.
 
     For more information see the relevant Documentation:
-    - [Discord](https://discordapp.com/developers/docs/resources/webhook#execute-webhook-jsonform-params)
+    - [Discord](https://discord.com/developers/docs/resources/webhook#execute-webhook-jsonform-params)
     - [Slack](https://api.slack.com/messaging/webhooks)
     - [Github](https://developer.github.com/webhooks/)
     """
@@ -2531,9 +2531,9 @@ defmodule Crux.Rest do
     Note that only a message sent using the `:discord` `:type` that was `:wait`ed for will return a `t:Message.t/0`.
 
     For more information see the Discord Developer Documentation:
-    - [default](https://discordapp.com/developers/docs/resources/webhook#execute-webhook)
-    - [Slack-Compatible](https://discordapp.com/developers/docs/resources/webhook#execute-slackcompatible-webhook)
-    - [Github-Compatible](https://discordapp.com/developers/docs/resources/webhook#execute-githubcompatible-webhook)
+    - [default](https://discord.com/developers/docs/resources/webhook#execute-webhook)
+    - [Slack-Compatible](https://discord.com/developers/docs/resources/webhook#execute-slackcompatible-webhook)
+    - [Github-Compatible](https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook)
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2548,9 +2548,9 @@ defmodule Crux.Rest do
     Note that only a message sent using the `:discord` `:type` that was `:wait`ed for will return a `t:Message.t/0`.
 
     For more information see the Discord Developer Documentation:
-    - [default](https://discordapp.com/developers/docs/resources/webhook#execute-webhook)
-    - [Slack-Compatible](https://discordapp.com/developers/docs/resources/webhook#execute-slackcompatible-webhook)
-    - [Github-Compatible](https://discordapp.com/developers/docs/resources/webhook#execute-githubcompatible-webhook)
+    - [default](https://discord.com/developers/docs/resources/webhook#execute-webhook)
+    - [Slack-Compatible](https://discord.com/developers/docs/resources/webhook#execute-slackcompatible-webhook)
+    - [Github-Compatible](https://discord.com/developers/docs/resources/webhook#execute-githubcompatible-webhook)
     """
     @doc since: "0.3.0"
     @doc section: :webhook
@@ -2617,7 +2617,7 @@ defmodule Crux.Rest do
     @doc """
     Get the currently valid WSS URL.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/gateway#get-gateway).
     """
     @doc since: "0.3.0"
     @doc section: :gateway
@@ -2626,7 +2626,7 @@ defmodule Crux.Rest do
     @doc """
     Get the currently valid WSS URL and additional metadata.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/gateway#get-gateway).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/gateway#get-gateway).
     """
     @doc since: "0.3.0"
     @doc section: :gateway
@@ -2646,13 +2646,13 @@ defmodule Crux.Rest do
     ###
 
     ###
-    # OAuth2
+    # OAuth2 START
     ###
 
     @typedoc """
     An OAuth2 application object.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information-response-structure).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/oauth2#get-current-application-information-response-structure).
     """
     @typedoc since: "0.3.0"
     @type oauth2_application :: %{
@@ -2687,7 +2687,7 @@ defmodule Crux.Rest do
     @doc """
     Get the currently logged in user's OAuth2 application info.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/topics/oauth2#get-current-application-information).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/oauth2#get-current-application-information).
     """
     @doc since: "0.3.0"
     @doc section: :oauth2

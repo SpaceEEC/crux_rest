@@ -126,7 +126,7 @@ defmodule Crux.Rest.Impl.Resolver do
   ###
 
   @doc """
-  Resolves image data as per Discord's specification: [Discord Developer Documentation](https://discordapp.com/developers/docs/reference#image-data)
+  Resolves image data as per Discord's specification: [Discord Developer Documentation](https://discord.com/developers/docs/reference#image-data)
   """
   @spec resolve_image(image :: nil | String.t() | {extension :: String.t(), data :: binary()}) ::
           nil | String.t()

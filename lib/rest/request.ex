@@ -7,7 +7,7 @@ defmodule Crux.Rest.Request do
   alias Crux.Structs
   alias Mix.Project
 
-  # See: https://discordapp.com/developers/docs/reference#user-agent
+  # See: https://discord.com/developers/docs/reference#user-agent
   url = Project.config()[:source_url]
   version = Project.config()[:version]
   @user_agent "DiscordBot (#{url}, v#{version})"

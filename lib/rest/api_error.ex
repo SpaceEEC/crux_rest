@@ -19,8 +19,8 @@ defmodule Crux.Rest.ApiError do
   @typedoc """
   | Property      | Description                                                                                                                    | Example(s)          |
   | ------------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-  | `status_code` | The [HTTP Response code](https://discordapp.com/developers/docs/topics/opcodes-and-status-codes#http-http-response-codes)      | `400`, `404`, `403` |
-  | `code`        | Discord's [JSON Error Code](https://discordapp.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes)      | `10006`, `90001`    |
+  | `status_code` | The [HTTP Response code](https://discord.com/developers/docs/topics/opcodes-and-status-codes#http-http-response-codes)      | `400`, `404`, `403` |
+  | `code`        | Discord's [JSON Error Code](https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes)      | `10006`, `90001`    |
   | `message`     | Message describing the error                                                                                                   | `Unknown Invite`    |
   | `path`        | Path of the request                                                                                                            | `/invites/broken`   |
   | `method`      | HTTP verb of the request                                                                                                       | :get, :post, :patch |
