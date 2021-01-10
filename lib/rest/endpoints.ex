@@ -18,8 +18,8 @@ defmodule Crux.Rest.Endpoints do
   iex> Crux.Rest.Endpoints.base_url(nil)
   "#{@base_url}"
 
-  iex> Crux.Rest.Endpoints.base_url(7)
-  "#{@base_url}/v7"
+  iex> Crux.Rest.Endpoints.base_url(8)
+  "#{@base_url}/v8"
   ```
   """
   @spec base_url(version :: integer() | nil) :: String.t()
@@ -33,14 +33,20 @@ defmodule Crux.Rest.Endpoints do
   end
 
   route "/channels/:channel_id" do
+    route("/followers")
+
     route("/invites")
 
     route "/messages" do
       route("/bulk-delete")
 
-      route "/:message_id/reactions/:emoji" do
-        route("/:user_id")
-        route("/@me")
+      route "/:message_id" do
+        route("/crosspost")
+
+        route "/reactions/:emoji" do
+          route("/:user_id")
+          route("/@me")
+        end
       end
     end
 
@@ -58,7 +64,6 @@ defmodule Crux.Rest.Endpoints do
     route("/audit-logs")
     route("/bans/:member_id")
     route("/channels")
-    route("/embed")
     route("/emojis/:emoji_id")
     route("/integrations/:integration_id/sync")
     route("/invites")
@@ -73,8 +78,11 @@ defmodule Crux.Rest.Endpoints do
     route("/prune")
     route("/regions")
     route("/roles/:role_id")
+    route("/templates/:template_code")
     route("/vanity-url")
     route("/webhooks")
+    route("/widget")
+    route("/widget.json")
   end
 
   route("/invites/:code")
@@ -93,6 +101,7 @@ defmodule Crux.Rest.Endpoints do
   route("/voice/regions")
 
   route "/webhooks/:webhook_id/:token" do
+    route("/messages/:message_id")
     route("/github")
     route("/slack")
   end
