@@ -1776,17 +1776,36 @@ defmodule Crux.Rest do
     # Shortcut
     @callback delete_role(role :: Role.t(), reason :: String.t() | nil) :: api_result()
 
+    @typedoc """
+    Used to prune guild members or get the count of to-be pruned guild members using respectively `c:create_prune/2` or `c:get_prune_count/2`.
+
+    `:compute_prune_count` only has effect in `c:create_prune/2`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#begin-guild-prune-json-params).
+    """
+    @typedoc since: "0.3.0"
+    @type prune_options ::
+            %{
+              optional(:days) => 1..30,
+              optional(:include_roles) => [Role.id_resolvable()],
+              optional(:compute_prune_count) => boolean()
+            }
+            | [
+                {:days, 1..30}
+                | {:include_roles, [Role.id_resolvable()]}
+                | {:compute_prune_count, boolean()}
+              ]
+
     @doc """
     Calculate the amount of members that would have been removed in a prune operation.
     Requires the `kick_members` permission.
 
-    For more information see the [Discord Developer Documentation](https://discordapp.com/developers/docs/resources/guild#get-guild-prune-count).
     """
     @doc since: "0.3.0"
     @doc section: :guild
     @callback get_prune_count(
                 guild :: Guild.id_resolvable(),
-                opts :: %{optional(:days) => 1..30} | [{:days, 1..30}]
+                opts :: prune_options()
               ) ::
                 api_result(%{pruned: non_neg_integer()})
 
@@ -1802,9 +1821,7 @@ defmodule Crux.Rest do
     @doc section: :guild
     @callback create_prune(
                 guild :: Guild.id_resolvable(),
-                opts ::
-                  %{optional(:days) => 1..30, optional(:compute_prune_count) => boolean()}
-                  | [{:days, 1..30} | {:compute_prune_count, boolean()}]
+                opts :: prune_options()
               ) :: api_result(%{pruned: non_neg_integer() | nil})
 
     @doc """

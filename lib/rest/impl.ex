@@ -958,7 +958,16 @@ defmodule Crux.Rest.Impl do
   def get_prune_count(guild, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
 
-    params = Enum.to_list(opts)
+    params =
+      opts
+      |> Map.new()
+      |> Map.delete(:compute_prune_count)
+      |> Resolver.resolve_custom(:include_roles, fn roles ->
+        roles
+        |> Resolver.resolve_list!(Role)
+        |> Enum.join(",")
+      end)
+      |> Enum.to_list()
 
     path = Endpoints.guilds_prune(guild_id)
 
@@ -971,13 +980,16 @@ defmodule Crux.Rest.Impl do
   def create_prune(guild, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
 
-    params = Enum.to_list(opts)
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:include_roles, &Resolver.resolve_list!(&1, Role))
+      |> Enum.to_list()
 
     path = Endpoints.guilds_prune(guild_id)
 
     :post
-    |> Request.new(path)
-    |> Request.put_params(params)
+    |> Request.new(path, data)
     |> Request.put_transform(&Util.atomify/1)
   end
 
