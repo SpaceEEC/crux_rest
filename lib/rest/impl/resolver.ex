@@ -233,7 +233,7 @@ defmodule Crux.Rest.Impl.Resolver do
     multipart_files =
       Enum.map(files, fn {attachment, name} ->
         disposition = {"form-data", [{"filename", "\"#{name}\""}]}
-        headers = [{"content-type", :mimerl.filename(name)}]
+        headers = [{:"content-type", :mimerl.filename(name)}]
 
         {name, attachment, disposition, headers}
       end)
@@ -251,7 +251,7 @@ defmodule Crux.Rest.Impl.Resolver do
         multipart_files
       end
 
-    {{:multipart, form_data}, [{"content-type", "multipart/form-data"}]}
+    {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
   end
 
   def resolve_files(%{} = opts) do
