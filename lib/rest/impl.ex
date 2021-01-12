@@ -1463,7 +1463,7 @@ defmodule Crux.Rest.Impl do
 
     {data, headers} =
       opts
-      |> Map.drop(~w/type wait event/)
+      |> Map.drop(~w/type wait event/a)
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
       |> Resolver.resolve_files()
 
@@ -1478,6 +1478,7 @@ defmodule Crux.Rest.Impl do
 
     :post
     |> Request.new(path, data)
+    |> Request.put_auth(false)
     |> Request.put_params(wait: wait)
     |> Request.put_headers(headers2)
   end
@@ -1506,8 +1507,9 @@ defmodule Crux.Rest.Impl do
 
     path = Endpoints.webhooks_messages(webhook_id, token, message_id)
 
-    :post
+    :patch
     |> Request.new(path, data)
+    |> Request.put_auth(false)
     |> Request.put_transform(Message)
   end
 
@@ -1519,6 +1521,7 @@ defmodule Crux.Rest.Impl do
 
     :delete
     |> Request.new(path)
+    |> Request.put_auth(false)
   end
 
   def get_gateway() do
