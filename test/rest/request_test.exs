@@ -39,10 +39,29 @@ defmodule Crux.Rest.RequestTests do
       assert "559412396586696706" ==
                Request.get_major(Endpoints.channels_messages(559_412_396_586_696_706))
 
+      assert "516569101267894284" == Request.get_major(Endpoints.guilds(516_569_101_267_894_284))
+    end
+
+    test "handles webhook edge cases correctly" do
       assert "550715604512931840" ==
+               Request.get_major(Endpoints.webhooks(550_715_604_512_931_840))
+
+      assert "550715604512931840" ==
+               Request.get_major(Endpoints.webhooks_messages(550_715_604_512_931_840, nil))
+
+      assert "550715604512931840" ==
+               Request.get_major(Endpoints.webhooks_github(550_715_604_512_931_840, nil))
+
+      assert "some token" ==
                Request.get_major(Endpoints.webhooks(550_715_604_512_931_840, "some token"))
 
-      assert "516569101267894284" == Request.get_major(Endpoints.guilds(516_569_101_267_894_284))
+      assert "some token" ==
+               Request.get_major(
+                 Endpoints.webhooks_messages(550_715_604_512_931_840, "some token")
+               )
+
+      assert "some token" ==
+               Request.get_major(Endpoints.webhooks_github(550_715_604_512_931_840, "some token"))
     end
 
     test "handles route without major parameter" do

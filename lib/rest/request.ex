@@ -179,12 +179,24 @@ defmodule Crux.Rest.Request do
   @doc false
   @doc since: "0.3.0"
   @spec get_major(String.t()) :: String.t() | nil
-  def get_major(path) do
-    case Regex.run(~r'(?:channels|guilds|webhooks)\/(\d+)|(?:/webhooks/\d+)/(.+?)(?=/|$)', path) do
-      nil -> nil
-      [_path, major] -> major
-      # Group webhooks per token
-      [_path, _, major] -> major
+  def get_major("/" <> path) do
+    case String.split(path, "/", parts: 4) do
+      ["channels", id | _rest] ->
+        id
+
+      ["guilds", id | _rest] ->
+        id
+
+      # Group webhooks per token, if available
+      ["webhooks", _id, token | _rest]
+      when token not in ["github", "slack", "messages"] ->
+        token
+
+      ["webhooks", id | _rest] ->
+        id
+
+      _segments ->
+        nil
     end
   end
 
