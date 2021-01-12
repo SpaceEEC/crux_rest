@@ -1868,7 +1868,7 @@ defmodule Crux.Rest do
     @typedoc since: "0.3.0"
     @type create_integration_options :: %{
             required(:type) => String.t(),
-            required(:id) => Snowflake.resolvable(),
+            required(:id) => Integration.id_resolvable(),
             optional(:reason) => String.t() | nil
           }
 
@@ -1936,7 +1936,7 @@ defmodule Crux.Rest do
     @doc section: :integration
     @callback create_integration_sync(
                 guild :: Guild.id_resolvable(),
-                integration :: Snowflake.resolvable()
+                integration :: Integration.id_resolvable()
               ) :: api_result()
 
     @typedoc """

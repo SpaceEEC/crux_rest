@@ -1030,7 +1030,7 @@ defmodule Crux.Rest.Impl do
     {reason, data} =
       opts
       |> Map.new()
-      |> Resolver.resolve_custom(:id, &Snowflake.to_snowflake/1)
+      |> Resolver.resolve_custom(:id, &Resolver.resolve!(&1, Integration))
       |> Map.pop(:reason)
 
     path = Endpoints.guilds_integrations(guild_id)
