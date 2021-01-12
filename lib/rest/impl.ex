@@ -1359,6 +1359,7 @@ defmodule Crux.Rest.Impl do
     :get
     |> Request.new(path)
     |> Request.put_transform(Webhook)
+    |> Map.update!(:route, &("GET:" <> &1))
   end
 
   def get_webhook(webhook, token) do
@@ -1370,6 +1371,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
     |> Request.put_auth(false)
     |> Request.put_transform(Webhook)
+    |> Map.update!(:route, &("GET:" <> &1))
   end
 
   def modify_webhook(%{id: webhook_id, token: token}, opts)
@@ -1393,6 +1395,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path, data)
     |> Request.put_reason(reason)
     |> Request.put_transform(Webhook)
+    |> Map.update!(:route, &("MODIFY:" <> &1))
   end
 
   def modify_webhook(webhook, token, opts) do
@@ -1411,6 +1414,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_auth(false)
     |> Request.put_reason(reason)
     |> Request.put_transform(Webhook)
+    |> Map.update!(:route, &("MODIFY:" <> &1))
   end
 
   def delete_webhook(webhook, opts_or_token \\ %{})
@@ -1424,6 +1428,7 @@ defmodule Crux.Rest.Impl do
     :delete
     |> Request.new(path)
     |> Request.put_auth(false)
+    |> Map.update!(:route, &("DELETE:" <> &1))
   end
 
   def delete_webhook(webhook, opts) do
@@ -1436,6 +1441,7 @@ defmodule Crux.Rest.Impl do
     :delete
     |> Request.new(path)
     |> Request.put_reason(reason)
+    |> Map.update!(:route, &("DELETE:" <> &1))
   end
 
   def create_webhook_message(%{token: token, id: id}, opts) do

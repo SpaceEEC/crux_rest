@@ -180,9 +180,11 @@ defmodule Crux.Rest.Request do
   @doc since: "0.3.0"
   @spec get_major(String.t()) :: String.t() | nil
   def get_major(path) do
-    case Regex.run(~r'(?:channels|guilds|webhooks)\/(\d+)', path) do
+    case Regex.run(~r'(?:channels|guilds|webhooks)\/(\d+)|(?:/webhooks/\d+)/(.+?)(?=/|$)', path) do
       nil -> nil
       [_path, major] -> major
+      # Group webhooks per token
+      [_path, _, major] -> major
     end
   end
 
@@ -191,8 +193,12 @@ defmodule Crux.Rest.Request do
   @spec get_route(String.t()) :: String.t()
   def get_route(path)
       when is_binary(path) do
-    route = Regex.replace(~r'(?<!channels|guilds|webhooks)/\d+', path, "/:id")
+    path
+    # Group major routes together
+    |> String.replace(~r'(?<!channels|guilds|webhooks)/\d+', "/:id")
+    # Group all webhook endpoints together
+    |> String.replace(~r'(?<=\/webhooks\/)(\d+)\/?.+', "\\1/*")
     # Group all reaction endpoints together, as all of them share a bucket (and the limit is 1...)
-    Regex.replace(~r'(?<=\/reactions)\/.+', route, "/*")
+    |> String.replace(~r'(?<=\/reactions)\/.+', "/*")
   end
 end
