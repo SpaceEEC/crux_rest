@@ -32,6 +32,19 @@ defmodule Crux.Rest.RequestTests do
                  )
                )
     end
+
+    test "handles webhook routes correctly" do
+      assert "/webhooks/559412396586696706/*" ==
+               Request.get_route(Endpoints.webhooks(559_412_396_586_696_706))
+
+      assert "/webhooks/559412396586696706/*" ==
+               Request.get_route(Endpoints.webhooks_messages(559_412_396_586_696_706, nil))
+
+      assert "/webhooks/559412396586696706/*" ==
+               Request.get_route(
+                 Endpoints.webhooks_messages(559_412_396_586_696_706, "some token")
+               )
+    end
   end
 
   describe "get_major/1" do

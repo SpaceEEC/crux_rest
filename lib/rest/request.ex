@@ -209,7 +209,7 @@ defmodule Crux.Rest.Request do
     # Group major routes together
     |> String.replace(~r'(?<!channels|guilds|webhooks)/\d+', "/:id")
     # Group all webhook endpoints together
-    |> String.replace(~r'(?<=\/webhooks\/)(\d+)\/?.+', "\\1/*")
+    |> String.replace(~r'(?<=\/webhooks\/)(\d+)\/?.*', "\\1/*")
     # Group all reaction endpoints together, as all of them share a bucket (and the limit is 1...)
     |> String.replace(~r'(?<=\/reactions)\/.+', "/*")
   end
