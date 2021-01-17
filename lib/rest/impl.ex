@@ -315,7 +315,7 @@ defmodule Crux.Rest.Impl do
 
     path = Endpoints.channels_messages_bulk_delete(channel_id)
 
-    Request.new(:delete, path, data)
+    Request.new(:post, path, data)
   end
 
   def modify_channel_overwrite(channel, overwrite, reason \\ nil) do
