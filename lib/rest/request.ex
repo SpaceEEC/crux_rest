@@ -159,9 +159,7 @@ defmodule Crux.Rest.Request do
     %{t | auth: auth}
   end
 
-  @doc """
-  Transforms the given data to the expected value for the given `t:t/0`.
-  """
+  @doc false
   @doc since: "0.2.0"
   @spec transform(t(), data :: term()) :: term()
   def transform(%__MODULE__{transform: nil}, data), do: data
