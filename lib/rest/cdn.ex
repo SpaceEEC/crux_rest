@@ -112,8 +112,6 @@ defmodule Crux.Rest.CDN do
 
   If the guild has no icon, nil will be returned.
 
-  The extension "gif" is not valid here.
-
   ```elixir
   # A guild struct
   iex> %Crux.Structs.Guild{id: 269508806759809042, icon: "15abb45cf1c59f90ea291185b99ab1dd"}
