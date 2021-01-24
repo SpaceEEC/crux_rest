@@ -699,6 +699,7 @@ defmodule Crux.Rest.Impl do
     :patch
     |> Request.new(path, data)
     |> Request.put_reason(reason)
+    |> Request.put_transform(Member)
   end
 
   def modify_current_user_nick(guild, nick, reason \\ nil) do

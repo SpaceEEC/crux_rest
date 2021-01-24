@@ -1419,7 +1419,7 @@ defmodule Crux.Rest do
                 guild :: Guild.id_resolvable(),
                 user :: User.id_resolvable(),
                 data :: modify_member_options()
-              ) :: api_result()
+              ) :: api_result(Member.t())
 
     @doc """
     Edit a member in a guild.
