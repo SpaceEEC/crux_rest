@@ -1575,6 +1575,27 @@ defmodule Crux.Rest.Impl do
     end)
   end
 
+  def get_current_authorization_information(bearer) do
+    path = Endpoints.oauth2_me()
+
+    :get
+    |> Request.new(path)
+    |> Request.put_auth(false)
+    |> Request.put_token(bearer, "Bearer")
+    |> Request.put_transform(fn info ->
+      info =
+        info
+        |> Util.atomify()
+        |> update_in([:application, :id], &Snowflake.to_snowflake/1)
+
+      if Map.has_key?(info, :user) do
+        Map.update!(info, :user, &Structs.create(&1, User))
+      else
+        info
+      end
+    end)
+  end
+
   defp to_map(target, key \\ :id) do
     fn data ->
       data

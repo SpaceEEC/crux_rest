@@ -2693,6 +2693,32 @@ defmodule Crux.Rest do
     @doc section: :oauth2
     @callback get_current_application() :: api_result(oauth2_application())
 
+    @typedoc """
+    Info about an authorization.
+
+    The application is partial, missing owner, team, and other optional fields.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information-response-structure).
+    """
+    @typedoc since: "0.3.0"
+    @type authorization_information :: %{
+            required(:application) => oauth2_application(),
+            required(:scopes) => [String.t()],
+            required(:expires) => String.t(),
+            optional(:user) => User.t()
+          }
+
+    @doc """
+    Get info about the current authorization.
+
+    > This will use the provided bearer token instead of the otherwise configured authorization.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/oauth2#get-current-authorization-information).
+    """
+    @doc since: "0.3.0"
+    @doc section: :oauth2
+    @callback get_current_authorization_information(bearer :: String.t()) :: api_result(map())
+
     ###
     # OAuth2 END
     ###
