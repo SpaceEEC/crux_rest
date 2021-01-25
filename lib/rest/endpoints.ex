@@ -88,7 +88,7 @@ defmodule Crux.Rest.Endpoints do
   route("/invites/:code")
 
   route "/oauth2" do
-    route("/applictions/@me")
+    route("/applications/@me")
     route("/@me")
   end
 
