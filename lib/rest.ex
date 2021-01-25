@@ -31,6 +31,7 @@ defmodule Crux.Rest do
   alias Crux.Rest.Request
 
   alias Crux.Structs.{
+    Application,
     AuditLog,
     Channel,
     Emoji,
@@ -2649,41 +2650,6 @@ defmodule Crux.Rest do
     # OAuth2 START
     ###
 
-    @typedoc """
-    An OAuth2 application object.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/topics/oauth2#get-current-application-information-response-structure).
-    """
-    @typedoc since: "0.3.0"
-    @type oauth2_application :: %{
-            optional(:rpc_origins) => [String.t()],
-            optional(:guild_id) => Snowflake.t() | nil,
-            optional(:primary_sku_id) => Snowflake.t() | nil,
-            optional(:slug) => String.t() | nil,
-            optional(:cover_image) => String.t() | nil,
-            id: Snowflake.t(),
-            name: String.t(),
-            icon: String.t() | nil,
-            description: String.t(),
-            bot_public: boolean(),
-            bot_require_code_grant: boolean(),
-            owner: User.t(),
-            summary: String.t(),
-            verify_key: String.t(),
-            team: %{
-              icon: String.t() | nil,
-              id: Snowflake.t(),
-              members:
-                snowflake_map(%{
-                  membership_state: integer(),
-                  permissions: [String.t()],
-                  team_id: Snowflake.t(),
-                  user: User.t()
-                }),
-              owner_user_id: Snowflake.t()
-            }
-          }
-
     @doc """
     Get the currently logged in user's OAuth2 application info.
 
@@ -2691,7 +2657,7 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :oauth2
-    @callback get_current_application() :: api_result(oauth2_application())
+    @callback get_current_application() :: api_result(Application.t())
 
     @typedoc """
     Info about an authorization.
@@ -2702,7 +2668,7 @@ defmodule Crux.Rest do
     """
     @typedoc since: "0.3.0"
     @type authorization_information :: %{
-            required(:application) => oauth2_application(),
+            required(:application) => Application.t(),
             required(:scopes) => [String.t()],
             required(:expires) => String.t(),
             optional(:user) => User.t()

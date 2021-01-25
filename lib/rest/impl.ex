@@ -17,6 +17,7 @@ defmodule Crux.Rest.Impl do
   alias Crux.Structs
 
   alias Crux.Structs.{
+    Application,
     AuditLog,
     Channel,
     Emoji,
@@ -1545,34 +1546,11 @@ defmodule Crux.Rest.Impl do
   # credo:disable-for-lines:35
   @spec get_current_application :: Crux.Rest.Request.t()
   def get_current_application() do
-    path = Endpoints.oauth2_applictions_me()
+    path = Endpoints.oauth2_applications_me()
 
     :get
     |> Request.new(path)
-    |> Request.put_transform(fn application ->
-      application
-      |> Util.atomify()
-      |> Map.update!(:id, &Snowflake.to_snowflake/1)
-      |> Resolver.resolve_custom(:guild_id, &Snowflake.to_snowflake/1)
-      |> Resolver.resolve_custom(:primary_sku_id, &Snowflake.to_snowflake/1)
-      |> Map.update!(:owner, &Structs.create(&1, User))
-      |> update_in([:team, :id], &Snowflake.to_snowflake/1)
-      |> update_in([:team, :owner_user_id], &Snowflake.to_snowflake/1)
-      |> update_in(
-        [:team, :members],
-        fn members ->
-          Map.new(members, fn member ->
-            %{user: %{id: id}} =
-              member =
-              member
-              |> Map.update!(:team_id, &Snowflake.to_snowflake/1)
-              |> Map.update!(:user, &Structs.create(&1, User))
-
-            {id, member}
-          end)
-        end
-      )
-    end)
+    |> Request.put_transform(Application)
   end
 
   def get_current_authorization_information(bearer) do
@@ -1586,7 +1564,7 @@ defmodule Crux.Rest.Impl do
       info =
         info
         |> Util.atomify()
-        |> update_in([:application, :id], &Snowflake.to_snowflake/1)
+        |> Map.update!(:application, &Structs.create(&1, Application))
 
       if Map.has_key?(info, :user) do
         Map.update!(info, :user, &Structs.create(&1, User))
