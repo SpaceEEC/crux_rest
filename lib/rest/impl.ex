@@ -301,12 +301,31 @@ defmodule Crux.Rest.Impl do
 
     path = Endpoints.channels_messages(channel_id, message_id)
 
-    :delete
-    |> Request.new(path)
-    # Separate route as this is an exception
+    # Separate route for message deletion
     # See the first info box here:
     # https://discord.com/developers/docs/topics/rate-limits#rate-limits
-    |> Map.update!(:route, &("DELETE:" <> &1))
+
+    # Additionally
+    # Messages older than 2 weeks get a stricter separate rate limit, see:
+    # https://github.com/discord/discord-api-docs/issues/1295
+    route_prefix =
+      (DateTime.diff(
+         DateTime.utc_now(),
+         DateTime.from_unix!(
+           Snowflake.deconstruct(message_id).timestamp,
+           :millisecond
+         )
+       ) >
+         60 * 60 * 24 * 14)
+      |> if do
+        "DELETE-OLD:"
+      else
+        "DELETE:"
+      end
+
+    :delete
+    |> Request.new(path)
+    |> Map.update!(:route, &(route_prefix <> &1))
   end
 
   def delete_messages(channel, messages) do
