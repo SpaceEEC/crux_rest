@@ -1,7 +1,11 @@
 # credo:disable-for-this-file Credo.Check.Readability.Specs
 defmodule Crux.Rest.Impl do
   @moduledoc """
-    TODO: Write me
+  A module providing the functions behind `Crux.Rest`.
+
+  All functions return a `Crux.Rest.Request` struct, that can be executed using `c:Crux.Rest.request/1` or ` c:Crux.Rest.request!/1`.
+
+  For documentation about these functions see `Crux.Rest`.
   """
   @moduledoc since: "0.3.0"
 
@@ -39,6 +43,7 @@ defmodule Crux.Rest.Impl do
   alias Crux.Rest.{Endpoints, Request}
   alias Crux.Rest.Impl.Resolver
 
+  @doc section: :guild
   def get_audit_log(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -57,6 +62,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(AuditLog)
   end
 
+  @doc section: :channel
   def get_channel(channel) do
     channel_id = Resolver.resolve!(channel, Channel)
     path = Endpoints.channels(channel_id)
@@ -66,6 +72,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Channel)
   end
 
+  @doc section: :channel
   def modify_channel(channel, opts \\ %{}) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -87,6 +94,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Channel)
   end
 
+  @doc section: :channel
   def delete_channel(channel, reason \\ nil) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -98,6 +106,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Channel)
   end
 
+  @doc section: :message
   def get_messages(channel, opts \\ %{}) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -117,10 +126,12 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :message
   def get_message(%{channel_id: channel_id, id: message_id}) do
     get_message(channel_id, message_id)
   end
 
+  @doc section: :message
   def get_message(channel, message) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -132,6 +143,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :message
   def create_message(channel, opts)
       when not is_map(opts) do
     create_message(channel, Map.new(opts))
@@ -155,6 +167,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :message
   def create_message_crosspost(channel, message) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -166,14 +179,17 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :message
   def create_message_crosspost(%{channel_id: channel_id, id: message_id}) do
     create_message_crosspost(channel_id, message_id)
   end
 
+  @doc section: :reaction
   def create_reaction(%{channel_id: channel_id, id: message_id}, emoji) do
     create_reaction(channel_id, message_id, emoji)
   end
 
+  @doc section: :reaction
   def create_reaction(channel, message, emoji) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -184,10 +200,12 @@ defmodule Crux.Rest.Impl do
     Request.new(:put, path)
   end
 
+  @doc section: :reaction
   def delete_user_reaction(%{channel_id: channel_id, id: message_id}, emoji, user) do
     delete_user_reaction(channel_id, message_id, emoji, user)
   end
 
+  @doc section: :reaction
   def delete_user_reaction(channel, message, emoji, user) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -205,6 +223,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:delete, path)
   end
 
+  @doc section: :reaction
   def get_reactions(
         channel_or_message,
         message_or_emoji,
@@ -237,10 +256,12 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(User)
   end
 
+  @doc section: :reaction
   def delete_all_reactions(%{channel_id: channel_id, id: message_id}) do
     delete_all_reactions(channel_id, message_id)
   end
 
+  @doc section: :reaction
   def delete_all_reactions(channel, message) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -250,10 +271,12 @@ defmodule Crux.Rest.Impl do
     Request.new(:delete, path)
   end
 
+  @doc section: :reaction
   def delete_all_reactions_for_emoji(%{channel_id: channel_id, id: message_id}, emoji) do
     delete_all_reactions_for_emoji(channel_id, message_id, emoji)
   end
 
+  @doc section: :reaction
   def delete_all_reactions_for_emoji(channel, message, emoji) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -264,6 +287,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:delete, path)
   end
 
+  @doc section: :message
   def modify_message(
         message_or_channel,
         message_or_opts \\ %{},
@@ -291,10 +315,12 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :message
   def delete_message(%{channel_id: channel_id, id: message_id}) do
     delete_message(channel_id, message_id)
   end
 
+  @doc section: :message
   def delete_message(channel, message) do
     channel_id = Resolver.resolve!(channel, Channel)
     message_id = Resolver.resolve!(message, Message)
@@ -328,6 +354,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &(route_prefix <> &1))
   end
 
+  @doc section: :message
   def delete_messages(channel, messages) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -338,6 +365,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:post, path, data)
   end
 
+  @doc section: :channel
   def modify_channel_overwrite(channel, overwrite, reason \\ nil) do
     channel_id = Resolver.resolve!(channel, Channel)
     %{id: overwrite_id} = overwrite = Resolver.resolve_overwrite(overwrite)
@@ -349,6 +377,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :invite
   def get_channel_invites(channel) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -359,6 +388,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Invite, :code))
   end
 
+  @doc section: :invite
   def create_invite(channel, opts \\ %{}) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -376,6 +406,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Invite)
   end
 
+  @doc section: :channel
   def delete_channel_overwrite(channel, overwrite, reason \\ nil) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -394,6 +425,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :channel
   def create_news_channel_webhook(news_channel, webhook_channel) do
     news_channel_id = Resolver.resolve!(news_channel, Channel)
     webhook_channel_id = Resolver.resolve!(webhook_channel, Channel)
@@ -406,6 +438,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path, data)
   end
 
+  @doc section: :channel
   def create_typing_indicator(channel) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -414,6 +447,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:post, path)
   end
 
+  @doc section: :message
   def get_pinned_messages(channel) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -424,6 +458,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Message))
   end
 
+  @doc section: :message
   def create_pinned_message(
         message_or_channel,
         message_or_reason \\ nil,
@@ -449,6 +484,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :message
   def delete_pinned_message(
         message_or_channel,
         message_or_reason \\ nil,
@@ -474,6 +510,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :emoji
   def get_emojis(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -484,6 +521,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Emoji))
   end
 
+  @doc section: :emoji
   def get_emoji(guild, emoji) do
     guild_id = Resolver.resolve!(guild, Guild)
     emoji_id = Resolver.resolve!(emoji, Emoji)
@@ -495,6 +533,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Emoji)
   end
 
+  @doc section: :emoji
   def create_emoji(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -513,6 +552,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Emoji)
   end
 
+  @doc section: :emoji
   def modify_emoji(guild, emoji, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
     emoji_id = Resolver.resolve!(emoji, Emoji)
@@ -531,6 +571,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Emoji)
   end
 
+  @doc section: :emoji
   def delete_emoji(guild, emoji, reason \\ nil) do
     guild_id = Resolver.resolve!(guild, Guild)
     emoji_id = Resolver.resolve!(emoji, Emoji)
@@ -542,6 +583,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :guild
   def create_guild(opts \\ %{}) do
     data = Map.new(opts)
 
@@ -552,6 +594,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Guild)
   end
 
+  @doc section: :guild
   def get_guild(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -562,6 +605,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Guild)
   end
 
+  @doc section: :guild
   def get_guild_preview(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -572,6 +616,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(GuildPreview)
   end
 
+  @doc section: :guild
   def modify_guild(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -595,6 +640,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Guild)
   end
 
+  @doc section: :guild
   def delete_guild(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -603,6 +649,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:delete, path)
   end
 
+  @doc section: :channel
   def get_channels(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -613,6 +660,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Channel))
   end
 
+  @doc section: :channel
   def create_channel(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -634,6 +682,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Channel)
   end
 
+  @doc section: :channel
   def modify_channel_positions(guild, opts \\ []) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -644,10 +693,12 @@ defmodule Crux.Rest.Impl do
     Request.new(:patch, path, data)
   end
 
+  @doc section: :member
   def get_member(%{guild_id: guild_id, user: user_id}) do
     get_member(guild_id, user_id)
   end
 
+  @doc section: :member
   def get_member(guild, user) do
     guild_id = Resolver.resolve!(guild, Guild)
     user_id = Resolver.resolve!(user, User)
@@ -659,6 +710,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Member)
   end
 
+  @doc section: :member
   def get_members(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -676,6 +728,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Member, :user))
   end
 
+  @doc section: :member
   def create_member(guild, user, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
     user_id = Resolver.resolve!(user, User)
@@ -692,6 +745,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Member)
   end
 
+  @doc section: :member
   def modify_member(
         guild_or_member,
         user_or_opts \\ %{},
@@ -722,6 +776,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Member)
   end
 
+  @doc section: :member
   def modify_current_user_nick(guild, nick, reason \\ nil) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -733,6 +788,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  @doc section: :member
   def create_member_role(
         guild_or_member,
         user_or_role,
@@ -756,6 +812,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :member
   def delete_member_role(
         guild_or_member,
         user_or_role,
@@ -779,6 +836,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :member
   def delete_member(
         guild_or_member,
         user_or_reason \\ nil,
@@ -800,6 +858,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :ban
   def get_bans(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -820,10 +879,12 @@ defmodule Crux.Rest.Impl do
     )
   end
 
+  @doc section: :ban
   def get_ban(%{guild_id: guild_id, user: user_id}) do
     get_ban(guild_id, user_id)
   end
 
+  @doc section: :ban
   def get_ban(guild, user) do
     guild_id = Resolver.resolve!(guild, Guild)
     user_id = Resolver.resolve!(user, User)
@@ -840,6 +901,7 @@ defmodule Crux.Rest.Impl do
     end)
   end
 
+  @doc section: :ban
   def create_ban(
         guild_or_member,
         user_or_opts \\ nil,
@@ -866,6 +928,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :ban
   def delete_ban(
         guild_or_member,
         user_or_reason \\ nil,
@@ -887,6 +950,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :role
   def get_roles(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -897,6 +961,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Role))
   end
 
+  @doc section: :role
   def create_role(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -914,6 +979,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Role)
   end
 
+  @doc section: :role
   def modify_role_positions(guild, opts \\ []) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -926,6 +992,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Role))
   end
 
+  @doc section: :role
   def modify_role(
         role_or_guild,
         role_or_opts \\ %{},
@@ -955,6 +1022,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Role)
   end
 
+  @doc section: :role
   def delete_role(
         role_or_guild,
         role_or_reason \\ nil,
@@ -977,6 +1045,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Role)
   end
 
+  @doc section: :guild
   def get_prune_count(guild, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -999,6 +1068,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  @doc section: :guild
   def create_prune(guild, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1015,6 +1085,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  @doc section: :guild
   def get_voice_regions(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1025,6 +1096,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(VoiceRegion))
   end
 
+  @doc section: :invite
   def get_guild_invites(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1035,6 +1107,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Invite, :code))
   end
 
+  @doc section: :integration
   def get_integrations(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1045,6 +1118,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Integration))
   end
 
+  @doc section: :integration
   def create_integration(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1061,6 +1135,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :integration
   def modify_integration(guild, integration, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
     integration_id = Resolver.resolve!(integration, Integration)
@@ -1077,6 +1152,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :integration
   def delete_integration(guild, integration, reason \\ nil) do
     guild_id = Resolver.resolve!(guild, Guild)
     integration_id = Resolver.resolve!(integration, Integration)
@@ -1088,6 +1164,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_reason(reason)
   end
 
+  @doc section: :integration
   def create_integration_sync(guild, integration) do
     guild_id = Resolver.resolve!(guild, Guild)
     integration_id = Resolver.resolve!(integration, Integration)
@@ -1097,6 +1174,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:post, path)
   end
 
+  @doc section: :guild
   def get_guild_widget_settings(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1111,6 +1189,7 @@ defmodule Crux.Rest.Impl do
     end)
   end
 
+  @doc section: :guild
   def modify_guild_widget_settings(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1132,6 +1211,7 @@ defmodule Crux.Rest.Impl do
     end)
   end
 
+  @doc section: :guild
   def get_guild_widget(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1141,6 +1221,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
   end
 
+  @doc section: :invite
   def get_vanity_url(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1151,6 +1232,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  @doc section: :invite
   def get_invite(code, opts) do
     params = Enum.to_list(opts)
 
@@ -1162,6 +1244,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Invite)
   end
 
+  @doc section: :invite
   def delete_invite(code, reason \\ nil) do
     path = Endpoints.invites(code)
 
@@ -1171,6 +1254,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Invite)
   end
 
+  @doc section: :template
   def get_template(template) do
     code = Template.resolve_code(template)
 
@@ -1181,6 +1265,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :template
   def create_guild_from_template(template, opts) do
     code = Template.resolve_code(template)
 
@@ -1196,6 +1281,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :template
   def get_templates(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1206,6 +1292,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Template, :code))
   end
 
+  @doc section: :template
   def create_template(guild, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1221,6 +1308,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :template
   def sync_template(guild, template) do
     guild_id = Resolver.resolve!(guild, Guild)
     code = Template.resolve_code(template)
@@ -1232,6 +1320,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :template
   def modify_template(guild, template, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
     code = Template.resolve_code(template)
@@ -1245,6 +1334,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :template
   def delete_template(guild, template) do
     guild_id = Resolver.resolve!(guild, Guild)
     code = Template.resolve_code(template)
@@ -1256,6 +1346,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Template)
   end
 
+  @doc section: :user
   def get_current_user() do
     path = Endpoints.users_me()
 
@@ -1264,6 +1355,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(User)
   end
 
+  @doc section: :user
   def get_user(user) do
     user_id = Resolver.resolve!(user, User)
 
@@ -1274,6 +1366,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(User)
   end
 
+  @doc section: :user
   def modify_current_user(opts) do
     data =
       opts
@@ -1287,6 +1380,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(User)
   end
 
+  @doc section: :user
   def get_current_user_guilds(opts) do
     data =
       opts
@@ -1302,6 +1396,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Guild))
   end
 
+  @doc section: :user
   def leave_guild(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1310,6 +1405,7 @@ defmodule Crux.Rest.Impl do
     Request.new(:delete, path)
   end
 
+  @doc section: :user
   def create_dm(user) do
     user_id = Resolver.resolve!(user, User)
 
@@ -1322,6 +1418,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Channel)
   end
 
+  @doc section: :voice
   def get_voice_regions() do
     path = Endpoints.voice_regions()
 
@@ -1330,6 +1427,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(VoiceRegion)
   end
 
+  @doc section: :webhook
   def create_webhook(channel, opts) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -1347,6 +1445,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Webhook)
   end
 
+  @doc section: :webhook
   def get_channel_webhooks(channel) do
     channel_id = Resolver.resolve!(channel, Channel)
 
@@ -1357,6 +1456,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Webhook))
   end
 
+  @doc section: :webhook
   def get_guild_webhooks(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
 
@@ -1367,6 +1467,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Webhook))
   end
 
+  @doc section: :webhook
   def get_webhook(%{id: webhook_id, token: token})
       when is_binary(token) do
     get_webhook(webhook_id, token)
@@ -1383,6 +1484,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &("GET:" <> &1))
   end
 
+  @doc section: :webhook
   def get_webhook(webhook, token) do
     webhook_id = Resolver.resolve!(webhook, Webhook)
 
@@ -1395,6 +1497,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &("GET:" <> &1))
   end
 
+  @doc section: :webhook
   def modify_webhook(%{id: webhook_id, token: token}, opts)
       when is_binary(token) do
     modify_webhook(webhook_id, token, opts)
@@ -1419,6 +1522,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &("MODIFY:" <> &1))
   end
 
+  @doc section: :webhook
   def modify_webhook(webhook, token, opts) do
     webhook_id = Resolver.resolve!(webhook, Webhook)
 
@@ -1438,6 +1542,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &("MODIFY:" <> &1))
   end
 
+  @doc section: :webhook
   def delete_webhook(webhook, opts_or_token \\ %{})
 
   def delete_webhook(webhook, token)
@@ -1465,10 +1570,12 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:route, &("DELETE:" <> &1))
   end
 
+  @doc section: :webhook
   def create_webhook_message(%{token: token, id: id}, opts) do
     create_webhook_message(id, token, opts)
   end
 
+  @doc section: :webhook
   def create_webhook_message(webhook, token, opts)
       when not is_map(opts) do
     create_webhook_message(webhook, token, Map.new(opts))
@@ -1517,6 +1624,7 @@ defmodule Crux.Rest.Impl do
     Endpoints.webhooks(webhook_id, token)
   end
 
+  @doc section: :webhook
   def modify_webhook_message(webhook, token, message, opts) do
     webhook_id = Resolver.resolve!(webhook, Webhook)
     message_id = Resolver.resolve!(message, Message)
@@ -1534,6 +1642,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  @doc section: :webhook
   def delete_webhook_message(webhook, token, message) do
     webhook_id = Resolver.resolve!(webhook, Webhook)
     message_id = Resolver.resolve!(message, Message)
@@ -1545,6 +1654,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_auth(false)
   end
 
+  @doc section: :gateway
   def get_gateway() do
     path = Endpoints.gateway()
 
@@ -1554,6 +1664,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  @doc section: :gateway
   def get_gateway_bot() do
     path = Endpoints.gateway_bot()
 
@@ -1562,7 +1673,8 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
-  # credo:disable-for-lines:35
+  @doc section: :oauth2
+  # credo:disable-for-lines:8
   @spec get_current_application :: Crux.Rest.Request.t()
   def get_current_application() do
     path = Endpoints.oauth2_applications_me()
@@ -1572,6 +1684,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Application)
   end
 
+  @doc section: :oauth2
   def get_current_authorization_information(bearer) do
     path = Endpoints.oauth2_me()
 

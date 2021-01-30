@@ -58,25 +58,29 @@ defmodule Crux.Rest.MixProject do
   end
 
   defp docs() do
+    groups = [
+      "Slash Commands": &(&1[:section] == :slash_commands),
+      User: &(&1[:section] == :user),
+      Channel: &(&1[:section] == :channel),
+      Message: &(&1[:section] == :message),
+      Reaction: &(&1[:section] == :reaction),
+      Guild: &(&1[:section] == :guild),
+      Member: &(&1[:section] == :member),
+      Role: &(&1[:section] == :role),
+      Ban: &(&1[:section] == :ban),
+      Invite: &(&1[:section] == :invite),
+      Template: &(&1[:section] == :template),
+      Emoji: &(&1[:section] == :emoji),
+      Integration: &(&1[:section] == :integration),
+      Webhook: &(&1[:section] == :webhook),
+      Voice: &(&1[:section] == :voice),
+      Gateway: &(&1[:section] == :gateway),
+      OAuth2: &(&1[:section] == :oauth2)
+    ]
+
     [
-      groups_for_callbacks: [
-        User: &(&1[:section] == :user),
-        Channel: &(&1[:section] == :channel),
-        Message: &(&1[:section] == :message),
-        Reaction: &(&1[:section] == :reaction),
-        Guild: &(&1[:section] == :guild),
-        Member: &(&1[:section] == :member),
-        Role: &(&1[:section] == :role),
-        Ban: &(&1[:section] == :ban),
-        Invite: &(&1[:section] == :invite),
-        Template: &(&1[:section] == :template),
-        Emoji: &(&1[:section] == :emoji),
-        Integration: &(&1[:section] == :integration),
-        Webhook: &(&1[:section] == :webhook),
-        Voice: &(&1[:section] == :voice),
-        Gateway: &(&1[:section] == :gateway),
-        OAuth2: &(&1[:section] == :oauth2)
-      ],
+      groups_for_callbacks: groups,
+      groups_for_functions: groups,
       markdown_processor_options: [breaks: true],
       formatter: "html"
     ]

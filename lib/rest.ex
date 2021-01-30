@@ -65,7 +65,7 @@ defmodule Crux.Rest do
 
   # Required path params are separate parameters.
   # Other params an options enumerable. (With exceptions)
-  # # Options are always suffixed with "_options".
+  # Options are always suffixed with "_options".
 
   ###
   # Conventions END
@@ -2003,7 +2003,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-vanity-url).
     """
     @doc since: "0.3.0"
-    @doc section: :guild
+    @doc section: :invite
     @callback get_vanity_url(guild :: Guild.id_resolvable()) ::
                 api_result(%{code: String.t() | nil, uses: non_neg_integer()})
 
