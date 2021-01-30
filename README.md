@@ -1,4 +1,4 @@
-# Crux.Rest
+# Crux.Rest [![](https://github.com/SpaceEEC/crux_rest/workflows/Tests/badge.svg?event=push&branch=master)](https://github.com/SpaceEEC/crux_rest/actions)
 
 Library providing rest functions and rate limiting for the [Discord API](https://discord.com/developers/docs/).
 
