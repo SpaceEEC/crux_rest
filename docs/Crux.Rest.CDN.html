@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.23.0">
+    <meta name="project" content="crux_rest v0.3.0-dev">
+
+    <title>Crux.Rest.CDN — crux_rest v0.3.0-dev</title>
+    <link rel="stylesheet" href="dist/elixir-ec941ecbc4f85ab01625.css" />
+
+    <script src="dist/sidebar_items-7a0be08d6d.js"></script>
+
+      <script src="docs_config.js"></script>
+
+    <script async src="dist/app-f97730d45ef67f3e6188.js"></script>
+
+  </head>
+  <body data-type="modules">
+    <script>
+
+      try {
+        if (localStorage.getItem('night-mode') === 'true') {
+          document.body.classList.add('night-mode');
+        }
+      } catch (error) { }
+    </script>
+
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button" aria-label="Submit Search">
+      <span class="icon-search" aria-hidden="true" title="Submit search"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button" aria-label="Cancel Search">
+      <span class="icon-cross" aria-hidden="true" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" class="search-input" placeholder="Search..." aria-label="Input your search terms" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://github.com/SpaceEEC/crux_rest/" class="sidebar-projectName">
+crux_rest
+      </a>
+      <strong class="sidebar-projectVersion">
+        v0.3.0-dev
+      </strong>
+    </div>
+
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list-link" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list-link" href="#full-list">Modules</a></li>
+
+
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+      <h1>
+Crux.Rest.CDN <small class="app-vsn">(crux_rest v0.3.0-dev)</small>
+
+          <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L1" title="View Source" class="view-source" rel="help">
+            <span class="icon-code" aria-hidden="true"></span>
+            <span class="sr-only">View Source</span>
+          </a>
+
+      </h1>
+
+
+        <section id="moduledoc">
+<p>Functions to generate CDN urls pointing to avatars, icons, etc.</p><p>Relevant upstream documentation: <a href="https://discord.com/developers/docs/reference#image-formatting-cdn-endpoints">Discord Developer Documentation</a></p>
+        </section>
+
+
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:format_options/0">format_options()</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Specifies the file type / extension and size of the resource url to generate.</p></div>
+
+</div>
+
+  </div>
+
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#application_icon/2">application_icon(application, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to an application icon.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#base_url/0">base_url()</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Base CDN address.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#custom_emoji/1">custom_emoji(emoji)</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates the url to an emoji.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#default_user_avatar/1">default_user_avatar(user)</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to the default avatar url of a user.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#group_dm_icon/2">group_dm_icon(group_dm, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates the url to group dm channel's icon.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#guild_banner/2">guild_banner(guild, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a guild banner.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#guild_discovery_splash/2">guild_discovery_splash(guild, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a guild's discovery splash.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#guild_icon/2">guild_icon(guild, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a guild's icon.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#guild_splash/2">guild_splash(guild, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a guild's splash.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#team_icon/2">team_icon(team, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a team icon.</p></div>
+
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_avatar/2">user_avatar(user, options \\ [])</a>
+
+  </div>
+
+    <div class="summary-synopsis"><p>Generates a url to a user avatar.</p></div>
+
+</div>
+
+  </div>
+
+        </section>
+
+
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Types
+          </h1>
+          <div class="types-list">
+<section class="detail" id="t:format_options/0">
+
+  <div class="detail-header">
+    <a href="#t:format_options/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">format_options()</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L20" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>format_options() ::
+  %{
+    optional(:size) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(),
+    optional(:extension) =&gt; <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+    optional(:animated) =&gt; <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()
+  }
+  | [size: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">pos_integer</a>(), extension: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), animated: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()]</pre>
+
+      </div>
+
+<p>Specifies the file type / extension and size of the resource url to generate.</p><p>Notes:</p><ul><li><code class="inline">:size</code> has to be any power of two between 16 and 4096</li><li><code class="inline">:extension</code> has to be one of &quot;jpg&quot;, &quot;jpeg&quot;, &quot;png&quot;, &quot;webp&quot;, &quot;gif&quot;</li><li><code class="inline">:animated</code> whether to keep &quot;gif&quot; if the resource is animated regardless of <code class="inline">:extension</code></li><li>See the docs of each function for information what sizes / extensions are valid there.</li></ul>
+  </section>
+</section>
+
+          </div>
+        </section>
+
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Functions
+          </h1>
+          <div class="functions-list">
+<section class="detail" id="application_icon/2">
+
+    <span id="application_icon/1"></span>
+
+  <div class="detail-header">
+    <a href="#application_icon/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">application_icon(application, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L386" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.3.0)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>application_icon(
+  application :: %{icon: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil, id: Snowflake.t()},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to an application icon.</p><pre><code class="makeup elixir"><span class="c1"># A map with an icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="0252420704-1">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">560524012627820547</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cb861044ce722df3e5a9547a2a012a04&quot;</span><span class="p" data-group-id="0252420704-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">application_icon</span><span class="p" data-group-id="0252420704-2">(</span><span class="p" data-group-id="0252420704-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/app-icons/560524012627820547/cb861044ce722df3e5a9547a2a012a04.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="0252420704-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">560524012627820547</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cb861044ce722df3e5a9547a2a012a04&quot;</span><span class="p" data-group-id="0252420704-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">application_icon</span><span class="p" data-group-id="0252420704-4">(</span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p" data-group-id="0252420704-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/app-icons/560524012627820547/cb861044ce722df3e5a9547a2a012a04.png?size=2048&quot;</span><span class="w">
+
+</span><span class="c1"># A map without an icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="0252420704-5">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">560524012627820547</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="0252420704-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">application_icon</span><span class="p" data-group-id="0252420704-6">(</span><span class="p" data-group-id="0252420704-6">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="base_url/0">
+
+  <div class="detail-header">
+    <a href="#base_url/0" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">base_url()</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L35" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>base_url() :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Base CDN address.</p>
+  </section>
+</section>
+<section class="detail" id="custom_emoji/1">
+
+  <div class="detail-header">
+    <a href="#custom_emoji/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">custom_emoji(emoji)</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L60" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>custom_emoji(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Emoji.html#t:t/0">Crux.Structs.Emoji.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), animated: <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">boolean</a>()}
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Generates the url to an emoji.</p><p>This function does not accept any <a href="#t:format_options/0"><code class="inline">format_options/0</code></a>.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="4060660175-1">%</span><span class="nc" data-group-id="4060660175-1">Crux.Structs.Emoji</span><span class="p" data-group-id="4060660175-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">438226248293154816</span><span class="p">,</span><span class="w"> </span><span class="ss">animated</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p" data-group-id="4060660175-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">custom_emoji</span><span class="p" data-group-id="4060660175-2">(</span><span class="p" data-group-id="4060660175-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/emojis/438226248293154816.png&quot;</span><span class="w">
+
+</span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="4060660175-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">438226248293154816</span><span class="p">,</span><span class="w"> </span><span class="ss">animated</span><span class="p">:</span><span class="w"> </span><span class="no">true</span><span class="p" data-group-id="4060660175-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">custom_emoji</span><span class="p" data-group-id="4060660175-4">(</span><span class="p" data-group-id="4060660175-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/emojis/438226248293154816.gif&quot;</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="default_user_avatar/1">
+
+  <div class="detail-header">
+    <a href="#default_user_avatar/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">default_user_avatar(user)</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L306" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>default_user_avatar(<a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.User.html#t:t/0">Crux.Structs.User.t</a>() | %{discriminator: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()}) ::
+  <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Generates a url to the default avatar url of a user.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="2599081637-1">%</span><span class="nc" data-group-id="2599081637-1">Crux.Structs.User</span><span class="p" data-group-id="2599081637-1">{</span><span class="ss">discriminator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0001&quot;</span><span class="p" data-group-id="2599081637-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">default_user_avatar</span><span class="p" data-group-id="2599081637-2">(</span><span class="p" data-group-id="2599081637-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/embed/avatars/1.png&quot;</span><span class="w">
+
+</span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="2599081637-3">%{</span><span class="ss">discriminator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0001&quot;</span><span class="p" data-group-id="2599081637-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">default_user_avatar</span><span class="p" data-group-id="2599081637-4">(</span><span class="p" data-group-id="2599081637-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/embed/avatars/1.png&quot;</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="group_dm_icon/2">
+
+    <span id="group_dm_icon/1"></span>
+
+  <div class="detail-header">
+    <a href="#group_dm_icon/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">group_dm_icon(group_dm, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L100" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>group_dm_icon(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Channel.html#t:t/0">Crux.Structs.Channel.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), icon: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates the url to group dm channel's icon.</p><p>If the group dm channel has no icon, nil will be returned.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="7551665040-1">%</span><span class="nc" data-group-id="7551665040-1">Crux.Structs.Channel</span><span class="p" data-group-id="7551665040-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">354042501201526786</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ecd7839b9eed535f1ae3a545c5d5f3c8&quot;</span><span class="p" data-group-id="7551665040-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">group_dm_icon</span><span class="p" data-group-id="7551665040-2">(</span><span class="p" data-group-id="7551665040-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp&quot;</span><span class="w">
+
+</span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="7551665040-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">354042501201526786</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ecd7839b9eed535f1ae3a545c5d5f3c8&quot;</span><span class="p" data-group-id="7551665040-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">group_dm_icon</span><span class="p" data-group-id="7551665040-4">(</span><span class="p" data-group-id="7551665040-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.webp&quot;</span><span class="w">
+
+  </span><span class="c1"># With format options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="7551665040-5">%</span><span class="nc" data-group-id="7551665040-5">Crux.Structs.Channel</span><span class="p" data-group-id="7551665040-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">354042501201526786</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ecd7839b9eed535f1ae3a545c5d5f3c8&quot;</span><span class="p" data-group-id="7551665040-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">group_dm_icon</span><span class="p" data-group-id="7551665040-6">(</span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p" data-group-id="7551665040-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/channel-icons/354042501201526786/ecd7839b9eed535f1ae3a545c5d5f3c8.png?size=16&quot;</span><span class="w">
+
+</span><span class="c1"># Without icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="7551665040-7">%{</span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="7551665040-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">group_dm_icon</span><span class="p" data-group-id="7551665040-8">(</span><span class="p" data-group-id="7551665040-8">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="guild_banner/2">
+
+    <span id="guild_banner/1"></span>
+
+  <div class="detail-header">
+    <a href="#guild_banner/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">guild_banner(guild, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L278" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.2.0)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>guild_banner(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Guild.html#t:t/0">Crux.Structs.Guild.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), banner: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to a guild banner.</p><p>If the guild has no banner, nil will be returned.</p><p>The extension &quot;gif&quot; is not valid here.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3077065148-1">%</span><span class="nc" data-group-id="3077065148-1">Crux.Structs.Guild</span><span class="p" data-group-id="3077065148-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">banner</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;29c1980a3471cb2d5c1208c5196278fb&quot;</span><span class="p" data-group-id="3077065148-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_banner</span><span class="p" data-group-id="3077065148-2">(</span><span class="p" data-group-id="3077065148-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.webp&quot;</span><span class="w">
+
+  </span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3077065148-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">banner</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;29c1980a3471cb2d5c1208c5196278fb&quot;</span><span class="p" data-group-id="3077065148-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_banner</span><span class="p" data-group-id="3077065148-4">(</span><span class="p" data-group-id="3077065148-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format_options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3077065148-5">%</span><span class="nc" data-group-id="3077065148-5">Crux.Structs.Guild</span><span class="p" data-group-id="3077065148-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">banner</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;29c1980a3471cb2d5c1208c5196278fb&quot;</span><span class="p" data-group-id="3077065148-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_banner</span><span class="p" data-group-id="3077065148-6">(</span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p" data-group-id="3077065148-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/banners/269508806759809042/29c1980a3471cb2d5c1208c5196278fb.png?size=16&quot;</span><span class="w">
+
+</span><span class="c1"># Without banner</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3077065148-7">%</span><span class="nc" data-group-id="3077065148-7">Crux.Structs.Guild</span><span class="p" data-group-id="3077065148-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">banner</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="3077065148-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_banner</span><span class="p" data-group-id="3077065148-8">(</span><span class="p" data-group-id="3077065148-8">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="guild_discovery_splash/2">
+
+    <span id="guild_discovery_splash/1"></span>
+
+  <div class="detail-header">
+    <a href="#guild_discovery_splash/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">guild_discovery_splash(guild, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L233" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.3.0)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>guild_discovery_splash(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Guild.html#t:t/0">Crux.Structs.Guild.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), splash: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to a guild's discovery splash.</p><p>If the guild has no discovery splash, nil will be returned.</p><p>The extension &quot;gif&quot; is not valid here.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3648391384-1">%</span><span class="nc" data-group-id="3648391384-1">Crux.Structs.Guild</span><span class="p" data-group-id="3648391384-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="3648391384-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_discovery_splash</span><span class="p" data-group-id="3648391384-2">(</span><span class="p" data-group-id="3648391384-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/discovery-splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+  </span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3648391384-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="3648391384-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_discovery_splash</span><span class="p" data-group-id="3648391384-4">(</span><span class="p" data-group-id="3648391384-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/discovery-splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format_options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3648391384-5">%</span><span class="nc" data-group-id="3648391384-5">Crux.Structs.Guild</span><span class="p" data-group-id="3648391384-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="3648391384-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_discovery_splash</span><span class="p" data-group-id="3648391384-6">(</span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p" data-group-id="3648391384-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/discovery-splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16&quot;</span><span class="w">
+
+</span><span class="c1"># Without splash</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="3648391384-7">%</span><span class="nc" data-group-id="3648391384-7">Crux.Structs.Guild</span><span class="p" data-group-id="3648391384-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="3648391384-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_discovery_splash</span><span class="p" data-group-id="3648391384-8">(</span><span class="p" data-group-id="3648391384-8">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="guild_icon/2">
+
+    <span id="guild_icon/1"></span>
+
+  <div class="detail-header">
+    <a href="#guild_icon/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">guild_icon(guild, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L143" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>guild_icon(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Guild.html#t:t/0">Crux.Structs.Guild.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), icon: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to a guild's icon.</p><p>If the guild has no icon, nil will be returned.</p><pre><code class="makeup elixir"><span class="c1"># A guild struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6884911057-1">%</span><span class="nc" data-group-id="6884911057-1">Crux.Structs.Guild</span><span class="p" data-group-id="6884911057-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="6884911057-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_icon</span><span class="p" data-group-id="6884911057-2">(</span><span class="p" data-group-id="6884911057-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+</span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6884911057-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="6884911057-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_icon</span><span class="p" data-group-id="6884911057-4">(</span><span class="p" data-group-id="6884911057-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format_options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6884911057-5">%</span><span class="nc" data-group-id="6884911057-5">Crux.Structs.Guild</span><span class="p" data-group-id="6884911057-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="6884911057-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_icon</span><span class="p" data-group-id="6884911057-6">(</span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p" data-group-id="6884911057-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/icons/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16&quot;</span><span class="w">
+
+</span><span class="c1"># Without icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6884911057-7">%</span><span class="nc" data-group-id="6884911057-7">Crux.Structs.Guild</span><span class="p" data-group-id="6884911057-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="6884911057-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_icon</span><span class="p" data-group-id="6884911057-8">(</span><span class="p" data-group-id="6884911057-8">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="guild_splash/2">
+
+    <span id="guild_splash/1"></span>
+
+  <div class="detail-header">
+    <a href="#guild_splash/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">guild_splash(guild, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L188" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>guild_splash(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Guild.html#t:t/0">Crux.Structs.Guild.t</a>()
+  | %{id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(), splash: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to a guild's splash.</p><p>If the guild has no splash, nil will be returned.</p><p>The extension &quot;gif&quot; is not valid here.</p><pre><code class="makeup elixir"><span class="c1"># A struct</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="8797456780-1">%</span><span class="nc" data-group-id="8797456780-1">Crux.Structs.Guild</span><span class="p" data-group-id="8797456780-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="8797456780-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_splash</span><span class="p" data-group-id="8797456780-2">(</span><span class="p" data-group-id="8797456780-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+  </span><span class="c1"># A plain map</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="8797456780-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="8797456780-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_splash</span><span class="p" data-group-id="8797456780-4">(</span><span class="p" data-group-id="8797456780-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format_options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="8797456780-5">%</span><span class="nc" data-group-id="8797456780-5">Crux.Structs.Guild</span><span class="p" data-group-id="8797456780-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;15abb45cf1c59f90ea291185b99ab1dd&quot;</span><span class="p" data-group-id="8797456780-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_splash</span><span class="p" data-group-id="8797456780-6">(</span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p" data-group-id="8797456780-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/splashes/269508806759809042/15abb45cf1c59f90ea291185b99ab1dd.png?size=16&quot;</span><span class="w">
+
+</span><span class="c1"># Without splash</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="8797456780-7">%</span><span class="nc" data-group-id="8797456780-7">Crux.Structs.Guild</span><span class="p" data-group-id="8797456780-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">269508806759809042</span><span class="p">,</span><span class="w"> </span><span class="ss">splash</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="8797456780-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">guild_splash</span><span class="p" data-group-id="8797456780-8">(</span><span class="p" data-group-id="8797456780-8">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="team_icon/2">
+
+    <span id="team_icon/1"></span>
+
+  <div class="detail-header">
+    <a href="#team_icon/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">team_icon(team, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L423" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.3.0)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>team_icon(
+  team :: %{icon: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil, id: Snowflake.t()},
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil</pre>
+
+      </div>
+
+<p>Generates a url to a team icon.</p><pre><code class="makeup elixir"><span class="c1"># A map with an icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="9252273834-1">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">701002408041512991</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cb861044ce722df3e5a9547a2a012a04&quot;</span><span class="p" data-group-id="9252273834-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">team_icon</span><span class="p" data-group-id="9252273834-2">(</span><span class="p" data-group-id="9252273834-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/team-icons/701002408041512991/cb861044ce722df3e5a9547a2a012a04.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="9252273834-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">701002408041512991</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;cb861044ce722df3e5a9547a2a012a04&quot;</span><span class="p" data-group-id="9252273834-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">team_icon</span><span class="p" data-group-id="9252273834-4">(</span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p" data-group-id="9252273834-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/team-icons/701002408041512991/cb861044ce722df3e5a9547a2a012a04.png?size=2048&quot;</span><span class="w">
+
+</span><span class="c1"># A map without an icon</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="9252273834-5">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">701002408041512991</span><span class="p">,</span><span class="w"> </span><span class="ss">icon</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p" data-group-id="9252273834-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">team_icon</span><span class="p" data-group-id="9252273834-6">(</span><span class="p" data-group-id="9252273834-6">)</span><span class="w">
+</span><span class="no">nil</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+<section class="detail" id="user_avatar/2">
+
+    <span id="user_avatar/1"></span>
+
+  <div class="detail-header">
+    <a href="#user_avatar/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">user_avatar(user, options \\ [])</h1>
+
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/cdn.ex#L349" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+
+
+      <span class="note">(since 0.1.5)</span>
+
+  </div>
+
+  <section class="docstring">
+
+      <h2>Specs</h2>
+      <div class="specs">
+
+          <pre>user_avatar(
+  <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.User.html#t:t/0">Crux.Structs.User.t</a>()
+  | %{
+      id: <a href="https://hexdocs.pm/crux_structs/0.3.0-dev/Crux.Structs.Snowflake.html#t:t/0">Crux.Structs.Snowflake.t</a>(),
+      discriminator: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(),
+      avatar: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | nil
+    },
+  <a href="#t:format_options/0">format_options</a>()
+) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+
+      </div>
+
+<p>Generates a url to a user avatar.</p><p>If the user has no custom avatar, this will return a default one with the extension &quot;png&quot;.</p><p>The extension defaults to &quot;gif&quot; or &quot;webp&quot; depending on whether the user has an animated avatar.</p><pre><code class="makeup elixir"><span class="c1"># A struct with an avatar</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6631628041-1">%</span><span class="nc" data-group-id="6631628041-1">Crux.Structs.User</span><span class="p" data-group-id="6631628041-1">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">218348062828003328</span><span class="p">,</span><span class="w"> </span><span class="ss">avatar</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;646a356e237350bf8b8dfde15667dfc4&quot;</span><span class="p" data-group-id="6631628041-1">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">user_avatar</span><span class="p" data-group-id="6631628041-2">(</span><span class="p" data-group-id="6631628041-2">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp&quot;</span><span class="w">
+
+</span><span class="c1"># A plain map with an avatar</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6631628041-3">%{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">218348062828003328</span><span class="p">,</span><span class="w"> </span><span class="ss">avatar</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;646a356e237350bf8b8dfde15667dfc4&quot;</span><span class="p" data-group-id="6631628041-3">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">user_avatar</span><span class="p" data-group-id="6631628041-4">(</span><span class="p" data-group-id="6631628041-4">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.webp&quot;</span><span class="w">
+
+</span><span class="c1"># With format options</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6631628041-5">%</span><span class="nc" data-group-id="6631628041-5">Crux.Structs.User</span><span class="p" data-group-id="6631628041-5">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">218348062828003328</span><span class="p">,</span><span class="w"> </span><span class="ss">avatar</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;646a356e237350bf8b8dfde15667dfc4&quot;</span><span class="p" data-group-id="6631628041-5">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">user_avatar</span><span class="p" data-group-id="6631628041-6">(</span><span class="ss">extension</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;png&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">size</span><span class="p">:</span><span class="w"> </span><span class="mi">2048</span><span class="p" data-group-id="6631628041-6">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/avatars/218348062828003328/646a356e237350bf8b8dfde15667dfc4.png?size=2048&quot;</span><span class="w">
+
+</span><span class="c1"># A struct without an avatar</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="p" data-group-id="6631628041-7">%</span><span class="nc" data-group-id="6631628041-7">Crux.Structs.User</span><span class="p" data-group-id="6631628041-7">{</span><span class="ss">id</span><span class="p">:</span><span class="w"> </span><span class="mi">218348062828003328</span><span class="p">,</span><span class="w"> </span><span class="ss">avatar</span><span class="p">:</span><span class="w"> </span><span class="no">nil</span><span class="p">,</span><span class="w"> </span><span class="ss">discriminator</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0001&quot;</span><span class="p" data-group-id="6631628041-7">}</span><span class="w">
+</span><span class="gp unselectable">...&gt; </span><span class="o">|&gt;</span><span class="w"> </span><span class="nc">Crux.Rest.CDN</span><span class="o">.</span><span class="n">user_avatar</span><span class="p" data-group-id="6631628041-8">(</span><span class="p" data-group-id="6631628041-8">)</span><span class="w">
+</span><span class="s">&quot;https://cdn.discordapp.com/embed/avatars/1.png&quot;</span><span class="w">
+</span></code></pre>
+  </section>
+</section>
+
+          </div>
+        </section>
+
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.23.0) for the
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank">Elixir programming language</a>.
+          </span>
+          <span class="line">
+            Designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+
+            <a href="api-reference.html" title="API reference" class="line footer-button">API Reference</a>
+
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+
+  </body>
+</html>
