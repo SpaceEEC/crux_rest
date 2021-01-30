@@ -43,6 +43,246 @@ defmodule Crux.Rest.Impl do
   alias Crux.Rest.{Endpoints, Request}
   alias Crux.Rest.Impl.Resolver
 
+  defp transform_command(commands)
+       when is_list(commands) do
+    Map.new(commands, fn command ->
+      command = transform_command(command)
+
+      {command.id, command}
+    end)
+  end
+
+  defp transform_command(%{} = command) do
+    Util.atomify(command)
+    |> Map.update!(:id, &Snowflake.to_snowflake/1)
+    |> Map.update!(:application_id, &Snowflake.to_snowflake/1)
+  end
+
+  @doc section: :slash_commands
+  def get_global_application_commands(application) do
+    application_id = Snowflake.to_snowflake(application)
+
+    path = Endpoints.applications_commands(application_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def get_global_application_command(application, command_id) do
+    application_id = Snowflake.to_snowflake(application)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    path = Endpoints.applications_commands(application_id, command_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def create_global_application_command(application, command_data) do
+    application_id = Snowflake.to_snowflake(application)
+
+    data = Resolver.resolve_application_command!(command_data)
+
+    path = Endpoints.applications_commands(application_id)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def modify_global_application_command(application, command_id, command_data) do
+    application_id = Snowflake.to_snowflake(application)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    data = Resolver.resolve_application_command!(command_data)
+
+    path = Endpoints.applications_commands(application_id, command_id)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def delete_global_application_command(application, command_id) do
+    application_id = Snowflake.to_snowflake(application)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    path = Endpoints.applications_commands(application_id, command_id)
+
+    :delete
+    |> Request.new(path)
+  end
+
+  @doc section: :slash_commands
+  def get_guild_application_command(application, guild, command_id) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id, command_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def get_guild_application_commands(application, guild) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def create_guild_application_command(application, guild, command_data) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    data = Resolver.resolve_application_command!(command_data)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def modify_guild_application_command(application, guild, command_id, command_data) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    data = Resolver.resolve_application_command!(command_data)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id, command_id)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def delete_guild_application_command(application, guild, command_id) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+    command_id = Resolver.resolve_application_command_id!(command_id)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id, command_id)
+
+    :delete
+    |> Request.new(path)
+  end
+
+  @doc section: :slash_commands
+  def create_interaction_response(interaction_id, interaction_token, opts) do
+    interaction_id = Snowflake.to_snowflake(interaction_id)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+
+    path = Endpoints.interactions_callback(interaction_id, interaction_token)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_auth(false)
+    |> Request.put_transform(&Util.atomify/1)
+  end
+
+  @doc section: :slash_commands
+  def modify_original_interaction_response(application, interaction_token, opts) do
+    application_id = Snowflake.to_snowflake(application)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+
+    path = Endpoints.webhooks_messages_original(application_id, interaction_token)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_auth(false)
+    |> Request.put_transform(Message)
+  end
+
+  @doc section: :slash_commands
+  def delete_original_interaction_response(application, interaction_token) do
+    application_id = Snowflake.to_snowflake(application)
+
+    path = Endpoints.webhooks_messages_original(application_id, interaction_token)
+
+    :delete
+    |> Request.new(path)
+    |> Request.put_auth(false)
+  end
+
+  @doc section: :slash_commands
+  def create_followup_message(application, interaction_token, opts) do
+    application_id = Snowflake.to_snowflake(application)
+
+    opts = Map.new(opts)
+    wait = Map.get(opts, :wait, true)
+
+    {data, headers} =
+      opts
+      |> Map.drop(~w/type wait event/a)
+      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_files()
+
+    path = Endpoints.webhooks(application_id, interaction_token)
+
+    :post
+    |> Request.new(path, data)
+    |> Request.put_auth(false)
+    |> Request.put_params(wait: wait)
+    |> Request.put_headers(headers)
+    |> Request.put_transform(Message)
+  end
+
+  @doc section: :slash_commands
+  def modify_followup_message(application, interaction_token, message, opts) do
+    application_id = Snowflake.to_snowflake(application)
+    message_id = Resolver.resolve!(message, Message)
+
+    data =
+      opts
+      |> Map.new()
+      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+
+    path = Endpoints.webhooks_messages(application_id, interaction_token, message_id)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_auth(false)
+    |> Request.put_transform(Message)
+  end
+
+  @doc section: :slash_commands
+  def delete_followup_message(application, interaction_token, message) do
+    application_id = Snowflake.to_snowflake(application)
+    message_id = Resolver.resolve!(message, Message)
+
+    path = Endpoints.webhooks_messages(application_id, interaction_token, message_id)
+
+    :delete
+    |> Request.new(path)
+    |> Request.put_auth(false)
+  end
+
   @doc section: :guild
   def get_audit_log(guild, opts \\ %{}) do
     guild_id = Resolver.resolve!(guild, Guild)

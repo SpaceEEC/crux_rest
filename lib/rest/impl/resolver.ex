@@ -8,6 +8,7 @@ defmodule Crux.Rest.Impl.Resolver do
     Overwrite,
     Permissions,
     Role,
+    Snowflake,
     User
   }
 
@@ -256,5 +257,40 @@ defmodule Crux.Rest.Impl.Resolver do
 
   def resolve_files(%{} = opts) do
     {opts, []}
+  end
+
+  def resolve_application_command_id!(%{id: id}) do
+    resolve_application_command_id!(id)
+  end
+
+  def resolve_application_command_id!(id) do
+    Snowflake.to_snowflake(id)
+  end
+
+  def resolve_application_command!(%{} = command) do
+    command
+  end
+
+  def resolve_application_command!(command_mod)
+      when is_atom(command_mod) do
+    unless Code.ensure_loaded?(command_mod) do
+      raise ArgumentError, """
+      Failed to resolve the given atom to an application command module.
+      Recevied: #{command_mod}
+
+      Failed to load the module.
+      """
+    end
+
+    if function_exported?(command_mod, :__crux_command__, 0) do
+      command_mod.__crux_command__()
+    else
+      raise ArgumentError, """
+      Failed to resolve the given atom to an application command module.
+      Recevied: #{command_mod}
+
+      The loaded module does not seem to be an application command module.
+      """
+    end
   end
 end

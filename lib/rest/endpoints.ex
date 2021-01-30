@@ -103,9 +103,20 @@ defmodule Crux.Rest.Endpoints do
 
   route("/voice/regions")
 
-  route "/webhooks/:webhook_id/:token" do
-    route("/messages/:message_id")
+  route "/webhooks/:webhook_or_application_id/:token_or_interaction_token" do
+    route "/messages" do
+      route("/:message_id")
+      route("/@original")
+    end
+
     route("/github")
     route("/slack")
   end
+
+  route "/applications/:application_id" do
+    route("/commands/:command_id")
+    route("/guilds/:guild_id/commands/:command_id")
+  end
+
+  route("/interactions/:interaction_id/:interaction_token/callback")
 end

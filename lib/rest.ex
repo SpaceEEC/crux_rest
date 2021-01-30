@@ -114,6 +114,328 @@ defmodule Crux.Rest do
     @callback request(request :: Request.t()) :: api_result() | api_result(term)
 
     ###
+    # Slash Commands START
+    ###
+
+    @typedoc """
+    An application (or slash) command, received as response from:
+    - `c:get_global_application_commands/1`
+    - `c:create_global_application_command/2`
+    - `c:modify_global_application_command/3`
+    - `c:get_guild_application_commands/2`
+    - `c:create_guild_application_command/3`
+    - `c:modify_guild_application_command/4`
+
+    ## Notes
+    - `name` must be [3,32] characters long.
+    - `description` must be [1,100] characters long.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommand).
+    """
+    @typedoc since: "0.3.0"
+    @type application_command :: %{
+            required(:id) => Snowflake.t(),
+            required(:application_id) => Snowflake.t(),
+            required(:name) => String.t(),
+            required(:description) => String.t(),
+            optional(:options) => [application_command_option()]
+          }
+
+    @typedoc """
+    Possible options for an application command.
+
+    Notes
+    * `name` must be [1,32] characters long
+    * `description` must be [1,100] characters long
+    * Only one required option may be `default`
+    * `required` may not be after a none required option
+    * `choices` are only valid if the type is either integer or string.
+    * `options` is only valid if the type is either `sub_command` or `sub_command_group`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption).
+    """
+    @typedoc since: "0.3.0"
+    @type application_command_option :: %{
+            required(:type) => application_command_option_type(),
+            required(:name) => String.t(),
+            required(:description) => String.t(),
+            optional(:default) => boolean(),
+            optional(:required) => boolean(),
+            optional(:choices) => [application_command_option_choice()],
+            optional(:options) => [application_command_option()]
+          }
+
+    @typedoc """
+    All available command option types:
+    * `sub_command`: 1
+    * `sub_command_group`: 2
+    * `string`: 3
+    * `integer`: 4
+    * `boolean`: 5
+    * `user`: 6
+    * `channel`: 7
+    * `role`: 8
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptiontype).
+    """
+    @typedoc since: "0.3.0"
+    @type application_command_option_type :: 1..8
+
+    @typedoc """
+    Choices for a string or integer type.
+    Name must be [1,100] chars long.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptionchoice).
+    """
+    @typedoc since: "0.3.0"
+    @type application_command_option_choice :: %{
+            name: String.t(),
+            value: String.t() | integer()
+          }
+
+    @typedoc """
+    The same as `t:application_command/0`, but `id` is optional and without `application_id`.
+
+    This can also be a module that `use`s `Crux.Interaction.SlashCommand`.
+    """
+    @typedoc since: "0.3.0"
+    @type application_command_data ::
+            %{
+              optional(:id) => Snowflake.t(),
+              required(:name) => String.t(),
+              required(:description) => String.t(),
+              optional(:options) => [application_command_option()]
+            }
+            | module()
+
+    @doc """
+    Get a globally registered command for your application.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-global-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_global_application_command(
+                application :: Application.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result(snowflake_map(application_command()))
+
+    @doc """
+    Get all globally registered commands for your application.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-global-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_global_application_commands(application :: Snowflake.resolvable()) ::
+                api_result(snowflake_map(application_command()))
+
+    @doc """
+    Register a command globally, if a name with the specified name already exists, this will overwrite it.
+
+    > New global commands will take up to 1 hour until they are available in all guilds.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-global-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_global_application_command(
+                application :: Application.id_resolvable(),
+                command_data :: application_command_data()
+              ) :: api_result(application_command())
+
+    @doc """
+    Modify a globally registered command.
+
+    > Updates will take up to 1 hour until they are available in all guilds.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-global-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback modify_global_application_command(
+                application :: Application.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command(),
+                command_data :: application_command_data()
+              ) :: api_result(application_command())
+
+    @doc """
+    Delete a globally registered command.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-global-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback delete_global_application_command(
+                application :: Application.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result()
+
+    @doc """
+    Get a command that is registered in a guild. (This is excluding global commands.)
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-guild-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_guild_application_command(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result(snowflake_map(application_command()))
+
+    @doc """
+    Get all commands that are registered in a guild. (This is excluding global commands.)
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-guild-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_guild_application_commands(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable()
+              ) :: api_result(snowflake_map(application_command()))
+
+    @doc """
+    Register a command in a specific guild, if a name with the specified name already exists, this will overwrite it.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-guild-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_guild_application_command(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                command_data :: application_command_data()
+              ) :: api_result(application_command())
+
+    @doc """
+    Modify a command that was registered in a specific guild.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-guild-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback modify_guild_application_command(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command(),
+                command_data :: application_command_data()
+              ) :: api_result(application_command())
+
+    @doc """
+    Delete a command that was registered in a specific guild.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-guild-application-command).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback delete_guild_application_command(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result()
+
+    @typedoc """
+    """
+    @typedoc since: "0.3.0"
+    @type interaction_response ::
+            %{type: 1}
+            | %{
+                required(:type) => 2..5,
+                optional(:data) => %{
+                  optional(:tts) => boolean(),
+                  optional(:content) => String.t(),
+                  optional(:embeds) => [embed_options()],
+                  optional(:allowed_mentions) => allowed_mentions_options()
+                }
+              }
+
+    @doc """
+    Create a response to an interaction from the gateway. (HTTP should send it as response to the webhook).
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-interaction-response).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_interaction_response(
+                interaction_id :: Snowflake.resolvable(),
+                interaction_token :: String.t(),
+                opts :: interaction_response()
+              ) :: api_result(map())
+
+    @doc """
+    Modify the initially sent response to an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-original-interaction-response).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback modify_original_interaction_response(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                opts :: modify_webhook_message_options()
+              ) :: api_result(Message.t())
+
+    @doc """
+    Delete the initially sent response to an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-original-interaction-response).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback delete_original_interaction_response(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t()
+              ) :: api_result()
+
+    @doc """
+    Create a followup message for an interaction.
+
+    > This only supports Discord style options.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-followup-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_followup_message(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                opts :: create_webhook_message_options()
+              ) :: api_result(Message.t())
+
+    @doc """
+    Edit a followup message for an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-followup-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback modify_followup_message(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                message :: Message.id_resolvable(),
+                opts :: modify_webhook_message_options()
+              ) :: api_result(Message.t())
+
+    @doc """
+    Delete a followup message for an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-followup-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback delete_followup_message(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                message :: Message.id_resolvable()
+              ) :: api_result()
+
+    ###
+    # Slash Commands END
+    ###
+
+    ###
     # Audit Log START
     ###
 
