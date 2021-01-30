@@ -26,6 +26,10 @@ defmodule Crux.Rest do
     Crux.Rest.Impl.Injector.inject(__CALLER__)
   end
 
+  defmacro __using__(_opts) do
+    raise ArgumentError, "Crux.Rest does not accept any options when `use`-ing this module, provide them when starting it instead."
+  end
+
   require Crux.Rest.Bangify
 
   alias Crux.Rest.Request
