@@ -9,10 +9,7 @@ jobs:
   docs:
     name: Build and Deploy Documentation
 
-    runs-on: ubuntu-latest
-
-    container:
-      image: spaceeec/elixir:1.10-slim
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout Code Branch
