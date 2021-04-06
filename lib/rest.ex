@@ -27,7 +27,8 @@ defmodule Crux.Rest do
   end
 
   defmacro __using__(_opts) do
-    raise ArgumentError, "Crux.Rest does not accept any options when `use`-ing this module, provide them when starting it instead."
+    raise ArgumentError,
+          "Crux.Rest does not accept any options when `use`-ing this module, provide them when starting it instead."
   end
 
   require Crux.Rest.Bangify
