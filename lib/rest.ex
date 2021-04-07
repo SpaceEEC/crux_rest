@@ -970,7 +970,6 @@ defmodule Crux.Rest do
     @typedoc since: "0.3.0"
     @type get_reactions_options ::
             %{
-              optional(:before) => User.id_resolvable(),
               optional(:after) => User.id_resolvable(),
               optional(:limit) => 1..100
             }

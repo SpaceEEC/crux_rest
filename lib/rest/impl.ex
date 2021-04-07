@@ -523,7 +523,6 @@ defmodule Crux.Rest.Impl do
     params =
       opts
       |> Map.new()
-      |> Resolver.resolve_option!(:before, User)
       |> Resolver.resolve_option!(:after, User)
       |> Map.to_list()
 
