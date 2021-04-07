@@ -250,6 +250,23 @@ defmodule Crux.Rest do
               ) :: api_result(application_command())
 
     @doc """
+    Replace all globally registered commands.
+    If a command in the list did not exist, it will be created.
+    If a command in the list already existed, it will be overwritten.
+    If an already existing command is not in this list, it will be deleted.
+
+    > New global commands will take up to 1 hour until they are available in all guilds.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#bulk-overwrite-global-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_global_application_commands(
+                application :: Application.id_resolvable(),
+                commands_data :: [application_command_data()]
+              ) :: api_result(application_command())
+
+    @doc """
     Modify a globally registered command.
 
     > Updates will take up to 1 hour until they are available in all guilds.
@@ -313,6 +330,23 @@ defmodule Crux.Rest do
                 guild :: Guild.id_resolvable(),
                 command_data :: application_command_data()
               ) :: api_result(application_command())
+
+    @doc """
+    Replace all commands registered in a guild.
+    If a command in the list did not exist, it will be created.
+    If a command in the list already existed, it will be overwritten.
+    If an already existing command is not in this list, it will be deleted.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#bulk-overwrite-guild-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_guild_application_commands(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                commands_data :: [application_command_data()]
+              ) :: api_result(application_command())
+
 
     @doc """
     Modify a command that was registered in a specific guild.

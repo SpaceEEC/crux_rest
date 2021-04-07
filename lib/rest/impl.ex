@@ -95,6 +95,19 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :slash_commands
+  def create_global_application_commands(application, commands_data) do
+    application_id = Snowflake.to_snowflake(application)
+
+    data = Enum.map(commands_data, &Resolver.resolve_application_command!/1)
+
+    path = Endpoints.applications_commands(application_id)
+
+    :put
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
   def modify_global_application_command(application, command_id, command_data) do
     application_id = Snowflake.to_snowflake(application)
     command_id = Resolver.resolve_application_command_id!(command_id)
@@ -154,6 +167,20 @@ defmodule Crux.Rest.Impl do
     path = Endpoints.applications_guilds_commands(application_id, guild_id)
 
     :post
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_command/1)
+  end
+
+  @doc section: :slash_commands
+  def create_guild_application_commands(application, guild, commands_data) do
+    application_id = Snowflake.to_snowflake(application)
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    data = Enum.map(commands_data, &Resolver.resolve_application_command!/1)
+
+    path = Endpoints.applications_guilds_commands(application_id, guild_id)
+
+    :put
     |> Request.new(path, data)
     |> Request.put_transform(&transform_command/1)
   end
