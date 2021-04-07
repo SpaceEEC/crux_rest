@@ -1008,6 +1008,20 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :member
+  def get_members_search(guild, opts) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    params = Enum.to_list(opts)
+
+    path = Endpoints.guilds_members_search(guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_params(params)
+    |> Request.put_transform(to_map(Member, :user))
+  end
+
+  @doc section: :member
   def create_member(guild, user, opts) do
     guild_id = Resolver.resolve!(guild, Guild)
     user_id = Resolver.resolve!(user, User)

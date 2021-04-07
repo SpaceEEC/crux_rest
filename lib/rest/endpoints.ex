@@ -72,6 +72,8 @@ defmodule Crux.Rest.Endpoints do
       route("/@me/nick")
 
       route("/:member_id/roles/:role_id")
+
+      route "/search"
     end
 
     route("/preview")

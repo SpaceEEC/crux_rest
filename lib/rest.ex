@@ -1711,6 +1711,31 @@ defmodule Crux.Rest do
               ) :: api_result(snowflake_map(Member.t()))
 
     @typedoc """
+    Used to retrieve members of a guild through a prefix search using `c:get_members_search/2`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#search-guild-members-query-string-params).
+    """
+    @typedoc since: "0.3.0"
+    @type get_members_search_options ::
+            %{
+              required(:query) => String.t(),
+              optional(:limit) => 1..1000
+            }
+            | [{:query, String.t()} | {:limit, 1..1000}]
+
+    @doc """
+    Search members of a guild using a prefix search on their usernames and nicknames.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#search-guild-members).
+    """
+    @doc since: "0.3.0"
+    @doc section: :member
+    @callback get_members_search(
+                guild :: Guild.id_resolvable(),
+                data :: get_members_search_options()
+              ) :: api_result(snowflake_map(Member.t()))
+
+    @typedoc """
     Used to add a member to a guild using `c:create_member/3`.
 
     ## Notes
