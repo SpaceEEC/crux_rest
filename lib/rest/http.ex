@@ -3,7 +3,7 @@ defmodule Crux.Rest.HTTP do
   # Behavior module executing requests and returning potentially normalized data.
   @moduledoc since: "0.3.0"
 
-  alias Crux.Rest.{Opts, Request}
+  alias Crux.Rest.Request
 
   @typedoc """
   A module implementing this behaviour, for example `Crux.Rest.HTTP.Default`.
@@ -21,14 +21,15 @@ defmodule Crux.Rest.HTTP do
   @type response :: %{
           body: map() | binary(),
           headers: [{String.t(), String.t()}],
-          status_code: pos_integer()
+          status_code: pos_integer(),
+          request: Request.t(),
         }
 
   @doc """
   Executes a `t:Crux.Rest.Request.t/0`.
   """
   @doc since: "0.3.0"
-  @callback request(opts :: Opts.t(), Request.t()) :: {:ok, response()} | {:error, term()}
+  @callback request(Request.t()) :: {:ok, response()} | {:error, term()}
 
   @doc """
   Used to optionally start the HTTP module under a supervisor.

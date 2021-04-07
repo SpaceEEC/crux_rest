@@ -121,10 +121,10 @@ defmodule Crux.Rest.Impl.Injector do
       {:ok, %{status_code: 204}} ->
         :ok
 
-      {:ok, %{status_code: code} = response} when code in 400..599 ->
+      {:ok, %{status_code: code, request: request} = response} when code in 400..599 ->
         {:error, ApiError.exception(request, response)}
 
-      {:ok, %{status_code: code, body: body}} when code in 200..299 ->
+      {:ok, %{status_code: code, request: request, body: body}} when code in 200..299 ->
         {:ok, Request.transform(request, body)}
 
       {:ok, response} ->

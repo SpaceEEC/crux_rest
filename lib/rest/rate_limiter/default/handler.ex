@@ -157,7 +157,10 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
 
     debug("Actually making request.", state)
 
-    case http.request(state.opts, request) do
+    request
+    |> Opts.apply_options(state.opts)
+    |> http.request()
+    |> case do
       {:error, error} = tuple ->
         warn("An error occured: #{inspect(error)}", state)
 

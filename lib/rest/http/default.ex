@@ -4,14 +4,13 @@ defmodule Crux.Rest.HTTP.Default do
 
   @behaviour Crux.Rest.HTTP
 
-  alias Crux.Rest.{HTTP, Opts, Request}
+  alias Crux.Rest.{HTTP, Request}
   alias HTTP.Default.Impl
 
-  @spec request(opts :: Opts.t(), request :: Request.t()) ::
-          {:ok, HTTP.response()} | {:error, term()}
-  def request(%{} = opts, %Request{} = request) do
-    request
-    |> Opts.apply_options(opts)
-    |> Impl.do_request()
+  @spec request(request :: Request.t()) :: {:ok, HTTP.response()} | {:error, term()}
+  def request(%Request{} = request) do
+    with {:ok, response} <- Impl.do_request(request) do
+      {:ok, Map.put(response, :request, request)}
+    end
   end
 end
