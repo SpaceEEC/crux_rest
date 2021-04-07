@@ -2235,59 +2235,6 @@ defmodule Crux.Rest do
     @doc section: :integration
     @callback get_integrations(guild :: Guild.id_resolvable()) ::
                 api_result(snowflake_map(Integration.t()))
-
-    @typedoc """
-    Used to create an integration used by `c:create_integration/2`.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration-json-params).
-    """
-    @typedoc since: "0.3.0"
-    @type create_integration_options :: %{
-            required(:type) => String.t(),
-            required(:id) => Integration.id_resolvable(),
-            optional(:reason) => String.t() | nil
-          }
-
-    @doc """
-    Create an integration.
-    This operation requires the `manage_guild` operation.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration).
-    """
-    @doc since: "0.3.0"
-    @doc section: :integration
-    @callback create_integration(
-                guild :: Guild.id_resolvable(),
-                data :: create_integration_options()
-              ) :: api_result()
-
-    @typedoc """
-    Used to edit an integration used by `c:modify_integration/3`.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#create-guild-integration-json-params).
-    """
-    @typedoc since: "0.3.0"
-    @type modify_integration_options :: %{
-            optional(:expire_behavior) => 0..1,
-            optional(:expire_grace_period) => integer(),
-            optional(:enable_emoticons) => boolean(),
-            optional(:reason) => String.t() | nil
-          }
-
-    @doc """
-    Edit an integration.
-    This operation requires the `manage_guild` operation.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-integration).
-    """
-    @doc since: "0.3.0"
-    @doc section: :integration
-    @callback modify_integration(
-                guild :: Guild.id_resolvable(),
-                integration :: Integration.id_resolvable(),
-                opts :: modify_integration_options()
-              ) :: api_result()
-
     @doc """
     Delete an integration.
     This operation requires the `manage_guild` operation.
@@ -2300,19 +2247,6 @@ defmodule Crux.Rest do
                 guild :: Guild.id_resolvable(),
                 integration :: Integration.id_resolvable(),
                 reason :: String.t() | nil
-              ) :: api_result()
-
-    @doc """
-    Sync an integration.
-    This operation requires the `manage_guild` operation.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#delete-guild-integration).
-    """
-    @doc since: "0.3.0"
-    @doc section: :integration
-    @callback create_integration_sync(
-                guild :: Guild.id_resolvable(),
-                integration :: Integration.id_resolvable()
               ) :: api_result()
 
     @typedoc """

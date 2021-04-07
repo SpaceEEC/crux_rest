@@ -1398,40 +1398,6 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :integration
-  def create_integration(guild, opts \\ %{}) do
-    guild_id = Resolver.resolve!(guild, Guild)
-
-    {reason, data} =
-      opts
-      |> Map.new()
-      |> Resolver.resolve_custom(:id, &Resolver.resolve!(&1, Integration))
-      |> Map.pop(:reason)
-
-    path = Endpoints.guilds_integrations(guild_id)
-
-    :post
-    |> Request.new(path, data)
-    |> Request.put_reason(reason)
-  end
-
-  @doc section: :integration
-  def modify_integration(guild, integration, opts \\ %{}) do
-    guild_id = Resolver.resolve!(guild, Guild)
-    integration_id = Resolver.resolve!(integration, Integration)
-
-    {reason, data} =
-      opts
-      |> Map.new()
-      |> Map.pop(:reason)
-
-    path = Endpoints.guilds_integrations(guild_id, integration_id)
-
-    :patch
-    |> Request.new(path, data)
-    |> Request.put_reason(reason)
-  end
-
-  @doc section: :integration
   def delete_integration(guild, integration, reason \\ nil) do
     guild_id = Resolver.resolve!(guild, Guild)
     integration_id = Resolver.resolve!(integration, Integration)
@@ -1441,16 +1407,6 @@ defmodule Crux.Rest.Impl do
     :patch
     |> Request.new(path)
     |> Request.put_reason(reason)
-  end
-
-  @doc section: :integration
-  def create_integration_sync(guild, integration) do
-    guild_id = Resolver.resolve!(guild, Guild)
-    integration_id = Resolver.resolve!(integration, Integration)
-
-    path = Endpoints.guilds_integrations_sync(guild_id, integration_id)
-
-    Request.new(:post, path)
   end
 
   @doc section: :guild
