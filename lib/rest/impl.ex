@@ -904,6 +904,7 @@ defmodule Crux.Rest.Impl do
       |> Map.new()
       |> Resolver.resolve_custom(:icon, &Resolver.resolve_image/1)
       |> Resolver.resolve_custom(:splash, &Resolver.resolve_image/1)
+      |> Resolver.resolve_custom(:discovery_splash, &Resolver.resolve_image/1)
       |> Resolver.resolve_custom(:banner, &Resolver.resolve_image/1)
       |> Resolver.resolve_option(:afk_channel_id, Channel)
       |> Resolver.resolve_option(:system_channel_id, Channel)

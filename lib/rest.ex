@@ -1557,14 +1557,17 @@ defmodule Crux.Rest do
               optional(:explicit_content_filter) => 0..2,
               optional(:afk_channel_id) => Channel.id_resolvable(),
               optional(:afk_timeout) => 60 | 300 | 900 | 1800 | 3600,
-              optional(:icon) => image_options(),
+              optional(:icon) => image_options() | nil,
               optional(:owner_id) => User.id_resolvable(),
-              optional(:splash) => image_options(),
-              optional(:banner) => image_options(),
-              optional(:system_channel_id) => Channel.id_resolvable(),
+              optional(:splash) => image_options() | nil,
+              optional(:discovery_splash) => image_options() | nil,
+              optional(:banner) => image_options() | nil,
+              optional(:system_channel_id) => Channel.id_resolvable() | nil,
               optional(:rules_channel_id) => Channel.id_resolvable(),
               optional(:public_update_channel_id) => Channel.id_resolvable(),
               optional(:preferred_locale) => String.t(),
+              optional(:features) => [String.t()],
+              optional(:description) => String.t() | nil,
               optional(:reason) => String.t() | nil
             }
             | [
@@ -1575,14 +1578,17 @@ defmodule Crux.Rest do
                 | {:explicit_content_filter, 0..2}
                 | {:afk_channel_id, Channel.id_resolvable()}
                 | {:afk_timeout, 60 | 300 | 900 | 1800 | 3600}
-                | {:icon, image_options()}
+                | {:icon, image_options() | nil}
                 | {:owner_id, User.id_resolvable()}
-                | {:splash, image_options()}
-                | {:banner, image_options()}
+                | {:splash, image_options() | nil}
+                | {:discovery_splash, image_options() | nil}
+                | {:banner, image_options() | nil}
                 | {:system_channel_id, Channel.id_resolvable()}
                 | {:rules_channel_id, Channel.id_resolvable()}
                 | {:public_update_channel_id, Channel.id_resolvable()}
                 | {:preferred_locale, String.t()}
+                | {:features, [String.t()]}
+                | {:description, String.t() | nil}
                 | {:reason, String.t() | nil}
               ]
 
