@@ -1641,15 +1641,25 @@ defmodule Crux.Rest do
     @typedoc """
     Used to edit the position of channels using `c:modify_channel_positions/2`.
 
+    ## Notes
+    - `lock_permissions` only works when moving the channel into a new category.
+
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions-json-params).
     """
     @typedoc since: "0.3.0"
     @type channel_positions_options ::
             %{
-              id: Channel.id_resolvable(),
-              position: integer()
+              required(:id) => Channel.id_resolvable(),
+              optional(:position) => integer(),
+              optional(:lock_permissions) => boolean(),
+              optional(:parent_id) => Channel.id_resolvable()
             }
-            | [{:id, Channel.id_resolvable()}, {:position, integer()}]
+            | [
+                {:id, Channel.id_resolvable()}
+                | {:position, integer()}
+                | {:lock_permissions, boolean()}
+                | {:parent_id, Channel.id_resolvable()}
+              ]
 
     @doc """
     Edit the positions of channels within a guild.

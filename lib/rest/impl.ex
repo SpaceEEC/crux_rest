@@ -966,7 +966,11 @@ defmodule Crux.Rest.Impl do
   def modify_channel_positions(guild, opts \\ []) do
     guild_id = Resolver.resolve!(guild, Guild)
 
-    data = Enum.map(opts, &Resolver.resolve_option!(&1, :id, Channel))
+    data = Enum.map(opts, fn position ->
+      position
+      |> Resolver.resolve_option!(:id, Channel)
+      |> Resolver.resolve_option!(:parent_id, Channel)
+    end)
 
     path = Endpoints.guilds_channels(guild_id)
 
