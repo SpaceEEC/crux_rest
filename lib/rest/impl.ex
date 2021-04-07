@@ -1486,6 +1486,42 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
+  defp transform_welcome_screen(welcome_screen) do
+    welcome_screen
+    |> Util.atomify()
+    |> Resolver.resolve_custom(:welcome_channels, fn welcome_channels ->
+      Enum.map(welcome_channels, fn welcome_channel ->
+        welcome_channel
+        |> Map.update!(:channel_id, &Resolver.resolve!(&1, Channel))
+        |> Resolver.resolve_custom(:emoji_id, &Resolver.resolve(&1, Emoji))
+      end)
+    end)
+  end
+
+  @doc section: :guild
+  def get_guild_welcome_screen(guild) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.guilds_welcome_screen(guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(&transform_welcome_screen/1)
+  end
+
+  @doc section: :guild
+  def modify_guild_welcome_screen(guild, options) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.guilds_welcome_screen(guild_id)
+
+    data = transform_welcome_screen(options)
+
+    :patch
+    |> Request.new(path, data)
+    |> Request.put_transform(&transform_welcome_screen/1)
+  end
+
   @doc section: :invite
   def get_invite(code, opts) do
     params = Enum.to_list(opts)

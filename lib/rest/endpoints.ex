@@ -85,6 +85,7 @@ defmodule Crux.Rest.Endpoints do
     route("/webhooks")
     route("/widget")
     route("/widget.json")
+    route("/welcome-screen")
   end
 
   route("/invites/:code")

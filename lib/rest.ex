@@ -2360,6 +2360,52 @@ defmodule Crux.Rest do
     # No get guild widget image, because it does not return JSON but just the plain image.
     # Also does not require authorization.
 
+    @doc """
+    Get the welcome screen of a guild.
+
+    > Returns `:ok` if no welcome screen is set up.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-welcome-screen).
+    """
+    @doc since: "0.3.0"
+    @doc section: :guild
+    @callback get_guild_welcome_screen(guild :: Guild.id_resolvable()) ::
+                api_result(Guild.welcome_screen())
+
+    @typedoc """
+    Used to modify the welcome screen of a guild using `c:modify_guild_welcome_screen/2`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-welcome-screen).
+    """
+    @typedoc since: "0.3.0"
+    @type modify_guild_welcome_screen_options :: %{
+            optional(:enabled) => boolean() | nil,
+            optional(:welcome_channels) =>
+              [
+                welcome_channel :: %{
+                  channel_id: Channel.id_resolvable(),
+                  description: String.t(),
+                  emoji_id: Emoji.id_resolvable() | nil,
+                  emoji_name: String.t() | nil
+                }
+              ]
+              | nil,
+            optional(:description) => String.t() | nil
+          }
+
+    @doc """
+    Modify the welcome screen of a guild.
+    This operation requires either the `manage_guild` permission.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#modify-guild-welcome-screen).
+    """
+    @doc since: "0.3.0"
+    @doc section: :guild
+    @callback modify_guild_welcome_screen(
+                guild :: Guild.id_resolvable(),
+                options :: modify_guild_welcome_screen_options()
+              ) :: api_result(Guild.welcome_screen())
+
     ###
     # Guild END
     ###
