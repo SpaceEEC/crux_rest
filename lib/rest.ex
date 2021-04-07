@@ -2913,11 +2913,13 @@ defmodule Crux.Rest do
             %{
               optional(:content) => String.t() | nil,
               optional(:embeds) => [Embed.t() | embed_options()] | nil,
+              optional(:files) => [file_options()],
               optional(:allowed_mentions) => allowed_mentions_options() | nil
             }
             | [
                 {:content, String.t() | nil}
                 | {:embeds, [Embed.t() | embed_options()] | nil}
+                | {:files, [file_options()]}
                 | {:allowed_mentions, allowed_mentions_options() | nil}
               ]
 

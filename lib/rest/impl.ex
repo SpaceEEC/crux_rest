@@ -1881,16 +1881,18 @@ defmodule Crux.Rest.Impl do
     webhook_id = Resolver.resolve!(webhook, Webhook)
     message_id = Resolver.resolve!(message, Message)
 
-    data =
+    {data, headers} =
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_files()
 
     path = Endpoints.webhooks_messages(webhook_id, token, message_id)
 
     :patch
     |> Request.new(path, data)
     |> Request.put_auth(false)
+    |> Request.put_headers(headers)
     |> Request.put_transform(Message)
   end
 
