@@ -596,6 +596,7 @@ defmodule Crux.Rest do
               optional(:user_limit) => 0..99,
               optional(:permission_overwrites) => [overwrite_options()],
               optional(:parent_id) => Channel.id_resolvable(),
+              optional(:rtc_region) => String.t() | nil,
               optional(:reason) => String.t() | nil
             }
             | [
@@ -609,6 +610,7 @@ defmodule Crux.Rest do
                 | {:user_limit, 0..99}
                 | {:permission_overwrites, [overwrite_options()]}
                 | {:parent_id, Channel.id_resolvable()}
+                | {:rtc_region, String.t() | nil}
                 | {:reason, String.t() | nil}
               ]
 
