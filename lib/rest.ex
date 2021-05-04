@@ -368,6 +368,20 @@ defmodule Crux.Rest do
                 interaction_token :: String.t(),
                 opts :: interaction_response()
               ) :: api_result(map())
+    
+
+    @doc """
+    Get the initially sent response to an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-original-interaction-response).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_original_interaction_response(
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                opts :: modify_webhook_message_options()
+              ) :: api_result(Message.t())
 
     @doc """
     Modify the initially sent response to an interaction.
