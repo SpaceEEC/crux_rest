@@ -203,13 +203,13 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :slash_commands
-  def get_original_interaction_response(interaction_id, interaction_token) do
-    interaction_id = Snowflake.to_snowflake(interaction_id)
+  def get_original_interaction_response(application, interaction_token) do
+    application_id = Snowflake.to_snowflake(application)
 
     path = Endpoints.webhooks_messages_original(application_id, interaction_token)
 
     :get
-    |> Request.new(path, data)
+    |> Request.new(path)
     |> Request.put_auth(false)
     |> Request.put_transform(Message)
   end
