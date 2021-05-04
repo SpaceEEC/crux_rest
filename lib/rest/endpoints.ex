@@ -118,5 +118,8 @@ defmodule Crux.Rest.Endpoints do
     route("/guilds/:guild_id/commands/:command_id")
   end
 
-  route("/interactions/:interaction_id/:interaction_token/callback")
+  route("/interactions/:interaction_id/:interaction_token") do
+    route("/callback")
+    route("/@original")
+  end
 end
