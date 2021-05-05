@@ -31,7 +31,7 @@ For example:
   ...> end
   {:module, MyBot.Rest, <<...>>, :ok}
 
-  iex> {:ok, pid} = MyBot.Rest.start_link(token: "token", retry_limit: 3)
+  iex> {:ok, pid} = MyBot.Rest.start_link(token: "token")
   {:ok, #PID<0.100.0>}
 
   iex> MyBot.Rest.create_message!(445290716198076427, content: "Hello there!")

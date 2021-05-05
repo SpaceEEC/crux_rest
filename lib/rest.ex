@@ -1,22 +1,70 @@
 defmodule Crux.Rest do
-  @moduledoc """
+  @moduledoc ~S"""
   Behaviour module specifying injected functions when `use`-ing this module within another module.
 
   Those functions then can be used to interact with Discord's REST API after starting the module, probably under a supervisor.
 
-  #### Examples
+  ## Examples
 
-  TODO: Write me!
+  ### Module definitions
 
-  #### A few words on semver
+  ```elixir
+  # Minimal setup
+  defmodule MyApp.Rest do
+    use Crux.Rest
+  end
 
-  This behavior is not intended to be implemented by yourself.
-  If you still decide to do so, keep in mind that with every
-  minor version there might be new **non-optional** callbacks added.
+  # Override a function to do something
+  defmodule MyApp.Rest do
+    use Crux.Rest
 
-  Discord might remove parameters or endpoints or decide
-  to disallow certain behavior at any point.
-  There is not much that can be done about this, semver or not.
+    require Logger
+
+    def get_user(user) do
+      with {:error, error} <- super(user) do
+        Logger.warn("Failed to fetch #{inspect(user)}: #{inspect(error)}")
+
+        {:error, error}
+      end
+    end
+  end
+  ```
+
+  ### Supervision trees
+
+  `Crux.Rest` modules fit under a supervision tree.
+
+  ```elixir
+  defmodule MyApp.Application do
+    use Application
+
+    @impl Application
+    def start(_type, _args) do
+      children = [
+        # ... Apps
+        {MyApp.Rest, token: "some-valid-token"}
+      ]
+
+      opts = [strategry: :one_for_one, name: MyApp.Supervisor]
+      Supervisor.start_link(children, opts)
+  end
+
+  ```
+
+  #### Options
+
+  * `token` - Required
+
+    Head over to your [Applications](https://discord.com/developers/applications), select your application, open the `Bot` tab, and `Copy` the token.
+  * `token_type` - Optional, defaults to `"Bot"`.
+
+    If you not running a bot and want to use a Bearer token (obtained through `client_credentials` flow), you can change the token type here.
+  * `raw` - Optional, defaults to `false`.
+
+    If set to `true`, `Crux.Rest` will only parse and atomify the JSON, but not transform it into structs or similar.
+  * `version` - Optional, defaults to `8`.
+
+    The API version to use, note that other versions will behave differently and may not work with `Crux.Rest`.
 
   Relevant upstream documentation: [Discord Developer Documentation](https://discord.com/developers/docs/intro)
   """
@@ -346,7 +394,6 @@ defmodule Crux.Rest do
                 guild :: Guild.id_resolvable(),
                 commands_data :: [application_command_data()]
               ) :: api_result(application_command())
-
 
     @doc """
     Modify a command that was registered in a specific guild.
@@ -1710,13 +1757,13 @@ defmodule Crux.Rest do
               optional(:limit) => 1..1000,
               optional(:after) => User.id_resolvable()
             }
-            | [{:limit, 1..1000}, {:after, User.id_resolvable()}]
+            | [{:limit, 1..1000} | {:after, User.id_resolvable()}]
 
     @doc """
     Get members of a guild.
     This operation requires the current user's application to have the `guild_members` intent enabled. (Regardless of whether any connected gateways specify it)
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#get-guild-member).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/guild#list-guild-members).
     """
     @doc since: "0.3.0"
     @doc section: :member
@@ -1755,7 +1802,7 @@ defmodule Crux.Rest do
     Used to add a member to a guild using `c:create_member/3`.
 
     ## Notes
-    - `:access_token` must have been granted the `guilds.join` scope.
+    - `:access_token` must have been granted the [`guilds.join`](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes) scope.
     - `:nick` if provided, requires the `manage_nicknames` permission.
     - `:roles` if provided, requires the `manage_roles` permission.
     - `:mute` if provided, requires the `mute_members` permission.
@@ -1774,7 +1821,7 @@ defmodule Crux.Rest do
 
     @doc """
     Add a member to a guild.
-    This operation requires the `create_instant_invite` permission and an oauth2 access token with the `guilds.join` scope.
+    This operation requires the `create_instant_invite` permission and an oauth2 access token with the [`guilds.join`](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes) scope.
 
     Returns no result if the member is already in the guild.
 
