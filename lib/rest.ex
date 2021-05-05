@@ -450,7 +450,6 @@ defmodule Crux.Rest do
                 opts :: interaction_response()
               ) :: api_result(map())
 
-
     @doc """
     Get the initially sent response to an interaction.
 

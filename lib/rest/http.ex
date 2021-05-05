@@ -22,7 +22,7 @@ defmodule Crux.Rest.HTTP do
           body: map() | binary(),
           headers: [{String.t(), String.t()}],
           status_code: pos_integer(),
-          request: Request.t(),
+          request: Request.t()
         }
 
   @doc """
