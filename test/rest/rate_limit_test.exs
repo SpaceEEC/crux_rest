@@ -12,9 +12,9 @@ defmodule Crux.Rest.RateLimiterTest do
   @name RateLimiterTest
 
   @opts Crux.Rest.Opts.transform(%{
-    name: @name,
-    token: "some_cool_token"
-  })
+          name: @name,
+          token: "some_cool_token"
+        })
 
   # To make mox global
   setup :set_mox_from_context
