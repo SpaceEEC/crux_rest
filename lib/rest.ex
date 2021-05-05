@@ -402,7 +402,7 @@ defmodule Crux.Rest do
                 interaction_token :: String.t(),
                 opts :: interaction_response()
               ) :: api_result(map())
-    
+
 
     @doc """
     Get the initially sent response to an interaction.
@@ -413,8 +413,7 @@ defmodule Crux.Rest do
     @doc section: :slash_commands
     @callback get_original_interaction_response(
                 application :: Application.id_resolvable(),
-                interaction_token :: String.t(),
-                opts :: modify_webhook_message_options()
+                interaction_token :: String.t()
               ) :: api_result(Message.t())
 
     @doc """
