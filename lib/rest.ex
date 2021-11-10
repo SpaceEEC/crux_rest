@@ -429,7 +429,6 @@ defmodule Crux.Rest do
                 commands_data :: [application_command_data()]
               ) :: api_result(application_command())
 
-
     @typedoc """
     """
     @typedoc since: "0.3.0"
@@ -518,10 +517,10 @@ defmodule Crux.Rest do
     @doc since: "0.3.0"
     @doc section: :application_commands
     @callback get_followup_message(
-      application :: Application.id_resolvable(),
-      interaction_token :: String.t(),
-      message :: Message.id_resolvable()
-    ) :: api_result(Message.t())
+                application :: Application.id_resolvable(),
+                interaction_token :: String.t(),
+                message :: Message.id_resolvable()
+              ) :: api_result(Message.t())
 
     @doc """
     Edit a followup message for an interaction.
