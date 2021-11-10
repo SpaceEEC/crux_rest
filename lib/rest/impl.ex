@@ -292,6 +292,18 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
+  def get_followup_message(application, interaction_token, message) do
+    application_id = Snowflake.to_snowflake(application)
+    message_id = Resolver.resolve!(message, Message)
+
+    path = Endpoints.webhooks_messages(application_id, interaction_token, message_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_auth(false)
+    |> Request.put_transform(Message)
+  end
+
   @doc section: :slash_commands
   def modify_followup_message(application, interaction_token, message, opts) do
     application_id = Snowflake.to_snowflake(application)

@@ -183,7 +183,7 @@ defmodule Crux.Rest do
     - `name` must be [3,32] characters long.
     - `description` must be [1,100] characters long.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommand).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#application-command-object).
     """
     @typedoc since: "0.3.0"
     @type application_command :: %{
@@ -204,8 +204,10 @@ defmodule Crux.Rest do
     * `required` may not be after a none required option
     * `choices` are only valid if the type is either integer or string.
     * `options` is only valid if the type is either `sub_command` or `sub_command_group`.
+    * `min_value` / `max_value` are only applicable to `integer` and `number` types.
+    * `autocomplete` may only be used in combination with the `string`, `integer`, or `number` type.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoption).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure).
     """
     @typedoc since: "0.3.0"
     @type application_command_option :: %{
@@ -215,7 +217,10 @@ defmodule Crux.Rest do
             optional(:default) => boolean(),
             optional(:required) => boolean(),
             optional(:choices) => [application_command_option_choice()],
-            optional(:options) => [application_command_option()]
+            optional(:options) => [application_command_option()],
+            optional(:min_value) => integer() | float(),
+            optional(:max_vaue) => integer() | float(),
+            optional(:autocomplete) => boolean()
           }
 
     @typedoc """
@@ -228,28 +233,30 @@ defmodule Crux.Rest do
     * `user`: 6
     * `channel`: 7
     * `role`: 8
+    * `mentionable`: 9
+    * `number`: 10
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptiontype).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type).
     """
     @typedoc since: "0.3.0"
-    @type application_command_option_type :: 1..8
+    @type application_command_option_type :: 1..10
 
     @typedoc """
     Choices for a string or integer type.
     Name must be [1,100] chars long.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#applicationcommandoptionchoice).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-choice-structure).
     """
     @typedoc since: "0.3.0"
     @type application_command_option_choice :: %{
             name: String.t(),
-            value: String.t() | integer()
+            value: String.t() | integer() | float()
           }
 
     @typedoc """
     The same as `t:application_command/0`, but `id` is optional and without `application_id`.
 
-    This can also be a module that `use`s `Crux.Interaction.SlashCommand`.
+    This can also be a module that `use`s `Crux.Interaction.ApplicationCommand.*`.
     """
     @typedoc since: "0.3.0"
     @type application_command_data ::
@@ -262,21 +269,9 @@ defmodule Crux.Rest do
             | module()
 
     @doc """
-    Get a globally registered command for your application.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-global-application-command).
-    """
-    @doc since: "0.3.0"
-    @doc section: :slash_commands
-    @callback get_global_application_command(
-                application :: Application.id_resolvable(),
-                command_id :: Snowflake.resolvable() | application_command()
-              ) :: api_result(snowflake_map(application_command()))
-
-    @doc """
     Get all globally registered commands for your application.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-global-application-commands).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -288,7 +283,7 @@ defmodule Crux.Rest do
 
     > New global commands will take up to 1 hour until they are available in all guilds.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-global-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#create-global-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -298,28 +293,23 @@ defmodule Crux.Rest do
               ) :: api_result(application_command())
 
     @doc """
-    Replace all globally registered commands.
-    If a command in the list did not exist, it will be created.
-    If a command in the list already existed, it will be overwritten.
-    If an already existing command is not in this list, it will be deleted.
+    Get a globally registered command for your application.
 
-    > New global commands will take up to 1 hour until they are available in all guilds.
-
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#bulk-overwrite-global-application-commands).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-global-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
-    @callback create_global_application_commands(
+    @callback get_global_application_command(
                 application :: Application.id_resolvable(),
-                commands_data :: [application_command_data()]
-              ) :: api_result(application_command())
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result(snowflake_map(application_command()))
 
     @doc """
     Modify a globally registered command.
 
     > Updates will take up to 1 hour until they are available in all guilds.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-global-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#edit-global-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -332,7 +322,7 @@ defmodule Crux.Rest do
     @doc """
     Delete a globally registered command.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-global-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#delete-global-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -342,22 +332,26 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     @doc """
-    Get a command that is registered in a guild. (This is excluding global commands.)
+    Replace all globally registered commands.
+    If a command in the list did not exist, it will be created.
+    If a command in the list already existed, it will be overwritten.
+    If an already existing command is not in this list, it will be deleted.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-guild-application-commands).
+    > New global commands will take up to 1 hour until they are available in all guilds.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
-    @callback get_guild_application_command(
+    @callback create_global_application_commands(
                 application :: Application.id_resolvable(),
-                guild :: Guild.id_resolvable(),
-                command_id :: Snowflake.resolvable() | application_command()
-              ) :: api_result(snowflake_map(application_command()))
+                commands_data :: [application_command_data()]
+              ) :: api_result(application_command())
 
     @doc """
     Get all commands that are registered in a guild. (This is excluding global commands.)
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-guild-application-commands).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-guild-application-commands).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -369,7 +363,7 @@ defmodule Crux.Rest do
     @doc """
     Register a command in a specific guild, if a name with the specified name already exists, this will overwrite it.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-guild-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -380,25 +374,22 @@ defmodule Crux.Rest do
               ) :: api_result(application_command())
 
     @doc """
-    Replace all commands registered in a guild.
-    If a command in the list did not exist, it will be created.
-    If a command in the list already existed, it will be overwritten.
-    If an already existing command is not in this list, it will be deleted.
+    Get a command that is registered in a guild. (This is excluding global commands.)
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#bulk-overwrite-guild-application-commands).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
-    @callback create_guild_application_commands(
+    @callback get_guild_application_command(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
-                commands_data :: [application_command_data()]
-              ) :: api_result(application_command())
+                command_id :: Snowflake.resolvable() | application_command()
+              ) :: api_result(snowflake_map(application_command()))
 
     @doc """
     Modify a command that was registered in a specific guild.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-guild-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#edit-guild-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -412,7 +403,7 @@ defmodule Crux.Rest do
     @doc """
     Delete a command that was registered in a specific guild.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-guild-application-command).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#delete-guild-application-command).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -421,6 +412,23 @@ defmodule Crux.Rest do
                 guild :: Guild.id_resolvable(),
                 command_id :: Snowflake.resolvable() | application_command()
               ) :: api_result()
+
+    @doc """
+    Replace all commands registered in a guild.
+    If a command in the list did not exist, it will be created.
+    If a command in the list already existed, it will be overwritten.
+    If an already existing command is not in this list, it will be deleted.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback create_guild_application_commands(
+                application :: Application.id_resolvable(),
+                guild :: Guild.id_resolvable(),
+                commands_data :: [application_command_data()]
+              ) :: api_result(application_command())
+
 
     @typedoc """
     """
@@ -440,7 +448,7 @@ defmodule Crux.Rest do
     @doc """
     Create a response to an interaction from the gateway. (HTTP should send it as response to the webhook).
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-interaction-response).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -453,7 +461,7 @@ defmodule Crux.Rest do
     @doc """
     Get the initially sent response to an interaction.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#get-original-interaction-response).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -465,7 +473,7 @@ defmodule Crux.Rest do
     @doc """
     Modify the initially sent response to an interaction.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-original-interaction-response).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#edit-original-interaction-response).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -478,7 +486,7 @@ defmodule Crux.Rest do
     @doc """
     Delete the initially sent response to an interaction.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-original-interaction-response).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#delete-original-interaction-response).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -492,7 +500,7 @@ defmodule Crux.Rest do
 
     > This only supports Discord style options.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#create-followup-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -503,9 +511,22 @@ defmodule Crux.Rest do
               ) :: api_result(Message.t())
 
     @doc """
+    Get a followup message for an interaction.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#get-followup-message).
+    """
+    @doc since: "0.3.0"
+    @doc section: :slash_commands
+    @callback get_followup_message(
+      application :: Application.id_resolvable(),
+      interaction_token :: String.t(),
+      message :: Message.id_resolvable()
+    ) :: api_result(Message.t())
+
+    @doc """
     Edit a followup message for an interaction.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#edit-followup-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#edit-followup-message).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
@@ -519,7 +540,7 @@ defmodule Crux.Rest do
     @doc """
     Delete a followup message for an interaction.
 
-    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/slash-commands#delete-followup-message).
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#delete-followup-message).
     """
     @doc since: "0.3.0"
     @doc section: :slash_commands
