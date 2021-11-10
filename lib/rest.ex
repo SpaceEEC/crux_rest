@@ -98,6 +98,7 @@ defmodule Crux.Rest do
     Permissions,
     Role,
     Snowflake,
+    Sticker,
     Template,
     User,
     VoiceRegion,
@@ -898,6 +899,27 @@ defmodule Crux.Rest do
               ]
 
     @typedoc """
+    Components may be used in messages to display rows, buttons, and select menus.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/message-components#what-is-a-component).
+    """
+    @typedoc since: "0.3.0"
+    @type component :: %{
+      required(:type) => 1..3,
+      optional(:custom_id) => String.t(),
+      optional(:disabled) => boolean(),
+      optional(:style) => 1..5,
+      optional(:label) => String.t(),
+      optional(:emoji) => no_return(),
+      optional(:url) => String.t(),
+      optional(:placeholder) => String.t(),
+      optional(:min_values) => non_neg_integer(),
+      optional(:max_values) => pos_integer(),
+      optional(:placeholder) => String.t(),
+      optional(:components) => [component()]
+    }
+
+    @typedoc """
     Used to post messages to a channel by using `c:create_message/2,3`.
 
     The maximum request size when sending a message is 8MB.
@@ -922,7 +944,9 @@ defmodule Crux.Rest do
               optional(:files) => [file_options()],
               optional(:embeds) => [Embed.t() | embed_options()],
               optional(:allowed_mentions) => allowed_mentions_options(),
-              optional(:message_reference) => message_reference()
+              optional(:message_reference) => message_reference(),
+              optional(:components) => [component()],
+              optional(:sticker_ids) => [Sticker.id_resolvable()]
             }
             | [
                 {:content, String.t()}
@@ -932,6 +956,8 @@ defmodule Crux.Rest do
                 | {:embeds, [Embed.t() | embed_options()]}
                 | {:allowed_mentions, allowed_mentions_options()}
                 | {:message_reference, message_reference()}
+                | {:components, [component()]}
+                | {:sticker_ids, Sticker.id_resolvable()}
               ]
 
     @doc """
