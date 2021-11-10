@@ -59,7 +59,7 @@ defmodule Crux.Rest.MixProject do
 
   defp docs() do
     groups = [
-      "Slash Commands": &(&1[:section] == :slash_commands),
+      "Application Commands": &(&1[:section] == :application_commands),
       User: &(&1[:section] == :user),
       Channel: &(&1[:section] == :channel),
       Message: &(&1[:section] == :message),

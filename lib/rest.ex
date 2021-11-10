@@ -167,11 +167,11 @@ defmodule Crux.Rest do
     @callback request(request :: Request.t()) :: api_result() | api_result(term)
 
     ###
-    # Slash Commands START
+    # Application Commands START
     ###
 
     @typedoc """
-    An application (or slash) command, received as response from:
+    An application command, received as response from:
     - `c:get_global_application_commands/1`
     - `c:create_global_application_command/2`
     - `c:modify_global_application_command/3`
@@ -274,7 +274,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_global_application_commands(application :: Snowflake.resolvable()) ::
                 api_result(snowflake_map(application_command()))
 
@@ -286,7 +286,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#create-global-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_global_application_command(
                 application :: Application.id_resolvable(),
                 command_data :: application_command_data()
@@ -298,7 +298,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-global-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_global_application_command(
                 application :: Application.id_resolvable(),
                 command_id :: Snowflake.resolvable() | application_command()
@@ -312,7 +312,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#edit-global-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback modify_global_application_command(
                 application :: Application.id_resolvable(),
                 command_id :: Snowflake.resolvable() | application_command(),
@@ -325,7 +325,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#delete-global-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback delete_global_application_command(
                 application :: Application.id_resolvable(),
                 command_id :: Snowflake.resolvable() | application_command()
@@ -342,7 +342,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_global_application_commands(
                 application :: Application.id_resolvable(),
                 commands_data :: [application_command_data()]
@@ -354,7 +354,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-guild-application-commands).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_guild_application_commands(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable()
@@ -366,7 +366,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#create-guild-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_guild_application_command(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
@@ -379,7 +379,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#get-guild-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_guild_application_command(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
@@ -392,7 +392,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#edit-guild-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback modify_guild_application_command(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
@@ -406,7 +406,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#delete-guild-application-command).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback delete_guild_application_command(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
@@ -422,7 +422,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-guild-application-commands).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_guild_application_commands(
                 application :: Application.id_resolvable(),
                 guild :: Guild.id_resolvable(),
@@ -451,7 +451,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_interaction_response(
                 interaction_id :: Snowflake.resolvable(),
                 interaction_token :: String.t(),
@@ -464,7 +464,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#get-original-interaction-response).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_original_interaction_response(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t()
@@ -476,7 +476,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#edit-original-interaction-response).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback modify_original_interaction_response(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t(),
@@ -489,7 +489,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#delete-original-interaction-response).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback delete_original_interaction_response(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t()
@@ -503,7 +503,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#create-followup-message).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback create_followup_message(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t(),
@@ -516,7 +516,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#get-followup-message).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback get_followup_message(
       application :: Application.id_resolvable(),
       interaction_token :: String.t(),
@@ -529,7 +529,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#edit-followup-message).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback modify_followup_message(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t(),
@@ -543,7 +543,7 @@ defmodule Crux.Rest do
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#delete-followup-message).
     """
     @doc since: "0.3.0"
-    @doc section: :slash_commands
+    @doc section: :application_commands
     @callback delete_followup_message(
                 application :: Application.id_resolvable(),
                 interaction_token :: String.t(),
@@ -551,7 +551,7 @@ defmodule Crux.Rest do
               ) :: api_result()
 
     ###
-    # Slash Commands END
+    # Application Commands END
     ###
 
     ###

@@ -58,7 +58,7 @@ defmodule Crux.Rest.Impl do
     |> Map.update!(:application_id, &Snowflake.to_snowflake/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def get_global_application_commands(application) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -69,7 +69,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def get_global_application_command(application, command_id) do
     application_id = Snowflake.to_snowflake(application)
     command_id = Resolver.resolve_application_command_id!(command_id)
@@ -81,7 +81,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_global_application_command(application, command_data) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -94,7 +94,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_global_application_commands(application, commands_data) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -107,7 +107,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def modify_global_application_command(application, command_id, command_data) do
     application_id = Snowflake.to_snowflake(application)
     command_id = Resolver.resolve_application_command_id!(command_id)
@@ -121,7 +121,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def delete_global_application_command(application, command_id) do
     application_id = Snowflake.to_snowflake(application)
     command_id = Resolver.resolve_application_command_id!(command_id)
@@ -132,7 +132,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def get_guild_application_command(application, guild, command_id) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -145,7 +145,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def get_guild_application_commands(application, guild) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -157,7 +157,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_guild_application_command(application, guild, command_data) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -171,7 +171,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_guild_application_commands(application, guild, commands_data) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -185,7 +185,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def modify_guild_application_command(application, guild, command_id, command_data) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -200,7 +200,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&transform_command/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def delete_guild_application_command(application, guild, command_id) do
     application_id = Snowflake.to_snowflake(application)
     guild_id = Resolver.resolve!(guild, Guild)
@@ -212,7 +212,7 @@ defmodule Crux.Rest.Impl do
     |> Request.new(path)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_interaction_response(interaction_id, interaction_token, opts) do
     interaction_id = Snowflake.to_snowflake(interaction_id)
 
@@ -229,7 +229,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(&Util.atomify/1)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def get_original_interaction_response(application, interaction_token) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -241,7 +241,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def modify_original_interaction_response(application, interaction_token, opts) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -258,7 +258,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def delete_original_interaction_response(application, interaction_token) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -269,7 +269,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_auth(false)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def create_followup_message(application, interaction_token, opts) do
     application_id = Snowflake.to_snowflake(application)
 
@@ -304,7 +304,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def modify_followup_message(application, interaction_token, message, opts) do
     application_id = Snowflake.to_snowflake(application)
     message_id = Resolver.resolve!(message, Message)
@@ -322,7 +322,7 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(Message)
   end
 
-  @doc section: :slash_commands
+  @doc section: :application_commands
   def delete_followup_message(application, interaction_token, message) do
     application_id = Snowflake.to_snowflake(application)
     message_id = Resolver.resolve!(message, Message)
