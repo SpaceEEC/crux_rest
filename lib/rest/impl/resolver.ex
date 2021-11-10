@@ -231,13 +231,34 @@ defmodule Crux.Rest.Impl.Resolver do
 
   @spec resolve_files(map()) :: {body :: term(), headers :: keyword()}
   def resolve_files(%{files: files} = opts) do
-    multipart_files =
-      Enum.map(files, fn {attachment, name} ->
-        disposition = {"form-data", [{"filename", "\"#{name}\""}]}
-        headers = [{:"content-type", :mimerl.filename(name)}]
+    {multipart_files, attachments} =
+      files
+      |> Enum.with_index()
+      |> Enum.reduce({[], []}, fn
+        {file, index}, {multipart_files, attachments} ->
+          {attachment, name, attachments} =
+            case file do
+              {attachment, name} ->
+                {attachment, name, attachments}
 
-        {name, attachment, disposition, headers}
+              {attachment, name, description} ->
+                {attachment, name,
+                 [%{id: index, filename: name, description: description} | attachments]}
+            end
+
+          disposition = {"form-data", [{"name", "files[#{index}]"}, {"filename", "\"#{name}\""}]}
+          headers = [{:"content-type", :mimerl.filename(name)}]
+          multipart_file = {name, attachment, disposition, headers}
+
+          {[multipart_file | multipart_files], attachments}
       end)
+
+    opts =
+      if attachments != [] do
+        Map.put(opts, :attachments, attachments)
+      else
+        opts
+      end
 
     # If opts contains more than files, prepend payload_json
     form_data =

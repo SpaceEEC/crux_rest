@@ -861,11 +861,13 @@ defmodule Crux.Rest do
     Example for a simple text file:
     `{<<104, 101, 108, 108, 111>>, "hello.txt"}` equivalent to `{"hello", "hello.txt"}`
 
-    Example for an image file:
-    `{File.read!("/path/to/image.png"), "image.png"}`
+    Example for an image file with a description (optional):
+    `{File.read!("/path/to/image.png"), "image.png", "A white cat in front of a barn."}`
     """
     @typedoc since: "0.3.0"
-    @type file_options :: {data :: binary(), filename :: String.t()}
+    @type file_options ::
+            {data :: binary(), filename :: String.t()}
+            | {data :: binary(), filename :: String.t(), description :: String.t()}
 
     @typedoc """
     Used to reply to a previously send message using `c:create_message/2`.
