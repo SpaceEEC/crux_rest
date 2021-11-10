@@ -13,7 +13,7 @@ defmodule Crux.Rest.Impl do
   # Conventions
   ###
 
-  # The paramter for the options is always called `opts`
+  # The parameter for the options is always called `opts`
   # Later when transforming the new parameter is called:
   # - When used as a request body: `data`
   # - When used as a query string: `params`
