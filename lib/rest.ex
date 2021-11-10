@@ -904,7 +904,7 @@ defmodule Crux.Rest do
 
     ## Permissions
     - `send_tts_messages` if using `tts: true` (silently fails if no permission)
-    - `embed_links` if using `:embed`
+    - `embed_links` if using `:embeds`
     - `embed_links` when intending to embed links in `content` (silently fails if no permission)
     - `attach_files` if using `:files`
     - `mention_everyone` if intending to mention `@everyone`, `@here`, or roles that are not marked as mentionable (silently fails if no permission)
@@ -920,7 +920,7 @@ defmodule Crux.Rest do
               optional(:nonce) => String.t() | integer(),
               optional(:tts) => boolean(),
               optional(:files) => [file_options()],
-              optional(:embed) => Embed.t() | embed_options(),
+              optional(:embeds) => [Embed.t() | embed_options()],
               optional(:allowed_mentions) => allowed_mentions_options(),
               optional(:message_reference) => message_reference()
             }
@@ -929,7 +929,7 @@ defmodule Crux.Rest do
                 | {:nonce, String.t() | integer()}
                 | {:tts, boolean()}
                 | {:files, [file_options()]}
-                | {:embed, Embed.t() | embed_options()}
+                | {:embeds, [Embed.t() | embed_options()]}
                 | {:allowed_mentions, allowed_mentions_options()}
                 | {:message_reference, message_reference()}
               ]
@@ -1148,7 +1148,7 @@ defmodule Crux.Rest do
     @typedoc since: "0.3.0"
     @type modify_message_options :: %{
             optional(:content) => String.t(),
-            optional(:embed) => Embed.t() | embed_options(),
+            optional(:embeds) => [Embed.t() | embed_options()],
             optional(:flags) => integer(),
             optional(:allowed_mentions) => allowed_mentions_options()
           }
