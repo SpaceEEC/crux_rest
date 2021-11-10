@@ -44,8 +44,7 @@ defmodule Crux.Rest.MixProject do
       {:crux_structs, github: "spaceeec/crux_structs"},
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:ex_doc,
-       github: "spaceeec/ex_doc", branch: "feat/groups_for_callbacks", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.25"},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mox, "~> 1.0", only: :test}
     ]
@@ -79,7 +78,6 @@ defmodule Crux.Rest.MixProject do
     ]
 
     [
-      groups_for_callbacks: groups,
       groups_for_functions: groups,
       markdown_processor_options: [breaks: true],
       formatter: "html"
