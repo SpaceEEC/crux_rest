@@ -9,7 +9,7 @@ defmodule Crux.Rest.Opts do
     token_type: "Bot",
     raw: false,
     name: nil,
-    version: 8
+    version: 9
   )
 
   @typedoc since: "0.3.0"

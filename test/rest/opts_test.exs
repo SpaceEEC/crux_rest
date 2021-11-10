@@ -18,14 +18,14 @@ defmodule Crux.Rest.OptsTest do
                token: "token",
                token_type: "Bot",
                raw: true,
-               version: 8
+               version: 9
              } ===
                Opts.transform(%{
                  name: @name,
                  token: "token",
                  token_type: "Bot",
                  raw: true,
-                 version: 8
+                 version: 9
                })
     end
 

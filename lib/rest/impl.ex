@@ -1966,7 +1966,6 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :oauth2
-  # credo:disable-for-lines:8
   @spec get_current_application :: Crux.Rest.Request.t()
   def get_current_application() do
     path = Endpoints.oauth2_applications_me()

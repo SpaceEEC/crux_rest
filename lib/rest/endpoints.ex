@@ -18,8 +18,8 @@ defmodule Crux.Rest.Endpoints do
   iex> Crux.Rest.Endpoints.base_url(nil)
   "#{@base_url}"
 
-  iex> Crux.Rest.Endpoints.base_url(8)
-  "#{@base_url}/v8"
+  iex> Crux.Rest.Endpoints.base_url(9)
+  "#{@base_url}/v9"
   ```
   """
   @spec base_url(version :: integer() | nil) :: String.t()

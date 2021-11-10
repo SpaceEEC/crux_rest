@@ -62,7 +62,7 @@ defmodule Crux.Rest do
   * `raw` - Optional, defaults to `false`.
 
     If set to `true`, `Crux.Rest` will only parse and atomify the JSON, but not transform it into structs or similar.
-  * `version` - Optional, defaults to `8`.
+  * `version` - Optional, defaults to `9`.
 
     The API version to use, note that other versions will behave differently and may not work with `Crux.Rest`.
 
