@@ -613,6 +613,10 @@ defmodule Crux.Rest do
 
     If you specify an `id` as `:id`, `:type` is required.
 
+    Types:
+    * `0` for role
+    * `1` for member
+
     For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/channel#overwrite-object).
     """
     @typedoc since: "0.3.0"
@@ -621,13 +625,13 @@ defmodule Crux.Rest do
               required(:id) => User.id_resolvable() | Role.id_resolvable(),
               optional(:allow) => Permissions.resolvable(),
               optional(:deny) => Permissions.resolvable(),
-              optional(:type) => member_or_role :: String.t()
+              optional(:type) => 0..1
             }
             | [
                 {:id, User.id_resolvable() | Role.id_resolvable()}
                 | {:allow, Permissions.resolvable()}
                 | {:deny, Permissions.resolvable()}
-                | {:type, member_or_role :: String.t()}
+                | {:type, 0..1}
               ]
             | Overwrite.t()
 

@@ -158,31 +158,34 @@ defmodule Crux.Rest.Impl.Resolver do
     overwrite
   end
 
-  def resolve_overwrite(%{type: "role", id: id} = overwrite) do
+  # Role
+  def resolve_overwrite(%{type: 0, id: id} = overwrite) do
     %{overwrite | id: resolve!(id, Role)}
     |> resolve_custom(:allow, &Permissions.resolve/1)
     |> resolve_custom(:deny, &Permissions.resolve/1)
   end
 
-  def resolve_overwrite(%{type: "member", id: id} = overwrite) do
+  # Member
+  def resolve_overwrite(%{type: 1, id: id} = overwrite) do
     %{overwrite | id: resolve!(id, User)}
     |> resolve_custom(:allow, &Permissions.resolve/1)
     |> resolve_custom(:deny, &Permissions.resolve/1)
   end
 
+  # Try to infer
   def resolve_overwrite(%{id: %{} = id} = overwrite)
       when not is_map_key(overwrite, :type) do
     overwrite =
       if id = Structs.resolve_id(id, Role) do
         overwrite
         |> Map.put(:id, id)
-        |> Map.put(:type, "role")
+        |> Map.put(:type, 0)
       else
         id = Structs.resolve_id(id, User)
 
         overwrite
         |> Map.put(:id, id)
-        |> Map.put(:type, "member")
+        |> Map.put(:type, 1)
       end
 
     overwrite
