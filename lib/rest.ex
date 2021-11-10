@@ -649,6 +649,8 @@ defmodule Crux.Rest do
     - `:user_limit` - has to be [0, 99]. 0 refers to no limit
       Amount of users that can connect to a voice channel at the same time.
       Users with the permission `move_members` are unaffacted.
+    - `:video_quality_mode` - `0` for auto, `1` for 720p
+    - `:default_auto_archive_duration` - This is only for clients, the api won't respect this default
 
     For more information see the Discord Developer Documentation: [create](https://discord.com/developers/docs/resources/guild#create-guild-channel-json-params) or [edit](https://discord.com/developers/docs/resources/channel#modify-channel-json-params).
     """
@@ -666,6 +668,8 @@ defmodule Crux.Rest do
               optional(:permission_overwrites) => [overwrite_options()],
               optional(:parent_id) => Channel.id_resolvable(),
               optional(:rtc_region) => String.t() | nil,
+              optional(:video_quality_mode) => 0..1,
+              optional(:default_auto_archive_duration) => 60 | 1440 | 4320 | 10080,
               optional(:reason) => String.t() | nil
             }
             | [
@@ -680,6 +684,8 @@ defmodule Crux.Rest do
                 | {:permission_overwrites, [overwrite_options()]}
                 | {:parent_id, Channel.id_resolvable()}
                 | {:rtc_region, String.t() | nil}
+                | {:video_quality_mode, 0..1}
+                | {:default_auto_archive_duration, 60 | 1440 | 4230 | 10080}
                 | {:reason, String.t() | nil}
               ]
 
