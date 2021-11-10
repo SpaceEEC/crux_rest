@@ -435,11 +435,6 @@ defmodule Crux.Rest.Impl do
   end
 
   @doc section: :message
-  def create_message(channel, opts)
-      when not is_map(opts) do
-    create_message(channel, Map.new(opts))
-  end
-
   def create_message(channel, opts) do
     channel_id = Resolver.resolve!(channel, Channel)
 
