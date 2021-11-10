@@ -680,7 +680,8 @@ defmodule Crux.Rest.Impl do
     {reason, data} =
       opts
       |> Map.new()
-      |> Resolver.resolve_option(:target_user, User)
+      |> Resolver.resolve_option(:target_user_id, User)
+      |> Resolver.resolve_custom(:target_application_id, &Snowflake.to_snowflake/1)
       |> Map.pop(:reason)
 
     path = Endpoints.channels_invites(channel_id)
