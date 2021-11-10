@@ -1,4 +1,4 @@
-# Crux.Rest [![](https://github.com/SpaceEEC/crux_rest/workflows/Tests/badge.svg?event=push&branch=trunk)](https://github.com/SpaceEEC/crux_rest/actions)
+# Crux.Rest [![](https://github.com/SpaceEEC/crux_rest/workflows/Tests/badge.svg?event=push&branch=trunk)](https://github.com/SpaceEEC/crux_rest/actions) [![](https://github.com/SpaceEEC/crux_rest/workflows/Documentation/badge.svg?event=push&branch=trunk)](https://spaceeec.github.io/crux_rest)
 
 Library providing rest functions and rate limiting for the [Discord API](https://discord.com/developers/docs/).
 
@@ -7,7 +7,8 @@ Library providing rest functions and rate limiting for the [Discord API](https:/
  - [Documentation](https://hexdocs.pm/crux_rest/0.2.2/)
  - [Github](https://github.com/SpaceEEC/crux_rest/)
  - [Changelog](https://github.com/SpaceEEC/crux_rest/releases/tag/0.2.2/)
- - [Umbrella Development Documentation](https://crux.randomly.space/)
+ - [Crux Libraries Overview](https://github.com/SpaceEEC/crux)
+ - [Trunk Documentation](https://spaceeec.github.io/crux_rest/)
 
 ## Installation
 
