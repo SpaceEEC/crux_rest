@@ -905,19 +905,19 @@ defmodule Crux.Rest do
     """
     @typedoc since: "0.3.0"
     @type component :: %{
-      required(:type) => 1..3,
-      optional(:custom_id) => String.t(),
-      optional(:disabled) => boolean(),
-      optional(:style) => 1..5,
-      optional(:label) => String.t(),
-      optional(:emoji) => no_return(),
-      optional(:url) => String.t(),
-      optional(:placeholder) => String.t(),
-      optional(:min_values) => non_neg_integer(),
-      optional(:max_values) => pos_integer(),
-      optional(:placeholder) => String.t(),
-      optional(:components) => [component()]
-    }
+            required(:type) => 1..3,
+            optional(:custom_id) => String.t(),
+            optional(:disabled) => boolean(),
+            optional(:style) => 1..5,
+            optional(:label) => String.t(),
+            optional(:emoji) => no_return(),
+            optional(:url) => String.t(),
+            optional(:placeholder) => String.t(),
+            optional(:min_values) => non_neg_integer(),
+            optional(:max_values) => pos_integer(),
+            optional(:placeholder) => String.t(),
+            optional(:components) => [component()]
+          }
 
     @typedoc """
     Used to post messages to a channel by using `c:create_message/2,3`.
