@@ -216,16 +216,18 @@ defmodule Crux.Rest.Impl do
   def create_interaction_response(interaction_id, interaction_token, opts) do
     interaction_id = Snowflake.to_snowflake(interaction_id)
 
-    data =
+    {data, headers} =
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_files()
 
     path = Endpoints.interactions_callback(interaction_id, interaction_token)
 
     :post
     |> Request.new(path, data)
     |> Request.put_auth(false)
+    |> Request.put_headers(headers)
     |> Request.put_transform(&Util.atomify/1)
   end
 

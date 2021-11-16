@@ -431,17 +431,29 @@ defmodule Crux.Rest do
               ) :: api_result(application_command())
 
     @typedoc """
+    Data used to respond to an interaction received over the gateway using `c:create_interaction_response/3`.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-response-object).
     """
     @typedoc since: "0.3.0"
     @type interaction_response ::
-            %{type: 1}
+            %{type: 1 | 5 | 6}
             | %{
-                required(:type) => 2..5,
-                optional(:data) => %{
+                type: 4 | 7,
+                data: %{
                   optional(:tts) => boolean(),
                   optional(:content) => String.t(),
                   optional(:embeds) => [embed_options()],
-                  optional(:allowed_mentions) => allowed_mentions_options()
+                  optional(:allowed_mentions) => allowed_mentions_options(),
+                  optional(:flags) => 64,
+                  optional(:components) => [component()],
+                  optional(:files) => [file_options()]
+                }
+              }
+            | %{
+                type: 8,
+                data: %{
+                  choices: [application_command_option_choice()]
                 }
               }
 
