@@ -40,6 +40,8 @@ defmodule Crux.Rest.Impl do
     Webhook
   }
 
+  alias Crux.Structs.Guild.SystemChannelFlags
+
   alias Crux.Rest.{Endpoints, Request}
   alias Crux.Rest.Impl.Resolver
 
@@ -917,6 +919,7 @@ defmodule Crux.Rest.Impl do
       |> Resolver.resolve_custom(:banner, &Resolver.resolve_image/1)
       |> Resolver.resolve_option(:afk_channel_id, Channel)
       |> Resolver.resolve_option(:system_channel_id, Channel)
+      |> Resolver.resolve_custom(:system_channel_flags, &SystemChannelFlags.resolve/1)
       |> Resolver.resolve_option(:rules_channel_id, Channel)
       |> Resolver.resolve_option(:public_update_channel_id, Channel)
       |> Map.pop(:reason)

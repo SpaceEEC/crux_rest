@@ -105,6 +105,8 @@ defmodule Crux.Rest do
     Webhook
   }
 
+  alias Crux.Structs.Guild.SystemChannelFlags
+
   ###
   # Conventions START
   ###
@@ -1681,6 +1683,7 @@ defmodule Crux.Rest do
               optional(:discovery_splash) => image_options() | nil,
               optional(:banner) => image_options() | nil,
               optional(:system_channel_id) => Channel.id_resolvable() | nil,
+              optional(:system_channel_flags) => SystemChannelFlags.resolvable(),
               optional(:rules_channel_id) => Channel.id_resolvable(),
               optional(:public_update_channel_id) => Channel.id_resolvable(),
               optional(:preferred_locale) => String.t(),
@@ -1702,6 +1705,7 @@ defmodule Crux.Rest do
                 | {:discovery_splash, image_options() | nil}
                 | {:banner, image_options() | nil}
                 | {:system_channel_id, Channel.id_resolvable()}
+                | {:system_channel_flags, SystemChannelFlags.resolvable()}
                 | {:rules_channel_id, Channel.id_resolvable()}
                 | {:public_update_channel_id, Channel.id_resolvable()}
                 | {:preferred_locale, String.t()}
