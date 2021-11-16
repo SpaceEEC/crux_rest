@@ -2540,9 +2540,10 @@ defmodule Crux.Rest do
     @typedoc since: "0.3.0"
     @type get_invite_options ::
             %{
-              optional(:with_counts) => boolean()
+              optional(:with_counts) => boolean(),
+              optional(:with_expiration) => boolean()
             }
-            | [{:with_counts, boolean()}]
+            | [{:with_counts, boolean()} | {:with_expiration, boolean()}]
 
     @doc """
     Get an invite.
