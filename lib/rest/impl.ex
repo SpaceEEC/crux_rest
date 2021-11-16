@@ -1277,6 +1277,7 @@ defmodule Crux.Rest.Impl do
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:permissions, &Permissions.resolve/1)
+      |> Resolver.resolve_custom(:icon, &Resolver.resolve_image/1)
       |> Map.pop(:reason)
 
     path = Endpoints.guilds_roles(guild_id)
@@ -1320,6 +1321,7 @@ defmodule Crux.Rest.Impl do
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:permissions, &Permissions.resolve/1)
+      |> Resolver.resolve_custom(:icon, &Resolver.resolve_image/1)
       |> Map.pop(:reason)
 
     path = Endpoints.guilds_roles(guild_id, role_id)

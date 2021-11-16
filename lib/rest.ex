@@ -2208,6 +2208,8 @@ defmodule Crux.Rest do
               optional(:permissions) => Permissions.resolvable(),
               optional(:color) => 0..0xFFFFFF,
               optional(:hoist) => boolean(),
+              optional(:icon) => image_options() | nil,
+              optional(:unicode_emoji) => String.t() | nil,
               optional(:mentionable) => boolean(),
               optional(:reason) => String.t() | nil
             }
@@ -2216,6 +2218,8 @@ defmodule Crux.Rest do
                 | {:permissions, Permissions.resolvable()}
                 | {:color, 0..0xFFFFFF}
                 | {:hoist, boolean()}
+                | {:icon, image_options() | nil}
+                | {:unicode_emoji, String.t() | nil}
                 | {:mentionable, boolean()}
                 | {:reason, String.t() | nil}
               ]
