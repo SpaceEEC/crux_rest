@@ -98,7 +98,7 @@ defmodule Crux.Rest.Endpoints do
   route "/users" do
     route "/@me" do
       route("/channels")
-      route("/guilds/:guild_id")
+      route("/guilds/:guild_id/member")
     end
 
     route("/:user_id")

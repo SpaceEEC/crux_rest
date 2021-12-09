@@ -2801,6 +2801,17 @@ defmodule Crux.Rest do
                 api_result(snowflake_map(Guild.t()))
 
     @doc """
+    Get the member of the current user in a guild.
+    This operation requires using a `Bearer` token that was granted the [`guilds.members.read`](https://discord.com/developers/docs/topics/oauth2#shared-resources-oauth2-scopes) scope.
+
+    For more information see the [Discord Developer Documentation](https://discord.com/developers/docs/resources/user#get-current-user-guild-member).
+    """
+    @doc since: "0.3.0"
+    @doc section: :member
+    @callback get_current_user_guild_member(guild :: Guild.id_resolvable()) ::
+                api_result(Member.t())
+
+    @doc """
     Leave a guild.
     Fails if the currently logged in user owns it.
 

@@ -1701,6 +1701,17 @@ defmodule Crux.Rest.Impl do
     |> Request.put_transform(to_map(Guild))
   end
 
+  @doc section: :member
+  def get_current_user_guild_member(guild) do
+    guild_id = Resolver.resolve!(guild, Guild)
+
+    path = Endpoints.users_me_guilds_member(guild_id)
+
+    :get
+    |> Request.new(path)
+    |> Request.put_transform(Member)
+  end
+
   @doc section: :user
   def leave_guild(guild) do
     guild_id = Resolver.resolve!(guild, Guild)
