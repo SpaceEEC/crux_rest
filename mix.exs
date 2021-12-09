@@ -44,7 +44,7 @@ defmodule Crux.Rest.MixProject do
       {:crux_structs, github: "spaceeec/crux_structs"},
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:ex_doc, "~> 0.25"},
+      {:ex_doc, "~> 0.25", only: :dev, runtime: false},
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false},
       {:mox, "~> 1.0", only: :test}
     ]
@@ -80,7 +80,19 @@ defmodule Crux.Rest.MixProject do
     [
       groups_for_functions: groups,
       markdown_processor_options: [breaks: true],
-      formatter: "html"
+      formatter: "html",
+      # To make these very long function names readable
+      # Comes at the cost of having a variable width sidebar
+      before_closing_head_tag: fn :html ->
+        """
+        <style>
+          .sidebar {
+            width: unset;
+            min-width: 300px;
+          }
+        </style>
+        """
+      end
     ]
   end
 
