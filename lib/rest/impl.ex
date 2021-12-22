@@ -256,16 +256,18 @@ defmodule Crux.Rest.Impl do
   def modify_original_interaction_response(application, interaction_token, opts) do
     application_id = Snowflake.to_snowflake(application)
 
-    data =
+    {data, headers} =
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_files()
 
     path = Endpoints.webhooks_messages_original(application_id, interaction_token)
 
     :patch
     |> Request.new(path, data)
     |> Request.put_auth(false)
+    |> Request.put_headers(headers)
     |> Request.put_transform(Message)
   end
 
@@ -320,16 +322,18 @@ defmodule Crux.Rest.Impl do
     application_id = Snowflake.to_snowflake(application)
     message_id = Resolver.resolve!(message, Message)
 
-    data =
+    {data, headers} =
       opts
       |> Map.new()
       |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+      |> Resolver.resolve_files()
 
     path = Endpoints.webhooks_messages(application_id, interaction_token, message_id)
 
     :patch
     |> Request.new(path, data)
     |> Request.put_auth(false)
+    |> Request.put_headers(headers)
     |> Request.put_transform(Message)
   end
 
