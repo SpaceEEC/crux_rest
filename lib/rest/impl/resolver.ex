@@ -232,8 +232,44 @@ defmodule Crux.Rest.Impl.Resolver do
     |> resolve_option(:guild_id, Guild)
   end
 
+  def resolve_files_interaction(%{data: %{files: _} = data} = opts) do
+    {multipart_files, data} = resolve_multipart_files(data)
+
+    opts = %{opts | data: data}
+
+    form_data = [
+      {"payload_json", Jason.encode!(opts), [{:"content-type", "application/json"}]}
+      | multipart_files
+    ]
+
+    {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
+  end
+
+  def resolve_files_interaction(%{data: {}} = opts), do: opts
+
   @spec resolve_files(map()) :: {body :: term(), headers :: keyword()}
-  def resolve_files(%{files: files} = opts) do
+  def resolve_files(%{files: _} = opts) do
+    {multipart_files, opts} = resolve_multipart_files(opts)
+
+    # If opts contains more than files, prepend payload_json
+    form_data =
+      if map_size(opts) > 1 do
+        [
+          {"payload_json", Jason.encode!(opts), [{:"content-type", "application/json"}]}
+          | multipart_files
+        ]
+      else
+        multipart_files
+      end
+
+    {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
+  end
+
+  def resolve_files(%{} = opts) do
+    {opts, []}
+  end
+
+  def resolve_multipart_files(%{files: files} = opts) do
     {multipart_files, attachments} =
       files
       |> Enum.with_index()
@@ -249,7 +285,9 @@ defmodule Crux.Rest.Impl.Resolver do
                  [%{id: index, filename: name, description: description} | attachments]}
             end
 
-          disposition = {"form-data", [{"name", "files[#{index}]"}, {"filename", "\"#{name}\""}]}
+          disposition =
+            {"form-data", [{"name", "\"files[#{index}]\""}, {"filename", "\"#{name}\""}]}
+
           headers = [{:"content-type", :mimerl.filename(name)}]
           multipart_file = {name, attachment, disposition, headers}
 
@@ -263,24 +301,7 @@ defmodule Crux.Rest.Impl.Resolver do
         opts
       end
 
-    # If opts contains more than files, prepend payload_json
-    form_data =
-      if map_size(opts) > 1 do
-        payload_json =
-          opts
-          |> Map.delete(:files)
-          |> Jason.encode!()
-
-        [{"payload_json", payload_json} | multipart_files]
-      else
-        multipart_files
-      end
-
-    {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
-  end
-
-  def resolve_files(%{} = opts) do
-    {opts, []}
+    {multipart_files, Map.delete(opts, :files)}
   end
 
   def resolve_application_command_id!(%{id: id}) do

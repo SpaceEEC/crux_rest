@@ -219,10 +219,17 @@ defmodule Crux.Rest.Impl do
     interaction_id = Snowflake.to_snowflake(interaction_id)
 
     {data, headers} =
-      opts
-      |> Map.new()
-      |> Resolver.resolve_custom(:allowed_mentions, &Resolver.resolve_allowed_mentions/1)
-      |> Resolver.resolve_files()
+      case Map.new(opts) do
+        %{data: %{} = data} ->
+          data =
+            Resolver.resolve_custom(data, :allowed_mentions, &Resolver.resolve_allowed_mentions/1)
+
+          %{opts | data: data}
+          |> Resolver.resolve_files_interaction()
+
+        %{} = opts ->
+          {opts, []}
+      end
 
     path = Endpoints.interactions_callback(interaction_id, interaction_token)
 
