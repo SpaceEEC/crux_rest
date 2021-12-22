@@ -245,7 +245,7 @@ defmodule Crux.Rest.Impl.Resolver do
     {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
   end
 
-  def resolve_files_interaction(%{data: {}} = opts), do: opts
+  def resolve_files_interaction(%{data: %{}} = opts), do: opts
 
   @spec resolve_files(map()) :: {body :: term(), headers :: keyword()}
   def resolve_files(%{files: _} = opts) do
