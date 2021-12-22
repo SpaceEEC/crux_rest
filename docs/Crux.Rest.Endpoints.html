@@ -8,9 +8,15 @@
     <meta name="project" content="crux_rest v0.3.0-dev">
     <title>Crux.Rest.Endpoints — crux_rest v0.3.0-dev</title>
     <link rel="stylesheet" href="dist/elixir-d1506dba1db7cdc5483e.css" />
-    <script src="dist/sidebar_items-cbbd17d310.js"></script>
+    <script src="dist/sidebar_items-92f034f717.js"></script>
       <script src="docs_config.js"></script>
     <script async src="dist/app-7b632b26f13d5e0d20e1.js"></script>
+<style>
+  .sidebar {
+    width: unset;
+    min-width: 300px;
+  }
+</style>
   </head>
   <body data-type="modules">
     <script>
@@ -626,6 +632,13 @@ All functions except <a href="#base_url/1"><code class="inline">base_url/1</code
 </div>
 <div class="summary-row">
   <div class="summary-signature">
+    <a href="#users_me_guilds_member/1">users_me_guilds_member(guild_id)</a>
+  </div>
+    <div class="summary-synopsis"><p>This function handles the route:
+<code class="inline">/users/@me/guilds/:guild_id/member</code>.</p></div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
     <a href="#voice/0">voice()</a>
   </div>
     <div class="summary-synopsis"><p>This function handles the route:
@@ -869,10 +882,10 @@ Functions          </h1>
           <pre>base_url(version :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>() | nil) :: <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
       </div>
 
-<p>Base API url, with or without a version.</p><pre><code class="makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Crux.Rest.Endpoints</span><span class="o">.</span><span class="n">base_url</span><span class="p" data-group-id="6826585075-1">(</span><span class="no">nil</span><span class="p" data-group-id="6826585075-1">)</span><span class="w">
+<p>Base API url, with or without a version.</p><pre><code class="makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="nc">Crux.Rest.Endpoints</span><span class="o">.</span><span class="n">base_url</span><span class="p" data-group-id="0180063599-1">(</span><span class="no">nil</span><span class="p" data-group-id="0180063599-1">)</span><span class="w">
 </span><span class="s">&quot;https://discord.com/api&quot;</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="nc">Crux.Rest.Endpoints</span><span class="o">.</span><span class="n">base_url</span><span class="p" data-group-id="6826585075-2">(</span><span class="mi">9</span><span class="p" data-group-id="6826585075-2">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="nc">Crux.Rest.Endpoints</span><span class="o">.</span><span class="n">base_url</span><span class="p" data-group-id="0180063599-2">(</span><span class="mi">9</span><span class="p" data-group-id="0180063599-2">)</span><span class="w">
 </span><span class="s">&quot;https://discord.com/api/v9&quot;</span></code></pre>  </section>
 </section>
 <section class="detail" id="channels/0">
@@ -2080,6 +2093,24 @@ Functions          </h1>
 
 <p>This function handles the route:
 <code class="inline">/users/@me/guilds/:guild_id</code>.</p>  </section>
+</section>
+<section class="detail" id="users_me_guilds_member/1">
+  <div class="detail-header">
+    <a href="#users_me_guilds_member/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">users_me_guilds_member(guild_id)</h1>
+      <a href="https://github.com/SpaceEEC/crux_rest/blob/master/lib/rest/endpoints.ex#L1" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+  </div>
+
+  <section class="docstring">
+
+<p>This function handles the route:
+<code class="inline">/users/@me/guilds/:guild_id/member</code>.</p>  </section>
 </section>
 <section class="detail" id="voice/0">
   <div class="detail-header">
