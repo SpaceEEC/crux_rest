@@ -245,7 +245,7 @@ defmodule Crux.Rest.Impl.Resolver do
     {{:multipart, form_data}, [{:"content-type", "multipart/form-data"}]}
   end
 
-  def resolve_files_interaction(%{data: %{}} = opts), do: opts
+  def resolve_files_interaction(%{data: %{}} = opts), do: {opts, []}
 
   @spec resolve_files(map()) :: {body :: term(), headers :: keyword()}
   def resolve_files(%{files: _} = opts) do
@@ -253,7 +253,7 @@ defmodule Crux.Rest.Impl.Resolver do
 
     # If opts contains more than files, prepend payload_json
     form_data =
-      if map_size(opts) > 1 do
+      if map_size(opts) > 0 do
         [
           {"payload_json", Jason.encode!(opts), [{:"content-type", "application/json"}]}
           | multipart_files
