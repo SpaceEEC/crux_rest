@@ -684,7 +684,7 @@ defmodule Crux.Rest do
               optional(:parent_id) => Channel.id_resolvable(),
               optional(:rtc_region) => String.t() | nil,
               optional(:video_quality_mode) => 0..1,
-              optional(:default_auto_archive_duration) => 60 | 1440 | 4320 | 10080,
+              optional(:default_auto_archive_duration) => 60 | 1440 | 4320 | 10_080,
               optional(:reason) => String.t() | nil
             }
             | [
@@ -700,7 +700,7 @@ defmodule Crux.Rest do
                 | {:parent_id, Channel.id_resolvable()}
                 | {:rtc_region, String.t() | nil}
                 | {:video_quality_mode, 0..1}
-                | {:default_auto_archive_duration, 60 | 1440 | 4230 | 10080}
+                | {:default_auto_archive_duration, 60 | 1440 | 4230 | 10_080}
                 | {:reason, String.t() | nil}
               ]
 
