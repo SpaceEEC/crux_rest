@@ -286,6 +286,50 @@ defmodule Crux.Rest.CDN do
   end
 
   @doc """
+  Generates a url to a user banner.
+
+  If the user has no banner, `nil`will be returned.
+
+  ```elixir
+  # A struct
+  iex> %Crux.Structs.User{id: 66564597481480192, banner: "a_27381a7510bf0e6dccd6a5c9ad90cb41"}
+  ...> |> Crux.Rest.CDN.user_banner()
+  "#{@base_url}/banners/66564597481480192/a_27381a7510bf0e6dccd6a5c9ad90cb41.gif"
+
+  # A plain map
+  iex> %{id: 66564597481480192, banner: "a_27381a7510bf0e6dccd6a5c9ad90cb41"}
+  ...> |> Crux.Rest.CDN.user_banner()
+  "#{@base_url}/banners/66564597481480192/a_27381a7510bf0e6dccd6a5c9ad90cb41.gif"
+
+  # With format options
+  iex> %{id: 66564597481480192, banner: "a_27381a7510bf0e6dccd6a5c9ad90cb41"}
+  ...> |> Crux.Rest.CDN.user_banner(size: 200, extension: "webp")
+  "#{@base_url}/banners/66564597481480192/a_27381a7510bf0e6dccd6a5c9ad90cb41.webp?size=200"
+
+  # No banner
+  iex> %{id: 218348062828003328, banner: nil}
+  ...> |> Crux.Rest.CDN.user_banner(size: 200, animated: false)
+  nil
+
+  ```
+  """
+  @spec user_banner(
+          Crux.Structs.User.t()
+          | %{id: Crux.Structs.Snowflake.t(), banner: String.t() | nil},
+          format_options()
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def user_banner(user, options \\ [])
+  def user_banner(%{banner: nil}, _options), do: nil
+
+  def user_banner(%{id: id, banner: banner}, options) do
+    extension = get_extension(banner, options[:animated], options[:extension])
+    url = "#{@base_url}/banners/#{id}/#{banner}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  @doc """
   Generates a url to the default avatar url of a user.
 
   ```elixir
@@ -358,6 +402,55 @@ defmodule Crux.Rest.CDN do
   end
 
   @doc """
+  Generates a url to a guild member avatar.
+
+  If the member has no guild avatar, this will return `nil`.
+
+  ```elixir
+  # A struct
+  iex> %Crux.Structs.Member{user: 218348062828003328, guild_id: 222078108977594368, avatar: "0c4ec84b8d40bcf8574b904731b930b7"}
+  ...> |> Crux.Rest.CDN.member_avatar()
+  "#{@base_url}/guilds/222078108977594368/users/218348062828003328/avatars/0c4ec84b8d40bcf8574b904731b930b7.webp"
+
+  # A plain map with an avatar
+  iex> %{user: 218348062828003328, guild_id: 222078108977594368, avatar: "0c4ec84b8d40bcf8574b904731b930b7"}
+  ...> |> Crux.Rest.CDN.member_avatar()
+  "#{@base_url}/guilds/222078108977594368/users/218348062828003328/avatars/0c4ec84b8d40bcf8574b904731b930b7.webp"
+
+  # No avatar
+  iex> %{user: 218348062828003328, guild_id: 222078108977594368, avatar: nil}
+  ...> |> Crux.Rest.CDN.member_avatar()
+  nil
+
+  # With format options
+  iex> %{user: 218348062828003328, guild_id: 222078108977594368, avatar: "0c4ec84b8d40bcf8574b904731b930b7"}
+  ...> |> Crux.Rest.CDN.member_avatar(extension: "png", size: 2048)
+  "#{@base_url}/guilds/222078108977594368/users/218348062828003328/avatars/0c4ec84b8d40bcf8574b904731b930b7.png?size=2048"
+
+  ```
+  """
+  @spec member_avatar(
+          Crux.Structs.Member.t()
+          | %{
+              avatar: String.t() | nil,
+              guild_id: Crux.Structs.Snowflake.t(),
+              user: Crux.Structs.Snowflake.t()
+            },
+          format_options()
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def member_avatar(member, options \\ [])
+
+  def member_avatar(%{avatar: nil}, _options), do: nil
+
+  def member_avatar(%{avatar: avatar, guild_id: guild_id, user: user_id}, options) do
+    extension = get_extension(avatar, options[:animated], options[:extension])
+    url = "#{@base_url}/guilds/#{guild_id}/users/#{user_id}/avatars/#{avatar}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  @doc """
   Generates a url to an application icon.
 
   ```elixir
@@ -394,6 +487,32 @@ defmodule Crux.Rest.CDN do
     append_size(url, options[:size])
   end
 
+  # Application Cover
+  # Application Asset
+  # Achievement Icon - These still exist?
+
+  @doc """
+  Generates a url to a sticker pack icon.
+
+  If the pack has no icon, this will return `nil`.
+  """
+  @spec sticker_pack_icon(
+          %{banner_asset_id: Crux.Structs.Snowflake.t() | nil},
+          format_options()
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def sticker_pack_icon(sticker_pack, options \\ [])
+
+  def sticker_pack_icon(%{asset: asset}, options) do
+    extension = get_extension(asset, options[:animated], options[:extension])
+    url = "#{@base_url}/app-assets/710982414301790216/store/#{asset}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  # The key is documented as option
+  def sticker_pack_icon(_sticker_pack, _options), do: nil
+
   @doc """
   Generates a url to a team icon.
 
@@ -427,6 +546,71 @@ defmodule Crux.Rest.CDN do
   def team_icon(%{id: id, icon: icon}, options) do
     extension = get_extension(icon, options[:animated], options[:extension])
     url = "#{@base_url}/team-icons/#{id}/#{icon}.#{extension}"
+
+    append_size(url, options[:size])
+  end
+
+  @doc """
+  Generates a url to a sticker.
+
+  The extension is derived from the format type and resizing it is not supported by Discord.
+  """
+  @spec sticker(
+          Crux.Structs.Sticker.t()
+          | %{id: Crux.Structs.Snowflake.t(), format_type: 1..3}
+        ) :: String.t()
+  @doc since: "0.3.0"
+  def sticker(sticker)
+
+  def sticker(%{id: sticker_id, format_type: format_type}) do
+    extension =
+      case format_type do
+        1 -> "png"
+        # apng
+        2 -> "png"
+        3 -> "lottie"
+      end
+
+    "#{@base_url}/stickers/#{sticker_id}.#{extension}"
+  end
+
+  @doc """
+  Generates a url to a role icon.
+
+  ```elixir
+  # A struct
+  iex> %Crux.Structs.Role{id: 402615751610990610, icon: "536d8aa3468b472500c3d304b2c0c340"}
+  ...> |> Crux.Rest.CDN.role_icon()
+  "#{@base_url}/role-icons/402615751610990610/536d8aa3468b472500c3d304b2c0c340.webp"
+
+  # A plain map
+  iex> %{id: 402615751610990610, icon: "536d8aa3468b472500c3d304b2c0c340"}
+  ...> |> Crux.Rest.CDN.role_icon()
+  "#{@base_url}/role-icons/402615751610990610/536d8aa3468b472500c3d304b2c0c340.webp"
+
+  # No icon
+  iex> %{id: 402615751610990610, icon: nil}
+  ...> |> Crux.Rest.CDN.role_icon()
+  nil
+
+  # Format options
+  iex> %{id: 402615751610990610, icon: "536d8aa3468b472500c3d304b2c0c340"}
+  ...> |> Crux.Rest.CDN.role_icon(extension: "png", size: 128)
+  "#{@base_url}/role-icons/402615751610990610/536d8aa3468b472500c3d304b2c0c340.png?size=128"
+
+  ```
+  """
+  @spec role_icon(
+          Crux.Structs.Role.t() | %{id: Crux.Structs.Snowflake.t(), icon: String.t() | nil},
+          format_options()
+        ) :: String.t() | nil
+  @doc since: "0.3.0"
+  def role_icon(role, options \\ [])
+  def role_icon(%{icon: nil}, _options), do: nil
+
+  def role_icon(%{id: role_id, icon: icon}, options) do
+    extension = get_extension(icon, options[:animated], options[:extension])
+    url = "#{@base_url}/role-icons/#{role_id}/#{icon}.#{extension}"
 
     append_size(url, options[:size])
   end
