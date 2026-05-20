@@ -66,14 +66,6 @@ defmodule Crux.Rest.RateLimiter.Default.Handler do
       identifier: identifier
     }
 
-    require Logger
-
-    Logger.metadata(
-      name: opts.name,
-      type: type,
-      identifier: identifier
-    )
-
     debug("Started #{type}-handler. (#{inspect(self())})", state)
 
     {:ok, state, @timeout}

@@ -7,10 +7,10 @@ defmodule Crux.Rest.Bangify do
   Discards all annotations that are not @doc and @callback.
   """
   @doc since: "0.3.0"
-  defmacro bangify(do: {:__block__, [], block}) do
+  defmacro bangify(do: {:__block__, meta, block}) do
     bangified = Enum.flat_map(block, &update_annotation/1)
 
-    {:__block__, [], block ++ bangified}
+    {:__block__, meta, block ++ bangified}
   end
 
   # Updates or removes an annotation

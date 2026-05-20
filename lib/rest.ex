@@ -1490,11 +1490,6 @@ defmodule Crux.Rest do
                 emoji :: Emoji.id_resolvable()
               ) :: api_result(Emoji.t())
 
-    # TODO: Uncomment after guild_id was added to Crux.Structs.Emoji
-    # @doc since: "0.3.0"
-    # Shortcut
-    # @callback get_emoji(emoji :: Emoji.t()) :: api_result(Emoji.t())
-
     @typedoc """
     Used to specify an image in various functions:
     - `c:create_emoji/2`
@@ -1581,9 +1576,6 @@ defmodule Crux.Rest do
                 data :: modify_emoji_options()
               ) :: api_result(Emoji.t())
 
-    # TODO: Uncomment after guild_id was added to Crux.Structs.Emoji
-    # @doc since: "0.3.0"
-    # Shortcut
     # @callback modify_emoji(
     #             emoji :: Emoji.t(),
     #             data :: modify_emoji_options()
@@ -1602,11 +1594,6 @@ defmodule Crux.Rest do
                 emoji :: Emoji.id_resolvable(),
                 reason :: String.t() | nil
               ) :: api_result()
-
-    # TODO: Uncomment after guild_id was added to Crux.Structs.Emoji
-    # @doc since: "0.3.0"
-    # Shortcut
-    # @callback delete_emoji(emoji :: Emoji.t(), reason :: String.t() | nil) :: api_result()
 
     ###
     # Emoji END
@@ -1842,7 +1829,6 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :member
-    # TODO: Link gateway alternative
     @callback get_members(
                 guild :: Guild.id_resolvable(),
                 data :: get_members_options()
@@ -2723,7 +2709,6 @@ defmodule Crux.Rest do
     """
     @doc since: "0.2.1"
     @doc section: :user
-    # TODO: mfa_enabled?
     @callback get_current_user() :: api_result(User.t())
 
     @doc """
@@ -2819,7 +2804,6 @@ defmodule Crux.Rest do
     """
     @doc since: "0.3.0"
     @doc section: :guild
-    # TODO: naming
     @callback leave_guild(guild :: Guild.id_resolvable()) :: api_result()
 
     # No Get User DMS
