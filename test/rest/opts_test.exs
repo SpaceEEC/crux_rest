@@ -77,11 +77,11 @@ defmodule Crux.Rest.OptsTest do
 
     test "non-map raises" do
       assert_raise FunctionClauseError, fn ->
-        Opts.transform([])
+        apply(Opts, :transform, [[]])
       end
 
       assert_raise FunctionClauseError, fn ->
-        Opts.transform({"123", Name})
+        apply(Opts, :transform, [{"123", Name}])
       end
     end
   end

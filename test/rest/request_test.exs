@@ -104,13 +104,13 @@ defmodule Crux.Rest.RequestTests do
 
     test "fails with invalid method" do
       assert_raise FunctionClauseError, fn ->
-        Request.new(:path, "/gateway")
+        apply(Request, :new, [:path, "/gateway"])
       end
     end
 
     test "fails with invalid path" do
       assert_raise FunctionClauseError, fn ->
-        Request.new(:get, :path)
+        apply(Request, :new, [:get, :path])
       end
     end
   end
@@ -129,7 +129,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "fails with non-list", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_headers(request, %{foo: "bar", bar: "baz"})
+        apply(Request, :put_headers, [request, %{foo: "bar", bar: "baz"}])
       end
     end
 
@@ -153,7 +153,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "fails with non-list", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_params(request, %{})
+        apply(Request, :put_params, [request, %{}])
       end
     end
   end
@@ -177,7 +177,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "fails with invalid function arity", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_transform(request, fn _, _ -> %{} end)
+        apply(Request, :put_transform, [request, fn _, _ -> %{} end])
       end
     end
   end
@@ -215,7 +215,7 @@ defmodule Crux.Rest.RequestTests do
       refute Keyword.has_key?(request.headers, :"x-audit-log-reason")
 
       assert_raise FunctionClauseError, fn ->
-        Request.put_reason(request, %{})
+        apply(Request, :put_reason, [request, %{}])
       end
     end
   end
@@ -231,7 +231,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "invalid token fails", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_token(request, %{})
+        apply(Request, :put_token, [request, %{}])
       end
     end
   end
@@ -255,7 +255,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "invalid values fail", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_version(request, %{})
+        apply(Request, :put_version, [request, %{}])
       end
     end
   end
@@ -279,7 +279,7 @@ defmodule Crux.Rest.RequestTests do
 
     test "invalid values fail", %{request: request} do
       assert_raise FunctionClauseError, fn ->
-        Request.put_auth(request, 1)
+        apply(Request, :put_auth, [request, 1])
       end
     end
   end
